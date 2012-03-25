@@ -1,0 +1,59 @@
+#######################################
+# Syntax Coloring Map for WiFly
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+WiFly KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+begin		KEYWORD2
+join		KEYWORD2
+leave		KEYWORD2
+reboot		KEYWORD2
+open		KEYWORD2
+openComplete	KEYWORD2
+close		KEYWORD2
+getSSID		KEYWORD2
+getDeviceID	KEYWORD2
+getIP		KEYWORD2
+getNetmask	KEYWORD2
+getGateway	KEYWORD2
+getDNS		KEYWORD2
+getMAC		KEYWORD2
+getTime		KEYWORD2
+getUptime	KEYWORD2
+getTimezone	KEYWORD2
+enableDHCP	KEYWORD2
+disableDHCP	KEYWORD2
+isConnected	KEYWORD2
+isAssociated	KEYWORD2
+
+setSSID		KEYWORD2
+setIP		KEYWORD2
+setNetmask	KEYWORD2
+setGateway	KEYWORD2
+setChannel	KEYWORD2
+setKey		KEYWORD2
+setPassphrase	KEYWORD2
+setSpaceReplace	KEYWORD2
+setDHCP		KEYWORD2
+setIpProtocol	KEYWORD2
+setIpFlags	KEYWORD2
+setUartMode	KEYWORD2
+setBroadcastInterval	KEYWORD2
+setTimeAddress	KEYWORD2
+setTimePort	KEYWORD2
+setTimezone	KEYWORD2
+
+print_P		KEYWORD2
+println_P	KEYWORD2
+
+#######################################
+# Constants (LITERAL1)
+#######################################
