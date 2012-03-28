@@ -93,10 +93,14 @@ public:
     boolean setBaud(uint32_t baud);
     uint32_t getBaud();
     uint8_t getUartMode();
+    uint8_t getIpFlags();
 
     uint8_t getFlushChar();
     uint16_t getFlushSize();
     uint16_t getFlushTimeout();
+
+    char *getHostIP(char *buf, int size);
+    uint16_t getHostPort();
 
     boolean setSSID(const char *buf);
     boolean setIP(const char *buf);
@@ -130,6 +134,8 @@ public:
     boolean enableDataTrigger(const uint16_t flushtime=10, const char flushChar=0, const uint16_t flushSize=64);
     boolean disableDataTrigger();
 
+    boolean setIOFunc(const uint8_t func);
+
     char *getTime(char *buf, int size);
     uint32_t getUptime();
     uint8_t getTimezone();
@@ -150,7 +156,18 @@ public:
     boolean reboot();
     boolean factoryRestore();
 
+    boolean sendto(const uint8_t *data, uint16_t size, const char *host, uint16_t port);
+    boolean sendto(const uint8_t *data, uint16_t size, IPAddress host, uint16_t port);
+    boolean sendto(const char *data, const char *host, uint16_t port);
+    boolean sendto(const char *data, IPAddress host, uint16_t port);
+    boolean sendto(const __FlashStringHelper *data, const char *host, uint16_t port);
+    boolean sendto(const __FlashStringHelper *data, IPAddress host, uint16_t port);
+
+    void enableHostRestore();
+    void disableHostRestore();
+
     boolean open(const char *addr, int port=80, boolean block=true);
+    boolean open(IPAddress addr, int port=80, boolean block=true);
     boolean close();
     boolean openComplete();
     boolean isConnected();
@@ -180,6 +197,13 @@ public:
     void init(void);
 
     void dump(const char *str);
+
+    boolean sendto(
+	const uint8_t *data,
+	uint16_t size,
+	const __FlashStringHelper *flashData,
+	const char *host,
+	uint16_t port);
 
     void eprint(const char ch);
     void eprint(const char *str);
@@ -222,6 +246,7 @@ public:
     boolean inCommandMode;
     int  exitCommand;
     boolean dhcp;
+    bool restoreHost;
 
     boolean connected;
     boolean connecting;

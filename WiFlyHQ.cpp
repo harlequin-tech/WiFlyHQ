@@ -76,6 +76,7 @@ const prog_char req_GetIP[] PROGMEM = "get ip\r";
 const prog_char resp_IP[] PROGMEM = "IP=";
 const prog_char resp_NM[] PROGMEM = "NM=";
 const prog_char resp_GW[] PROGMEM = "GW=";
+const prog_char resp_Host[] PROGMEM = "HOST=";
 const prog_char resp_DHCP[] PROGMEM = "DHCP=";
 const prog_char req_GetMAC[] PROGMEM = "get mac\r";
 const prog_char resp_MAC[] PROGMEM = "Mac Addr=";
@@ -102,6 +103,7 @@ const prog_char resp_FlushChar[] PROGMEM = "MatchChar=";
 const prog_char resp_FlushSize[] PROGMEM = "FlushSize=";
 const prog_char req_GetRSSI[] PROGMEM = "show rssi\r";
 const prog_char resp_RSSI[] PROGMEM = "RSSI=(-";
+const prog_char resp_Flags[] PROGMEM = "FLAGS=0x";
 
 /* Request and response for specific info */
 static struct {
@@ -126,6 +128,8 @@ static struct {
     { req_GetComm,	resp_FlushChar }, /* 15 */
     { req_GetComm,	resp_FlushSize }, /* 16 */
     { req_GetRSSI,	resp_RSSI },	 /* 17 */
+    { req_GetIP,	resp_Flags },	 /* 18 */
+    { req_GetIP,	resp_Host },	 /* 19 */
 };
 
 /* Request indices, must match table above */
@@ -148,6 +152,8 @@ typedef enum {
     WIFLY_GET_FLUSHCHAR	= 15,
     WIFLY_GET_FLUSHSIZE	= 16,
     WIFLY_GET_RSSI	= 17,
+    WIFLY_GET_IP_FLAGS	= 18,
+    WIFLY_GET_HOST	= 19,
 } e_wifly_requests;
 
 /** Convert a unsigned int to a string */
@@ -227,7 +233,7 @@ char *WiFly::iptoa(IPAddress addr, char *buf, int size)
     uint8_t fsize=0;
     uint8_t ind;
 
-    for (ind=0; ind<2; ind++) {
+    for (ind=0; ind<3; ind++) {
 	fsize += simple_utoa(addr[ind], 10, &buf[fsize], size-fsize);
 	if (fsize < (size-1)) {
 	    buf[fsize++] = '.';
@@ -261,6 +267,7 @@ WiFly::WiFly()
     connected = false;
     connecting = false;
     dhcp = true;
+    restoreHost = true;
 #ifdef DEBUG
     debugOn = true;
 #else
@@ -1054,6 +1061,36 @@ char *WiFly::getIP(char *buf, int size)
     return getopt(WIFLY_GET_IP, buf, size);
 }
 
+char *WiFly::getHostIP(char *buf, int size)
+{
+    if (getopt(WIFLY_GET_HOST, buf, size)) {
+	/* Trim off port */
+	while (*buf && *buf != ':') {
+	    buf++;
+	}
+    }
+    *buf = '\0';
+    return buf;
+}
+
+uint16_t WiFly::getHostPort()
+{
+    char buf[22];
+    uint8_t ind;
+
+    if (getopt(WIFLY_GET_HOST, buf, sizeof(buf))) {
+	/* Trim off IP */
+	for (ind=0;  buf[ind]; ind++) {
+	    if (buf[ind] == ':') {
+		ind++;
+		break;
+	    }
+	}
+	return (uint16_t)atou(&buf[ind]);
+    }
+    return 0;
+}
+
 char *WiFly::getNetmask(char *buf, int size)
 {
     return getopt(WIFLY_GET_NETMASK, buf, size);
@@ -1082,6 +1119,17 @@ char *WiFly::getSSID(char *buf, int size)
 char *WiFly::getDeviceID(char *buf, int size)
 {
     return getopt(WIFLY_GET_DEVICEID, buf, size);
+}
+
+uint8_t WiFly::getIpFlags()
+{
+    char buf[3];
+
+    if (!getopt(WIFLY_GET_IP_FLAGS, buf, sizeof(buf))) {
+	return 0;
+    }
+
+    return (uint8_t)atoh(buf);
 }
 
 uint32_t WiFly::getBaud()
@@ -1534,6 +1582,14 @@ boolean WiFly::setFlushSize(const uint16_t size)
     return setopt(PSTR("set comm size"), str);
 }
 
+boolean WiFly::setIOFunc(const uint8_t func)
+{
+    char str[5];
+
+    simple_utoa(func, 16, str, sizeof(str));
+    return setopt(PSTR("set sys iofunc"), str);
+}
+
 /**
  * Enable data trigger mode.  This mode will automatically send a new packet based on several conditions:
  * 1. If no characters are send to the WiFly for at least the flushTimeout period.
@@ -1857,6 +1913,12 @@ boolean WiFly::open(const char *addr, int port, boolean block)
     return false;
 }
 
+boolean WiFly::open(IPAddress addr, int port, boolean block)
+{
+    char buf[16];
+    return open(iptoa(addr, buf, sizeof(buf)), port, block);
+}
+
 /** Check to see if there is a tcp connection. */
 boolean WiFly::isConnected()
 {
@@ -1866,6 +1928,94 @@ boolean WiFly::isConnected()
 boolean WiFly::isInCommandMode()
 {
     return inCommandMode;
+}
+
+boolean WiFly::sendto(
+    const uint8_t *data,
+    uint16_t size,
+    const __FlashStringHelper *flashData,
+    const char *host,
+    uint16_t port)
+{
+    char lastHost[16];
+    uint16_t lastPort;
+    bool restore = restoreHost;
+
+    if (!startCommand()) {
+	eprintln_P(PSTR("sendto: failed to start command"));
+	return false;
+    }
+
+    getHostIP(lastHost, sizeof(lastHost));
+    lastPort = getHostPort();
+
+    if ((port != lastPort) && (strcmp(host, lastHost) != 0)) {
+	setHostIP(host);
+	setHostPort(port);
+    } else {
+	/* same host and port, no need to restore */
+	restore = false;
+    }
+
+    finishCommand();
+
+    if (data) {
+	write(data, size);
+    } else if (flashData) {
+	print(flashData);
+    }
+
+    /* Restore original host and port */
+    if (restore) {
+	eprint("Restoring host "); eprint(lastHost), eprint(":"), eprintln(lastPort);
+	setHost(lastHost,lastPort);
+    }
+
+    return true;
+}
+
+boolean WiFly::sendto(const uint8_t *data, uint16_t size, const char *host, uint16_t port)
+{
+    return sendto(data, size, NULL, host, port);
+}
+
+boolean WiFly::sendto(const uint8_t *data, uint16_t size, IPAddress host, uint16_t port)
+{
+    char buf[16];
+
+    return sendto(data, size, iptoa(host, buf, sizeof(buf)) , port);
+}
+
+boolean WiFly::sendto(const char *data, const char *host, uint16_t port)
+{
+    return sendto((uint8_t *)data, strlen(data), host, port);
+}
+
+boolean WiFly::sendto(const char *data, IPAddress host, uint16_t port)
+{
+    return sendto((uint8_t *)data, strlen(data), host, port);
+}
+
+boolean WiFly::sendto(const __FlashStringHelper *flashData, const char *host, uint16_t port)
+{
+    return sendto(NULL, 0, flashData, host, port);
+}
+
+boolean WiFly::sendto(const __FlashStringHelper *flashData, IPAddress host, uint16_t port)
+{
+    char buf[16];
+
+    return sendto(NULL, 0, flashData, iptoa(host, buf, sizeof(buf)), port);
+}
+
+void WiFly::enableHostRestore()
+{
+    restoreHost = true;
+}
+
+void WiFly::disableHostRestore()
+{
+    restoreHost = false;
 }
 
 /**
