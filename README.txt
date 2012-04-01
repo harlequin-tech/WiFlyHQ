@@ -33,7 +33,7 @@ Example code to open a TCP connection and send some data, and close the connecti
 
 	wifly.open("192.168.1.100",8042);
 	wifly.println("Hello, world!");
-	wifly.close("192.168.1.100",8042);
+	wifly.close();
 
 Exmaple code to receive UDP or TCP data (assumes software serial interface):
 
