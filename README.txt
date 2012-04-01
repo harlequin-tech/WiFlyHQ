@@ -35,7 +35,7 @@ Example code to open a TCP connection and send some data, and close the connecti
 	wifly.println("Hello, world!");
 	wifly.close();
 
-Exmaple code to receive UDP or TCP data (assumes software serial interface):
+Example code to receive UDP or TCP data (assumes software serial interface):
 
 	if (wifly.available() > 0) {
 	    Serial.write(wifly.read());
