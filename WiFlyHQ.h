@@ -43,7 +43,7 @@
 #define WIFLY_PROTOCOL_TCP		0x02
 #define WIFLY_PROTOCOL_SECURE		0x04
 #define WIFLY_PROTOCOL_TCP_CLIENT	0x08
-#define WIFLY_PROTOCOL_HTTP		0x10
+#define WIFLY_PROTOCOL_HTTP		0x10	/* HTTP Client mode */
 
 /* IP Flag bits */
 #define WIFLY_FLAG_TCP_KEEP		0x01	/* Keep TCP connection alive when wifi lost */
@@ -88,6 +88,7 @@ public:
     char *getSSID(char *buf, int size);
     char *getDeviceID(char *buf, int size);    
     char *getIP(char *buf, int size);
+    uint16_t getPort();
     char *getNetmask(char *buf, int size);
     char *getGateway(char *buf, int size);
     char *getDNS(char *buf, int size);
@@ -112,6 +113,7 @@ public:
 
     boolean setSSID(const char *buf);
     boolean setIP(const char *buf);
+    boolean setPort(const uint16_t port);
     boolean setNetmask(const char *buf);
     boolean setGateway(const char *buf);
     boolean setDNS(const char *buf);

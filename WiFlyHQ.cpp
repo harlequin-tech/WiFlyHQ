@@ -951,23 +951,56 @@ uint16_t WiFly::getConnection()
     return res;
 }
 
+/** Get local IP address */
 char *WiFly::getIP(char *buf, int size)
 {
-    return getopt(WIFLY_GET_IP, buf, size);
-}
-
-char *WiFly::getHostIP(char *buf, int size)
-{
-    if (getopt(WIFLY_GET_HOST, buf, size)) {
+    char *chp = buf;
+    if (getopt(WIFLY_GET_IP, buf, size)) {
 	/* Trim off port */
-	while (*buf && *buf != ':') {
-	    buf++;
+	while (*chp && *chp != ':') {
+	    chp++;
 	}
     }
-    *buf = '\0';
+    *chp = '\0';
+
     return buf;
 }
 
+/** Get local port */
+uint16_t WiFly::getPort()
+{
+    char buf[22];
+    uint8_t ind;
+
+    if (getopt(WIFLY_GET_IP, buf, sizeof(buf))) {
+	/* Trim off IP */
+	for (ind=0;  buf[ind]; ind++) {
+	    if (buf[ind] == ':') {
+		ind++;
+		break;
+	    }
+	}
+	return (uint16_t)atou(&buf[ind]);
+    }
+    return 0;
+}
+
+/** Get remote IP address */
+char *WiFly::getHostIP(char *buf, int size)
+{
+    char *chp = buf;
+    if (getopt(WIFLY_GET_HOST, buf, size)) {
+	/* Trim off port */
+	while (*chp && *chp != ':') {
+	    chp++;
+	}
+    }
+    *chp = '\0';
+
+    return buf;
+}
+
+/** Get remote port */
 uint16_t WiFly::getHostPort()
 {
     char buf[22];
@@ -1311,6 +1344,16 @@ boolean WiFly::setIP(const char *buf)
 {
     return setopt(PSTR("set ip address"), buf);
 }
+
+/** Set local port */
+boolean WiFly::setPort(const uint16_t port)
+{
+    char str[6];
+
+    simple_utoa(port, 10, str, sizeof(str));
+    return setopt(PSTR("set ip localport"), str);
+}
+
 
 boolean WiFly::setHostIP(const char *buf)
 {
