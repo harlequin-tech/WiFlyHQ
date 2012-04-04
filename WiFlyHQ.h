@@ -68,8 +68,16 @@
 #define WIFLY_DHCP_MODE_CACHE		0x03	/* Use previous DHCP address based on lease */
 #define WIFLY_DHCP_MODE_SERVER		0x04	/* Server DHCP IP addresses? */
 
-
 #define WIFLY_DEFAULT_TIMEOUT		500	/* 500 milliseconds */
+
+class WFDebug : public Print {
+public:
+    WFDebug();
+    void begin(Print *debugPrint);
+    virtual size_t write(uint8_t byte);
+private:
+    Print *debug;
+};
 
 class WiFly : public Stream {
 public:
@@ -205,21 +213,6 @@ public:
 	const char *host,
 	uint16_t port);
 
-    void eprint(const char ch);
-    void eprint(const char *str);
-    void eprint(const int data);
-    void eprint(const char data, int base);
-    void eprint(const unsigned char data, int base);
-    void eprint(const int data, int base);
-    void eprint(const unsigned int data, int base);
-    void eprint(const long data, int base);
-    void eprint(const unsigned long data, int base);
-    void eprint_P(const prog_char *str);
-    void eprintln_P(const prog_char *str);
-    void eprintln(void);
-    void eprintln(const int data);
-    void eprintln(const char *str);
-
     void send_P(const prog_char *str);
     void send(const char *str);
     void send(const char ch);
@@ -261,14 +254,12 @@ public:
 
     Stream *serial;	/* Serial interface to WiFly */
     
-    // Internal debug channel.
-    Print *debug;
+    WFDebug debug;	/* Internal debug channel. */
 
-    // for dbgDump()
+    /*  for dbgDump() */
     char *dbgBuf;
     int dbgInd;
     int dbgMax;
-
 };
 
 #endif
