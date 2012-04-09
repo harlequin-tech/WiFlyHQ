@@ -37,7 +37,7 @@ void setup()
     Serial.println(wifly.getFreeMemory(),DEC);
 
     wifiSerial.begin(9600);
-    if (!wifly.begin(&wifiSerial, (Print*) &Serial)) {
+    if (!wifly.begin(&wifiSerial, &Serial)) {
         Serial.println("Failed to start wifly");
 	terminal();
     }

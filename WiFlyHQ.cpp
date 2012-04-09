@@ -38,8 +38,10 @@ extern void *__brkval;
 
 #ifdef DEBUG
 #define DPRINT(item) debug.print(item)
+#define DPRINTLN(item) debug.println(item)
 #else
 #define DPRINT(item)
+#define DPRINTLN(item)
 #endif
 
 #define WIFLY_STATUS_TCP_MASK 		0x000F
@@ -101,6 +103,7 @@ const prog_char resp_FlushSize[] PROGMEM = "FlushSize=";
 const prog_char req_GetRSSI[] PROGMEM = "show rssi\r";
 const prog_char resp_RSSI[] PROGMEM = "RSSI=(-";
 const prog_char resp_Flags[] PROGMEM = "FLAGS=0x";
+const prog_char resp_Protocol[] PROGMEM = "PROTO=";
 
 /* Request and response for specific info */
 static struct {
@@ -127,6 +130,7 @@ static struct {
     { req_GetRSSI,	resp_RSSI },	 /* 17 */
     { req_GetIP,	resp_Flags },	 /* 18 */
     { req_GetIP,	resp_Host },	 /* 19 */
+    { req_GetIP,	resp_Protocol }, /* 20 */
 };
 
 /* Request indices, must match table above */
@@ -151,6 +155,7 @@ typedef enum {
     WIFLY_GET_RSSI	= 17,
     WIFLY_GET_IP_FLAGS	= 18,
     WIFLY_GET_HOST	= 19,
+    WIFLY_GET_PROTOCOL	= 20,
 } e_wifly_requests;
 
 /** Convert a unsigned int to a string */
@@ -307,17 +312,12 @@ void WiFly::init()
     dhcpMode = getDHCPMode();
     dhcp = !((dhcpMode == WIFLY_DHCP_MODE_OFF) || (dhcpMode == WIFLY_DHCP_MODE_SERVER));
 
-    if (status.tcp == WIFLY_TCP_CONNECTED) {
-	connected = true;
-    }
 }
 
-boolean WiFly::begin(Stream *serialdev, Print *debugPrint)
+boolean WiFly::begin(Stream *serialdev, Stream *debugPrint)
 {
     debug.begin(debugPrint);
     serial = serialdev;
-
-    debug.println("Hello World");
 
     if (!enterCommandMode()) {
 	debug.println(F("Failed to enter command mode"));
@@ -354,14 +354,17 @@ void WiFly::println_P(const prog_char *str)
  */
 int WiFly::getFreeMemory()
 {
-    int free;
+    void *bufp;
+    int size;
 
-    if ((int)__brkval == 0)
-	free = ((int)&free) - ((int)&__bss_end);
-    else
-	free = ((int)&free) - ((int)__brkval);
+    for (size=8192; size>0; size--) {
+	if ((bufp=malloc(size)) != NULL) {
+	    free(bufp);
+	    break;
+	}
+    }
 
-    return free;
+    return size;
 }
 
 void WiFly::flushRx(int timeout)
@@ -377,53 +380,129 @@ size_t WiFly::write(uint8_t byte)
    return serial->write(byte);
 }
 
-/* Read-ahead for checking for TCP stream close */
-static char peekBuf[6];
-static uint8_t peekInd = 0;	/* Current read-ahead index */
-static uint8_t peekOut = 0;	/* Feed read-ahead from here */
-const prog_char resp_Close[] PROGMEM = "*CLOS*";
+/* Read-ahead for checking for TCP stream close 
+ * A circular buffer is used to keep read-ahead bytes and
+ * feed them back to the user.
+ */
+static char peekBuf[8];
+static uint8_t peekHead = 0;	/* head of buffer; new characters stored here */
+static uint8_t peekTail = 0;	/* Tail of buffer; characters read from here */
+static uint8_t peekCount = 0;	/* Number of characters in peek buffer */
 
 int WiFly::peek()
 {
-    if (!peekInd) {
+    if (peekCount == 0) {
        return serial->peek();
     } else {
-       return peekBuf[peekOut];
+       return peekBuf[peekTail];
     }
 }
 
-/* Check for stream close, if its closed
+/** Check for a state change on the stream */
+boolean WiFly::checkStream(const prog_char *str, boolean peeked)
+{
+    char next;
+
+#ifdef DEBUG
+    debug.print(F("checkStream: "));
+    debug.println((const __FlashStringHelper *)str);
+#endif
+
+    if (peekCount > 0) {
+	uint8_t ind=0;
+	if (peeked) {
+	    str++;
+	    ind = 1;
+	}
+	for (; ind<peekCount; ind++) {
+	    uint8_t pind = peekTail + ind;
+	    next = pgm_read_byte(str++);
+
+	    if (next == '\0') {
+		/* Done - got a match */
+		peekCount = 0; // discard peeked bytes
+		peekTail = 0;
+		peekHead = 0;
+		return true;
+	    }
+
+	    if (pind > sizeof(peekBuf)) {
+		pind = 0;
+	    }
+	    if (peekBuf[pind] != next) {
+		/* Not a match */
+		return false;
+	    }
+	    /* peeked characters match */
+	}
+
+	/* string matched so far, keep reading */
+    } else if (!peeked) {
+	/* Already read the first character */
+	peekBuf[peekHead] = pgm_read_byte(str++);
+	peekHead++;
+	if (peekHead > sizeof(peekBuf)) {
+	    peekHead = 0;
+	}
+	peekCount++;
+	if (peekCount > sizeof(peekBuf)) {
+	    debug.println(F("ERROR peek buffer overlow"));
+	}
+    }
+
+    next = pgm_read_byte(str++);
+    while (readTimeout(&peekBuf[peekHead]),50) {
+	if (peekBuf[peekHead] != next) {
+	    if (++peekHead > sizeof(peekBuf)) {
+		peekHead = 0;
+	    }
+	    peekCount++;
+	    if (peekCount > sizeof(peekBuf)) {
+		debug.println(F("ERROR peek.1 buffer overlow"));
+	    }
+	    break;
+	}
+	if (++peekHead > sizeof(peekBuf)) {
+	    peekHead = 0;
+	}
+	peekCount++;
+	if (peekCount > sizeof(peekBuf)) {
+	    debug.println(F("ERROR peek.2 buffer overlow"));
+	}
+	next = pgm_read_byte(str++);
+	if (next == '\0') {
+	    /* Done - got a match */
+	    peekCount = 0; // discard peeked bytes
+	    peekTail = 0;
+	    peekHead = 0;
+	    return true;
+	}
+    }
+
+    return false;
+}
+
+/** Check for stream close, if its closed
  * we will quickly receive *CLOS* from the WiFly
  */
 boolean WiFly::checkClose(boolean peeked)
 {
-    /* Already read the first character? */
-    if (!peeked) {
-	peekBuf[0] = '*';
-	peekInd = 1;
-    } else {
-	peekInd = 0;
+    if (checkStream(PSTR("*CLOS*"), peeked)) {
+	connected = false;
+	DPRINTLN(F("Stream closed"));
+	return true;
     }
+    return false;
+}
 
-    peekOut = 0;
-
-    while (readTimeout(&peekBuf[peekInd]),50) {
-	if (peekBuf[peekInd] != pgm_read_byte(&resp_Close[peekInd])) {
-	    /* Not a close */
-	    peekInd++;
-	    break;
-	} else {
-	    if (peekInd >= 5) {
-		/* Done - got a close */
-		peekInd = 0;
-		connected = false;
-		debug.println(F("Closed"));
-		return true;
-	    }
-	}
-	peekInd++;
+/** Check for stream open.  */
+boolean WiFly::checkOpen(boolean peeked)
+{
+    if (checkStream(PSTR("*OPEN*"), peeked)) {
+	connected = true;
+	DPRINTLN(F("Stream opened"));
+	return true;
     }
-
     return false;
 }
 
@@ -432,13 +511,12 @@ int WiFly::read()
     int data = -1;
 
     /* Any data in peek buffer? */
-    if (peekInd) {
-	data = (uint8_t)peekBuf[peekOut++];
-	if (peekOut >= peekInd) {
-	    /* Finished catching up */
-	    peekInd = 0;
-	    peekOut = 0;
+    if (peekCount) {
+	data = (uint8_t)peekBuf[peekTail++];
+	if (peekTail > sizeof(peekBuf)) {
+	    peekTail = 0;
 	}
+	peekCount--;
     } else {
 	data = serial->read();
 	/* TCP connected? Check for close */
@@ -446,12 +524,8 @@ int WiFly::read()
 	    if (checkClose(false)) {
 		return -1;
 	    } else {
-		data = (uint8_t)peekBuf[peekOut++];
-		if (peekOut >= peekInd) {
-		    /* Finished catching up */
-		    peekInd = 0;
-		    peekOut = 0;
-		}
+		data = (uint8_t)peekBuf[peekTail++];
+		peekCount--;
 	    }
 	}
     }
@@ -466,17 +540,26 @@ int WiFly::available()
 
     count = serial->available();
     if (count > 0) {
+	if (debugOn) {
+	    debug.print(F("available: peek = "));
+	    debug.println((char)serial->peek());
+	}
 	/* Check for TCP stream closure */
-	if (connected && (serial->peek() == '*')) {
-	    if (checkClose(true)) {
-		return -1;
+	if (serial->peek() == '*') {
+	    if (connected) {
+		if (checkClose(true)) {
+		    return -1;
+		} else {
+		    return peekCount + serial->available();
+		}
 	    } else {
-		return peekInd;
+		checkOpen(true);
+		return peekCount + serial->available();
 	    }
 	}
     }
 
-    return count+peekInd;
+    return count+peekCount;
 }
 
 void WiFly::flush()
@@ -512,15 +595,10 @@ void WiFly::send(const char ch)
 /* Send a string from PROGMEM to the WiFly */
 void WiFly::send_P(const prog_char *str)
 {
-    uint8_t ch;
-
     DPRINT(F("send_P: "));
+    DPRINTLN((const __FlashStringHelper *)str);
 
-    while ((ch=pgm_read_byte(str++)) != 0) {
-	serial->write(ch);
-	DPRINT((char)ch);
-    }
-    DPRINT("\n\r");
+    serial->print((const __FlashStringHelper *)str);
 }
 
 void WiFly::dbgBegin(int size)
@@ -558,25 +636,27 @@ void WiFly::dbgDump()
     dbgMax = 0;
 }
 
-boolean WiFly::readTimeout(char *ch, uint16_t timeout)
+boolean WiFly::readTimeout(char *chp, uint16_t timeout)
 {
     uint32_t start = millis();
+    char ch;
 
     static int ind=0;
 
     while (millis() - start < timeout) {
 	if (serial->available() > 0) {
-	    *ch = serial->read();
+	    ch = serial->read();
+	    *chp = ch;
 	    if (dbgInd < dbgMax) {
-		dbgBuf[dbgInd++] = *ch;
+		dbgBuf[dbgInd++] = ch;
 	    }
 	    if (debugOn) {
 		debug.print(ind++);
 		debug.print(F(": "));
-		debug.print(*ch,HEX);
-		if (isprint(*ch)) {
+		debug.print(ch,HEX);
+		if (isprint(ch)) {
 		    debug.print(' ');
-		    debug.print(*ch);
+		    debug.print(ch);
 		}
 		debug.println();
 	    }
@@ -691,6 +771,9 @@ boolean WiFly::match(const char *str, boolean strict, uint16_t timeout)
 	    } 
 
 	    match = str;
+	    if (ch == *match) {
+		match++;
+	    }
 	}
 	if (*match == '\0') {
 	    DPRINT(F("match: true\n\r"));
@@ -712,14 +795,7 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
 
     if (debugOn) {
 	debug.print(F("match_P: "));
-	ch_P = pgm_read_byte(match);
-	while (ch_P != '\0') {
-	    debug.write(ch_P);
-	    match++;
-	    ch_P = pgm_read_byte(match);
-	}
-	debug.println();
-	match = str;
+	debug.println((const __FlashStringHelper *)str);
     }
 
     ch_P = pgm_read_byte(match);
@@ -734,6 +810,9 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
 	} else {
 	    /* Restart match */
 	    match = str;
+	    if (ch == pgm_read_byte(match)) {
+		match++;
+	    }
 	}
 
 	ch_P = pgm_read_byte(match);
@@ -745,6 +824,11 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
 
     DPRINT(F("match_P: false\n\r"));
     return false;
+}
+
+boolean WiFly::match(const __FlashStringHelper *str, uint16_t timeout)
+{
+    return match_P((const prog_char *)str, timeout);
 }
 
 boolean WiFly::getPrompt(boolean strict, uint16_t timeout)
@@ -940,6 +1024,11 @@ uint16_t WiFly::getConnection()
     }
 
     status.tcp = (res >> WIFLY_STATUS_TCP_OFFSET) & WIFLY_STATUS_TCP_MASK;
+    if (status.tcp) {
+	debug.println(F("getCon: TCP connected"));
+    } else {
+	debug.println(F("getCon: TCP disconnected"));
+    }
     status.assoc = (res >> WIFLY_STATUS_ASSOC_OFFSET) & WIFLY_STATUS_ASSOC_MASK;
     status.authen = (res >> WIFLY_STATUS_AUTHEN_OFFSET) & WIFLY_STATUS_AUTHEN_MASK;
     status.dnsServer = (res >> WIFLY_STATUS_DNS_SERVER_OFFSET) & WIFLY_STATUS_DNS_SERVER_MASK;
@@ -947,6 +1036,10 @@ uint16_t WiFly::getConnection()
     status.channel = (res >> WIFLY_STATUS_CHAN_OFFSET) & WIFLY_STATUS_CHAN_MASK;
 
     finishCommand();
+
+    if (status.tcp == WIFLY_TCP_CONNECTED) {
+	connected = true;
+    }
 
     return res;
 }
@@ -1171,6 +1264,38 @@ int8_t WiFly::getDHCPMode()
     }
     
     return mode;
+}
+
+//#define PROGMEM __attribute__(( section(".progmem.data") )) 
+static struct {
+    uint8_t protocol;
+    char name[6];
+} protmap[] __attribute__((__progmem__)) = {
+    { WIFLY_PROTOCOL_UDP,	 "UDP," },
+    { WIFLY_PROTOCOL_TCP, 	 "TCP," },
+    { WIFLY_PROTOCOL_SECURE, 	 "SECUR" },
+    { WIFLY_PROTOCOL_TCP_CLIENT, "TCP_C" },
+    { WIFLY_PROTOCOL_HTTP, 	 "HTTP," },
+    { WIFLY_PROTOCOL_RAW, 	 "RAW," },
+    { WIFLY_PROTOCOL_SMTP, 	 "SMTP," }
+};
+
+uint8_t WiFly::getProtocol()
+{
+    char buf[50];
+    int8_t prot=0;
+
+    if (!getopt(WIFLY_GET_PROTOCOL, buf, sizeof(buf))) {
+	return -1;
+    }
+
+    for (uint8_t ind=0; ind < (sizeof(protmap)/sizeof(protmap[0])); ind++) {
+	  if (strstr_P(buf, protmap[ind].name) != NULL) {
+	      prot |= pgm_read_byte(&protmap[ind].protocol);
+	  }
+    }
+
+    return prot;
 }
 
 uint16_t WiFly::getFlushTimeout()
@@ -1414,13 +1539,18 @@ boolean WiFly::setDHCP(const uint8_t mode)
     return setopt(PSTR("set ip dhcp"), buf);
 }
 
-boolean WiFly::setIpProtocol(const uint8_t protocol)
+boolean WiFly::setProtocol(const uint8_t protocol)
 {
     char hex[5];
 
     simple_utoa(protocol, 16, hex, sizeof(hex));
 
     return setopt(PSTR("set ip protocol"), hex);
+}
+
+boolean WiFly::setIpProtocol(const uint8_t protocol)
+{
+    return setProtocol(protocol);
 }
 
 boolean WiFly::setIpFlags(const uint8_t protocol)
@@ -1453,11 +1583,11 @@ boolean WiFly::setTimezone(const uint8_t zone)
     return setopt(PSTR("set time zone"), str);
 }
 
-boolean WiFly::setTimeEnable(const uint16_t protocol)
+boolean WiFly::setTimeEnable(const uint16_t period)
 {
     char str[6];
 
-    simple_utoa(protocol, 10, str, sizeof(str));
+    simple_utoa(period, 10, str, sizeof(str));
 
     return setopt(PSTR("set time enable"), str);
 }
@@ -1723,6 +1853,44 @@ boolean WiFly::isDotQuad(const char *addr)
     return false;
 }
 
+
+/** Send final chunk, end of message */
+void WiFly::sendChunkln()
+{
+    serial->println('0');
+    serial->println();
+}
+
+/** Send a chunk string with newline */
+void WiFly::sendChunkln(const char *str)
+{
+    serial->println(strlen(str)+2,HEX);
+    serial->println(str);
+    serial->println();
+}
+
+/** Send a progmem chunk string with newline */
+void WiFly::sendChunkln(const __FlashStringHelper *str)
+{
+    serial->println(strlen_P((const prog_char *)str)+2,HEX);
+    serial->println(str);
+    serial->println();
+}
+
+/** Send a chunk string without newline */
+void WiFly::sendChunk(const char *str)
+{
+    serial->println(strlen(str),HEX);
+    serial->println(str);
+}
+
+/** Send a progmem chunk string without newline */
+void WiFly::sendChunk(const __FlashStringHelper *str)
+{
+    serial->println(strlen_P((const prog_char *)str),HEX);
+    serial->println(str);
+}
+
 boolean WiFly::ping(const char *host)
 {
     char ip[16];
@@ -1860,6 +2028,10 @@ boolean WiFly::open(IPAddress addr, int port, boolean block)
 /** Check to see if there is a tcp connection. */
 boolean WiFly::isConnected()
 {
+    if (!connected) {
+	/* Check for a connection */
+	available();
+    }
     return connected;
 }
 
@@ -2015,6 +2187,21 @@ boolean WiFly::openComplete()
     return false;
 }
 
+
+void WiFly::terminal()
+{
+    debug.println(F("Terminal ready"));
+    while (1) {
+	if (serial->available() > 0) {
+	    debug.write(serial->read());
+	}
+
+	if (debug.available()) { // Outgoing data
+	    serial->write(debug.read());
+	}
+    }
+}
+
 /** Close the TCP connection */
 boolean WiFly::close()
 {
@@ -2022,18 +2209,26 @@ boolean WiFly::close()
 	return true;
     }
 
+    flushRx();
+
     startCommand();
     send_P(PSTR("close\r"));
 
     if (match_P(PSTR("*CLOS*"))) {
 	finishCommand();
+	debug.println(F("close: got *CLOS*"));
 	connected = false;
 	return true;
+    } else {
+	debug.println(F("close: failed, no *CLOS*"));
     }
+
+    /* Check connection state */
+    getConnection();
 
     finishCommand();
 
-    return false;
+    return !connected;
 }
 
 
@@ -2042,7 +2237,7 @@ WFDebug::WFDebug()
     debug = NULL;
 }
 
-void WFDebug::begin(Print *debugPrint)
+void WFDebug::begin(Stream *debugPrint)
 {
     debug = debugPrint;
 }

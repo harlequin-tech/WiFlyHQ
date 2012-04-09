@@ -27,6 +27,17 @@
  *
  * Version  Date         Description
  * 0.1      25-Mar-2012  First release.
+ * 0.2      09-Apr-2012  Added features to support http servers.
+ *                       - added an httpserver.ino example.
+ *                       - added sendChunk() and sendChunkln() to send chunked HTTP bodies.
+ *                       - added terminal() method for simple terminal access via debug stream
+ *                       - replaced getFreeMemory() with simpler version that works with 0 bytes
+ *                       - turned peek buffer into a circular buffer to fix bug with detecting
+ *                         *CLOS* and *OPEN* after a partial match.
+ *                       - Added new TCP connection detection via *OPEN* match from available().
+ *                         isConnected() can now be polled until a client connects.
+ *                       - made the match() function public, handy for matching text in a stream.
+ *                       - Added a getProtocol() function to get current set of protocols.
  *
  */
 
@@ -44,6 +55,8 @@
 #define WIFLY_PROTOCOL_SECURE		0x04
 #define WIFLY_PROTOCOL_TCP_CLIENT	0x08
 #define WIFLY_PROTOCOL_HTTP		0x10	/* HTTP Client mode */
+#define WIFLY_PROTOCOL_RAW		0x20
+#define WIFLY_PROTOCOL_SMTP		0x40
 
 /* IP Flag bits */
 #define WIFLY_FLAG_TCP_KEEP		0x01	/* Keep TCP connection alive when wifi lost */
@@ -70,20 +83,27 @@
 
 #define WIFLY_DEFAULT_TIMEOUT		500	/* 500 milliseconds */
 
-class WFDebug : public Print {
+class WFDebug : public Stream {
 public:
     WFDebug();
-    void begin(Print *debugPrint);
+    void begin(Stream *debugPrint);
+
     virtual size_t write(uint8_t byte);
+    virtual int read() { return debug->read(); }
+    virtual int available() { return debug->available(); }
+    virtual void flush() { return debug->flush(); }
+    virtual int peek() { return debug->peek(); }
+
+    using Print::write;
 private:
-    Print *debug;
+    Stream *debug;
 };
 
 class WiFly : public Stream {
 public:
     WiFly();
     
-    boolean begin(Stream *serialdev, Print *debugPrint = NULL);
+    boolean begin(Stream *serialdev, Stream *debugPrint = NULL);
     
     char *getSSID(char *buf, int size);
     char *getDeviceID(char *buf, int size);    
@@ -103,6 +123,7 @@ public:
     uint32_t getBaud();
     uint8_t getUartMode();
     uint8_t getIpFlags();
+    uint8_t getProtocol();
 
     uint8_t getFlushChar();
     uint16_t getFlushSize();
@@ -127,7 +148,8 @@ public:
     boolean setHostPort(const uint16_t port);
     boolean setHost(const char *buf, uint16_t port);
 
-    boolean setIpProtocol(const uint8_t protocol);
+    boolean setProtocol(const uint8_t protocol);
+    boolean setIpProtocol(const uint8_t protocol);	/* obsolete */
     boolean setIpFlags(const uint8_t flags);
     boolean setUartMode(const uint8_t mode);
 
@@ -195,14 +217,26 @@ public:
 
     void print_P(const prog_char *str);
     void println_P(const prog_char *str);
+    void sendChunk(const char *str);
+    void sendChunk(const __FlashStringHelper *str);
+    void sendChunkln(const char *str);
+    void sendChunkln(const __FlashStringHelper *str);
+    void sendChunkln(void);
 
     int getFreeMemory();
+    void terminal();
   
     using Print::write;
 
     void dbgBegin(int size=256);
     void dbgDump();
     boolean debugOn;
+
+    boolean match(const char *str, boolean strict=false, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    boolean match(const __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    int gets(char *buf, int size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    void flushRx(int timeout=WIFLY_DEFAULT_TIMEOUT);
+
   private:
     void init(void);
 
@@ -215,6 +249,8 @@ public:
 	const char *host,
 	uint16_t port);
 
+    boolean match_P(const prog_char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+
     void send_P(const prog_char *str);
     void send(const char *str);
     void send(const char ch);
@@ -223,18 +259,17 @@ public:
     boolean setPrompt();
     boolean getPrompt(boolean strict=false, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     boolean checkPrompt(const char *str);
-    boolean match(const char *str, boolean strict=false, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-    boolean match_P(const prog_char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     int getResponse(char *buf, int size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     boolean readTimeout(char *ch, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-    int gets(char *buf, int size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     boolean startCommand();
     boolean finishCommand();
     char *getopt(int opt, char *buf, int size);
     boolean setopt(const prog_char *cmd, const char *buf);
     boolean getres(char *buf, int size);
-    void flushRx(int timeout=WIFLY_DEFAULT_TIMEOUT);
+
+    boolean checkStream(const prog_char *str, boolean peeked);
     boolean checkClose(boolean peeked);
+    boolean checkOpen(boolean peeked);
 
     boolean hide();
 
@@ -242,6 +277,8 @@ public:
     int  exitCommand;
     boolean dhcp;
     bool restoreHost;
+
+    boolean tcpMode;
 
     boolean connected;
     boolean connecting;

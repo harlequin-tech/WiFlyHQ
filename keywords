@@ -51,8 +51,8 @@ setTimeAddress	KEYWORD2
 setTimePort	KEYWORD2
 setTimezone	KEYWORD2
 
-print_P		KEYWORD2
-println_P	KEYWORD2
+sendChunk	KEYWORD2
+sendChunkln	KEYWORD2
 
 #######################################
 # Constants (LITERAL1)
