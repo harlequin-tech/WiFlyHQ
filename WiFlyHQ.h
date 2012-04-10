@@ -215,8 +215,6 @@ public:
     IPAddress atoip(char *buf);
     boolean isDotQuad(const char *addr);
 
-    void print_P(const prog_char *str);
-    void println_P(const prog_char *str);
     void sendChunk(const char *str);
     void sendChunk(const __FlashStringHelper *str);
     void sendChunkln(const char *str);
@@ -232,7 +230,7 @@ public:
     void dbgDump();
     boolean debugOn;
 
-    boolean match(const char *str, boolean strict=false, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    boolean match(const char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     boolean match(const __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     int gets(char *buf, int size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     void flushRx(int timeout=WIFLY_DEFAULT_TIMEOUT);
@@ -257,7 +255,7 @@ public:
     boolean enterCommandMode();
     boolean exitCommandMode();
     boolean setPrompt();
-    boolean getPrompt(boolean strict=false, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    boolean getPrompt(uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     boolean checkPrompt(const char *str);
     int getResponse(char *buf, int size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     boolean readTimeout(char *ch, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);

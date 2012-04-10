@@ -334,37 +334,20 @@ boolean WiFly::begin(Stream *serialdev, Stream *debugPrint)
     return true;
 }
 
-void WiFly::print_P(const prog_char *str)
-{
-    char ch;
-    while ((ch=pgm_read_byte(str++)) != 0) {
-	serial->write(ch);
-    }
-}
-
-void WiFly::println_P(const prog_char *str)
-{
-    print_P(str);
-    serial->println();
-}
-
 /**
  * Return number of bytes of memory available.
  * @returns number of bytes of free memory
  */
 int WiFly::getFreeMemory()
 {
-    void *bufp;
-    int size;
+    int free;
 
-    for (size=8192; size>0; size--) {
-	if ((bufp=malloc(size)) != NULL) {
-	    free(bufp);
-	    break;
-	}
-    }
+    if ((int)__brkval == 0)
+	free = ((int)&free) - ((int)&__bss_end);
+    else
+	free = ((int)&free) - ((int)__brkval);
 
-    return size;
+    return free;
 }
 
 void WiFly::flushRx(int timeout)
@@ -398,7 +381,17 @@ int WiFly::peek()
     }
 }
 
-/** Check for a state change on the stream */
+/** Check for a state change on the stream
+ * @param str progmem string to check stream input for
+ * @param peeked true if the caller peeked the first char of the string,
+ *               false if the caller read the character already
+ * @return true if state change was matched, else false.
+ * @note A side effect of this function is that it will store
+ *       the unmatched string in the read-ahead peek buffer since
+ *       it has to read the characters from the WiFly to check for 
+ *       the match.  The peek buffer is used to feed those characters
+ *       to the user ahead of reading any more characters from the WiFly.
+ */
 boolean WiFly::checkStream(const prog_char *str, boolean peeked)
 {
     char next;
@@ -438,16 +431,8 @@ boolean WiFly::checkStream(const prog_char *str, boolean peeked)
 
 	/* string matched so far, keep reading */
     } else if (!peeked) {
-	/* Already read the first character */
-	peekBuf[peekHead] = pgm_read_byte(str++);
-	peekHead++;
-	if (peekHead > sizeof(peekBuf)) {
-	    peekHead = 0;
-	}
-	peekCount++;
-	if (peekCount > sizeof(peekBuf)) {
-	    debug.println(F("ERROR peek buffer overlow"));
-	}
+	/* Already read and matched the first character before being called */
+	str++;
     }
 
     next = pgm_read_byte(str++);
@@ -525,6 +510,9 @@ int WiFly::read()
 		return -1;
 	    } else {
 		data = (uint8_t)peekBuf[peekTail++];
+		if (peekTail > sizeof(peekBuf)) {
+		    peekTail = 0;
+		}
 		peekCount--;
 	    }
 	}
@@ -534,6 +522,10 @@ int WiFly::read()
 }
 
 
+/** Check to see if data is available to be read.
+ * @returns 0 if no data available, -1 if active TCP connection was closed,
+ *          else the number of bytes that are available to read.
+ */
 int WiFly::available()
 {
     int count;
@@ -568,6 +560,7 @@ void WiFly::flush()
 }
   
 
+/** Hex dump a string */
 void WiFly::dump(const char *str)
 {
     while (*str) {
@@ -578,7 +571,7 @@ void WiFly::dump(const char *str)
     debug.println();
 }
 
-/* Send a string to the WiFly */
+/** Send a string to the WiFly */
 void WiFly::send(const char *str)
 {
     DPRINT(F("send: ")); DPRINT(str); DPRINT("\n\r");
@@ -586,13 +579,13 @@ void WiFly::send(const char *str)
     serial->print(str);
 }
 
-/* Send a character to the WiFly */
+/** Send a character to the WiFly */
 void WiFly::send(const char ch)
 {
     serial->write(ch);
 }
 
-/* Send a string from PROGMEM to the WiFly */
+/** Send a string from PROGMEM to the WiFly */
 void WiFly::send_P(const prog_char *str)
 {
     DPRINT(F("send_P: "));
@@ -636,6 +629,12 @@ void WiFly::dbgDump()
     dbgMax = 0;
 }
 
+/** Read the next character from the WiFly serial interface.
+ * Waits up to timeout milliseconds to receive the character.
+ * @param chp pointer to store the read character in
+ * @param timeout the number of milliseconds to wait for a character
+ * @return true if character read, false if timeout was reached.
+ */
 boolean WiFly::readTimeout(char *chp, uint16_t timeout)
 {
     uint32_t start = millis();
@@ -674,6 +673,9 @@ boolean WiFly::readTimeout(char *chp, uint16_t timeout)
 static char prompt[16];
 static boolean gotPrompt = false;
 
+/** Scan the input data for the WiFLy prompt.  This is a string starting with a '<' and
+ * ending with a '>'. Store the prompt for future use.
+ */
 boolean WiFly::setPrompt()
 {
     char ch;
@@ -730,7 +732,7 @@ int WiFly::getResponse(char *buf, int size, uint16_t timeout)
     return count;
 }
 
-/* See if the prompt is somwhere in the string */
+/** See if the prompt is somwhere in the string */
 boolean WiFly::checkPrompt(const char *str)
 {
     if (strstr(str, prompt) != NULL) {
@@ -740,14 +742,18 @@ boolean WiFly::checkPrompt(const char *str)
     }
 }
 
-/* Reach characters from the WiFly and match them against the
- * string. Ignore any leading characters that don't match.
+/** Read characters from the WiFly and match them against the
+ * string. Ignore any leading characters that don't match. Keep
+ * reading, discarding the input, until the string is matched
+ * or until no characters are received for the timeout duration.
+ * @param str The string to match
+ * @timeout fail if no data received for this period (in milliseconds).
+ * @return true if a match is found, else false.
  */
-boolean WiFly::match(const char *str, boolean strict, uint16_t timeout)
+boolean WiFly::match(const char *str, uint16_t timeout)
 {
     const char *match = str;
     char ch;
-    boolean sticky=false;
 
 #ifdef DEBUG
     if (debugOn) {
@@ -764,12 +770,7 @@ boolean WiFly::match(const char *str, boolean strict, uint16_t timeout)
     while (readTimeout(&ch,timeout)) {
 	if (ch == *match) {
 	    match++;
-	    sticky = true;
 	} else {
-	    if (sticky && strict) {
-		return false;
-	    } 
-
 	    match = str;
 	    if (ch == *match) {
 		match++;
@@ -785,8 +786,13 @@ boolean WiFly::match(const char *str, boolean strict, uint16_t timeout)
     return false;
 }
 
-/* Reach characters from the WiFly and match them against the
- * PROGMEM string. Ignore any leading characters that don't match.
+/** Read characters from the WiFly and match them against the
+ * progmem string. Ignore any leading characters that don't match. Keep
+ * reading, discarding the input, until the string is matched
+ * or until no characters are received for the timeout duration.
+ * @param str The string to match, in progmem.
+ * @timeout fail if no data received for this period (in milliseconds).
+ * @return true if a match is found, else false.
  */
 boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
 {
@@ -826,12 +832,27 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
     return false;
 }
 
+/** Read characters from the WiFly and match them against the
+ * flash string. Ignore any leading characters that don't match. Keep
+ * reading, discarding the input, until the string is matched
+ * or until no characters are received for the timeout duration.
+ * @param str The string to match (in flash memory)
+ * @timeout fail if no data received for this period (in milliseconds).
+ * @return true if a match is found, else false.
+ */
 boolean WiFly::match(const __FlashStringHelper *str, uint16_t timeout)
 {
     return match_P((const prog_char *)str, timeout);
 }
 
-boolean WiFly::getPrompt(boolean strict, uint16_t timeout)
+/** Read characters from the WiFly until the prompt string is seen.
+ * Characters are discarded until the prompt is found.
+ * Fails if no data is received for the timeout duration.
+ * @timeout fail if no data received for this period (in milliseconds).
+ * @return true if a match is found, else false.
+ * @Note: The first time this function is called it will set the prompt string.
+ */
+boolean WiFly::getPrompt(uint16_t timeout)
 {
     boolean res;
 
@@ -844,7 +865,7 @@ boolean WiFly::getPrompt(boolean strict, uint16_t timeout)
 	}
     } else {
 	DPRINT(F("getPrompt \"")); DPRINT(prompt); DPRINT("\"\n\r");
-	res = match(prompt, strict, timeout);
+	res = match(prompt, timeout);
     }
     return res;
 }
@@ -1190,7 +1211,7 @@ bool WiFly::getHostByName(const char *hostname, char *buf, int size)
 	send(hostname);
 	send("\r");
 
-	if (match(hostname, false, 5000)) {
+	if (match(hostname, 5000)) {
 	    char ch;
 	    readTimeout(&ch);	// discard '='
 	    gets(buf, size);
