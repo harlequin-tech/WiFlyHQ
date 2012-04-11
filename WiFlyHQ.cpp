@@ -202,9 +202,9 @@ static uint32_t atoh(char *buf)
 	if (ch >= '0' && ch <= '9') {
 	    res = (res << 4) + ch - '0';
 	} else if (ch >= 'a' && ch <= 'f') {
-	    res = (res << 4) + ch - 'a';
+	    res = (res << 4) + ch - 'a' + 10;
 	} else if (ch >= 'A' && ch <= 'F') {
-	    res = (res << 4) + ch - 'A';
+	    res = (res << 4) + ch - 'A' + 10;
 	} else {
 	    break;
 	}
@@ -955,6 +955,7 @@ int WiFly::gets(char *buf, int size, uint16_t timeout)
 		}
 		return ind;
 	    }
+	    /* XXX looses characters from string */
 	}
 	/* Truncate to buffer size */
 	if ((ind < (size-1)) && buf) {
@@ -1415,10 +1416,10 @@ boolean WiFly::setopt(const prog_char *cmd, const char *buf)
 
     send_P(cmd);
     if (buf != NULL) {
-	send_P(PSTR(" "));
+	send(' ');
 	send(buf);
     }
-    send_P(PSTR("\r"));
+    send('\r');
 
     res = getres(rbuf, sizeof(rbuf));
     getPrompt();
@@ -1445,6 +1446,9 @@ boolean WiFly::save()
     return res;
 }
 
+/** Reboots the WiFly.
+ * @note Depending on the shield, this may also reboot the Arduino.
+ */
 boolean WiFly::reboot()
 {
     if (!startCommand()) {
@@ -1464,6 +1468,7 @@ boolean WiFly::reboot()
 
 }
 
+/** Restore factory default settings */
 boolean WiFly::factoryRestore()
 {
     bool res = false;
@@ -1583,11 +1588,13 @@ boolean WiFly::setIpFlags(const uint8_t protocol)
     return setopt(PSTR("set ip protocol"), hex);
 }
 
+/** Set NTP server IP address */
 boolean WiFly::setTimeAddress(const char *buf)
 {
     return setopt(PSTR("set time address"), buf);
 }
 
+/** Set NTP server port */
 boolean WiFly::setTimePort(const uint16_t port)
 {
     char str[6];
@@ -1596,6 +1603,7 @@ boolean WiFly::setTimePort(const uint16_t port)
     return setopt(PSTR("set time port"), str);
 }
 
+/** Set timezone for calculating local time based on NTP time. */
 boolean WiFly::setTimezone(const uint8_t zone)
 {
     char str[4];
@@ -1604,6 +1612,7 @@ boolean WiFly::setTimezone(const uint8_t zone)
     return setopt(PSTR("set time zone"), str);
 }
 
+/** Set the NTP update period */
 boolean WiFly::setTimeEnable(const uint16_t period)
 {
     char str[6];
@@ -1623,6 +1632,11 @@ boolean WiFly::setUartMode(const uint8_t mode)
     return setopt(PSTR("set uart mode"), hex);
 }
 
+/** Set the UDP broadcast time interval.
+ * @param seconds the number of seconds between broadcasts.
+ *                Set this to zero to disable broadcasts.
+ * @return true if sucessful, else false.
+ */
 boolean WiFly::setBroadcastInterval(const uint8_t seconds)
 {
     char hex[5];
@@ -1650,6 +1664,12 @@ boolean WiFly::setFlushTimeout(const uint16_t timeout)
     return setopt(PSTR("set comm time"), str);
 }
 
+/** Set the comms flush character. 0 disables the feature.
+ * A packet will be sent whenever this character is sent
+ * to the WiFly. Used for auto connect mode or UDP packet sending.
+ * @param flushChar send a packet when this character is sent.
+ *        Set to 0 to disable character based flush.
+ */
 boolean WiFly::setFlushChar(const char flushChar)
 {
     char str[5];
@@ -1658,6 +1678,10 @@ boolean WiFly::setFlushChar(const char flushChar)
     return setopt(PSTR("set comm match"), str);
 }
 
+/** Set the comms flush size.
+ * A packet will be sent whenever this many characters are sent.
+ * @param size number of characters to buffer before sending a packet
+ */
 boolean WiFly::setFlushSize(const uint16_t size)
 {
     char str[6];
@@ -1672,6 +1696,7 @@ boolean WiFly::setFlushSize(const uint16_t size)
     return setopt(PSTR("set comm size"), str);
 }
 
+/** Set the WiFly IO function option */
 boolean WiFly::setIOFunc(const uint8_t func)
 {
     char str[5];
@@ -1684,12 +1709,13 @@ boolean WiFly::setIOFunc(const uint8_t func)
  * Enable data trigger mode.  This mode will automatically send a new packet based on several conditions:
  * 1. If no characters are send to the WiFly for at least the flushTimeout period.
  * 2. If the character defined by flushChar is sent to the WiFly.
- * 3. If the numebr of characters sent to the WiFly reaches flushSize.
+ * 3. If the number of characters sent to the WiFly reaches flushSize.
  * @param flushTimeout Send a packet if no more characters are sent within this many milliseconds. Set
  *                     to 0 to disable.
  * @param flushChar Send a packet when this character is sent to the WiFly. Set to 0 to disable.
  * @param flushSize Send a packet when this many characters have been sent to the WiFly.
  * @returns true on success, else false.
+ * @note as of 2.32 firmware, the flushTimeout parameter does not take affect until after a save and reboot.
  */
 boolean WiFly::enableDataTrigger(const uint16_t flushTimeout, const char flushChar, const uint16_t flushSize)
 {
