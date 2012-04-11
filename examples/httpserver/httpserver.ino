@@ -2,7 +2,7 @@
  * WiFlyHQ Example httpserver.ino
  *
  * This sketch implements a simple Web server that waits for requests
- * and servers up a small form asking for a username, then when the
+ * and serves up a small form asking for a username, then when the
  * client posts that form the server sends a greeting page with the
  * user's name and an analog reading.
  *
@@ -115,7 +115,7 @@ void loop()
 		/* GET request */
 		Serial.println(F("Got GET request"));
 		while (wifly.gets(buf, sizeof(buf)) > 0) {
-		    /* Skip reset of request */
+		    /* Skip rest of request */
 		}
 		sendIndex();
 		Serial.println(F("Sent index page"));
