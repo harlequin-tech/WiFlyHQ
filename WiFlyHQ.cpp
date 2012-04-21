@@ -246,7 +246,13 @@ static uint32_t atou(const char *buf)
     return res;
 }
 
-/** Convert an IPAdress to an ASCIIZ string */
+/**
+ * Convert an IPAdress to an ASCIIZ string
+ * @param addr - the IP Address to convert
+ * @param buf - the buffer to write the result to
+ * @param size - the size of the buffer
+ * @returns pointer to the result
+ */
 char *WiFly::iptoa(IPAddress addr, char *buf, int size)
 {
     uint8_t fsize=0;
@@ -262,7 +268,12 @@ char *WiFly::iptoa(IPAddress addr, char *buf, int size)
     return buf;
 }
 
-/** Convert a dotquad string to an IPAddress */
+/**
+ * Convert a dotquad IP address string to an IPAddress.
+ * E.g. "192.168.1.100" -> { 192, 168, 1, 100 }.
+ * @param buf - the string to convert
+ * @returns the IPAddress form of the string
+ */
 IPAddress WiFly::atoip(char *buf)
 {
     IPAddress ip;
@@ -331,6 +342,14 @@ void WiFly::init()
 
 }
 
+/**
+ * Start the WiFly device, set it up to handle commands, obtain
+ * some initial status (TCP connection status, WiFi association, etc).
+ * @param serialdev - the serial stream to use to talk to the WiFly.
+ * @param debugPrint - optional debug stream for errors and status.
+ * @retval true - WiFly ready for use
+ * @retval false - failed to initialise WiFly
+ */
 boolean WiFly::begin(Stream *serialdev, Stream *debugPrint)
 {
     debug.begin(debugPrint);
@@ -367,6 +386,10 @@ int WiFly::getFreeMemory()
     return free;
 }
 
+/**
+ * Flush the incoming data from the WiFly.
+ * @param timeout - the number of milliseconds to wait for additional data to flush. Default is 500msecs.
+ */
 void WiFly::flushRx(int timeout)
 {
     char ch;
@@ -375,6 +398,11 @@ void WiFly::flushRx(int timeout)
     DPRINT(F("flushed\n\r"));
 }
 
+/**
+ * Write a byte to the WiFly.
+ * @param byte - the byte to write.
+ * @return the number of bytes written (1).
+ */
 size_t WiFly::write(uint8_t byte)
 {
    return serial->write(byte);
@@ -389,6 +417,12 @@ static uint8_t peekHead = 0;	/* head of buffer; new characters stored here */
 static uint8_t peekTail = 0;	/* Tail of buffer; characters read from here */
 static uint8_t peekCount = 0;	/* Number of characters in peek buffer */
 
+/**
+ * Return the next byte that a read() would return, but leave the
+ * byte in the receive buffer.
+ * @returns the next byte that would be read 
+ * @retval -1 - no data in receive buffer
+ */
 int WiFly::peek()
 {
     if (peekCount == 0) {
@@ -402,7 +436,8 @@ int WiFly::peek()
  * @param str progmem string to check stream input for
  * @param peeked true if the caller peeked the first char of the string,
  *               false if the caller read the character already
- * @return true if state change was matched, else false.
+ * @retval true - the state change was matched
+ * @retval false - state change not matched
  * @note A side effect of this function is that it will store
  *       the unmatched string in the read-ahead peek buffer since
  *       it has to read the characters from the WiFly to check for 
@@ -486,6 +521,9 @@ boolean WiFly::checkStream(const prog_char *str, boolean peeked)
 
 /** Check for stream close, if its closed
  * we will quickly receive *CLOS* from the WiFly
+ * @param peeked - set to true if first character of *CLOS* was peeked, or false if it has been read.
+ * @retval true - stream closed
+ * @retval false - stream not closed
  */
 boolean WiFly::checkClose(boolean peeked)
 {
@@ -497,7 +535,11 @@ boolean WiFly::checkClose(boolean peeked)
     return false;
 }
 
-/** Check for stream open.  */
+/** Check for stream open.
+ * @param peeked - set to true if first character of *OPEN* was peeked, or false if it has been read.
+ * @retval true - stream opened
+ * @retval false - stream not opened
+ */
 boolean WiFly::checkOpen(boolean peeked)
 {
     if (checkStream(PSTR("*OPEN*"), peeked)) {
@@ -508,6 +550,10 @@ boolean WiFly::checkOpen(boolean peeked)
     return false;
 }
 
+/** Read the next byte from the WiFly.
+ * @returns the byte read
+ * @retval -1 - nothing in the receive buffer to read
+ */
 int WiFly::read()
 {
     int data = -1;
@@ -540,8 +586,9 @@ int WiFly::read()
 
 
 /** Check to see if data is available to be read.
- * @returns 0 if no data available, -1 if active TCP connection was closed,
- *          else the number of bytes that are available to read.
+ * @returns the number of bytes that are available to read.
+ * @retval 0 - no data available
+ * @retval -1 - active TCP connection was closed,
  */
 int WiFly::available()
 {
@@ -611,6 +658,10 @@ void WiFly::send_P(const prog_char *str)
     serial->print((const __FlashStringHelper *)str);
 }
 
+/**
+ * Start a capture of all the characters recevied from the WiFly.
+ * @param size - the size of the capture buffer. This will be malloced.
+ */
 void WiFly::dbgBegin(int size)
 {
     if (dbgBuf != NULL) {
@@ -621,6 +672,7 @@ void WiFly::dbgBegin(int size)
     dbgMax = size;
 }
 
+/** Do a hex and ASCII dump of the capture buffer, and free the buffer.  */
 void WiFly::dbgDump()
 {
     int ind;
@@ -650,7 +702,8 @@ void WiFly::dbgDump()
  * Waits up to timeout milliseconds to receive the character.
  * @param chp pointer to store the read character in
  * @param timeout the number of milliseconds to wait for a character
- * @return true if character read, false if timeout was reached.
+ * @retval true - character read
+ * @retval false - timeout reached, character not read
  */
 boolean WiFly::readTimeout(char *chp, uint16_t timeout)
 {
@@ -737,19 +790,7 @@ boolean WiFly::setPrompt()
     return false;
 }
 
-int WiFly::getResponse(char *buf, int size, uint16_t timeout)
-{
-    int count=0;
-
-    for (count=0; count<(size-1) && readTimeout(&buf[count], timeout); count++) {
-    }
-
-    buf[count] = 0;
-
-    return count;
-}
-
-/** See if the prompt is somwhere in the string */
+/** See if the prompt is somewhere in the string */
 boolean WiFly::checkPrompt(const char *str)
 {
     if (strstr(str, prompt) != NULL) {
@@ -759,13 +800,15 @@ boolean WiFly::checkPrompt(const char *str)
     }
 }
 
-/** Read characters from the WiFly and match them against the
+/**
+ * Read characters from the WiFly and match them against the
  * string. Ignore any leading characters that don't match. Keep
  * reading, discarding the input, until the string is matched
  * or until no characters are received for the timeout duration.
  * @param str The string to match
- * @timeout fail if no data received for this period (in milliseconds).
- * @return true if a match is found, else false.
+ * @param timeout fail if no data received for this period (in milliseconds).
+ * @retval true - a match was found
+ * @retval false - no match found, timeout reached
  */
 boolean WiFly::match(const char *str, uint16_t timeout)
 {
@@ -803,13 +846,15 @@ boolean WiFly::match(const char *str, uint16_t timeout)
     return false;
 }
 
-/** Read characters from the WiFly and match them against the
+/**
+ * Read characters from the WiFly and match them against the
  * progmem string. Ignore any leading characters that don't match. Keep
  * reading, discarding the input, until the string is matched
  * or until no characters are received for the timeout duration.
  * @param str The string to match, in progmem.
- * @timeout fail if no data received for this period (in milliseconds).
- * @return true if a match is found, else false.
+ * @param timeout fail if no data received for this period (in milliseconds).
+ * @retval true - a match was found
+ * @retval false - no match found, timeout reached
  */
 boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
 {
@@ -849,6 +894,17 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
     return false;
 }
 
+/**
+ * Read characters from the WiFly and match them against the set of
+ * progmem strings. Ignore any leading characters that don't match. Keep
+ * reading, discarding the input, until one of the strings is matched
+ * or until no characters are received for the timeout duration.
+ * @param str - the array of progmem strings to match
+ * @param count - the number of strings in the str array
+ * @param timeout - fail if no data received for this period (in milliseconds).
+ * @returns the index of the matching string
+ * @retval -1 - no match found, timeout reached
+ */
 int8_t WiFly::multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeout)
 {
     struct {
@@ -881,34 +937,38 @@ int8_t WiFly::multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeo
 
 	    if (pgm_read_byte(match[ind].str) == '\0') {
 		/* Got a match */
-		DPRINT(F("multiMatch_P: true\n\r"));
+		DPRINTLN(F("multiMatch_P: true"));
 		return ind;
 	    }
 	}
     }
 
-    DPRINT(F("multiMatch_P: false\n\r"));
-    return false;
+    DPRINTLN(F("multiMatch_P: failed"));
+    return -1;
 }
 
-/** Read characters from the WiFly and match them against the
+/**
+ * Read characters from the WiFly and match them against the
  * flash string. Ignore any leading characters that don't match. Keep
  * reading, discarding the input, until the string is matched
  * or until no characters are received for the timeout duration.
  * @param str The string to match (in flash memory)
  * @timeout fail if no data received for this period (in milliseconds).
- * @return true if a match is found, else false.
+ * @retval true - a match was found
+ * @retval false - no match found, timeout reached
  */
 boolean WiFly::match(const __FlashStringHelper *str, uint16_t timeout)
 {
     return match_P((const prog_char *)str, timeout);
 }
 
-/** Read characters from the WiFly until the prompt string is seen.
+/**
+ * Read characters from the WiFly until the prompt string is seen.
  * Characters are discarded until the prompt is found.
  * Fails if no data is received for the timeout duration.
  * @timeout fail if no data received for this period (in milliseconds).
- * @return true if a match is found, else false.
+ * @retval true - prompt found
+ * @retval false - prompt not found, timeout reached
  * @Note: The first time this function is called it will set the prompt string.
  */
 boolean WiFly::getPrompt(uint16_t timeout)
@@ -929,6 +989,7 @@ boolean WiFly::getPrompt(uint16_t timeout)
     return res;
 }
 
+/** Put the WiFly into command mode */
 boolean WiFly::enterCommandMode()
 {
     uint8_t retry;
@@ -978,6 +1039,7 @@ boolean WiFly::enterCommandMode()
     return false;
 }
 
+/** Take the WiFly out of command mode */
 boolean WiFly::exitCommandMode()
 {
     if (!inCommandMode) {
@@ -995,7 +1057,15 @@ boolean WiFly::exitCommandMode()
     }
 }
 
-/* Get data to end of line */
+/**
+ * Read characters into the buffer until a carriage-return and newline is reached.
+ * If the buffer is too small, the remaining characters in the line are discarded.
+ * @param buf - the buffer to read into. If this is NULL then all characters in the line are discarded.
+ * @param size - the size of the buffer (max number of characters it can store)
+ * @param timeout - the number of milliseconds to wait for a new character to arrive
+ * @returns the number of characters read into the buffer.
+ * @note The buffer will be null terminated, and in effect can hold size-1 characters.
+ */
 int WiFly::gets(char *buf, int size, uint16_t timeout)
 {
     char ch;
@@ -1956,14 +2026,19 @@ boolean WiFly::isDotQuad(const char *addr)
 }
 
 
-/** Send final chunk, end of message */
+/** Send final chunk, end of HTTP message */
 void WiFly::sendChunkln()
 {
     serial->println('0');
     serial->println();
 }
 
-/** Send a chunk string with newline */
+/**
+ * Send a string as an HTTP chunk with newline
+ * An HTTP chunk is the length of the string in HEX followed
+ * by the string.
+ * @param str the string to send
+ */
 void WiFly::sendChunkln(const char *str)
 {
     serial->println(strlen(str)+2,HEX);
@@ -1971,7 +2046,12 @@ void WiFly::sendChunkln(const char *str)
     serial->println();
 }
 
-/** Send a progmem chunk string with newline */
+/**
+ * Send a progmame string as an HTTP chunk with newline
+ * An HTTP chunk is the length of the string in HEX followed
+ * by the string.
+ * @param str the string to send
+ */
 void WiFly::sendChunkln(const __FlashStringHelper *str)
 {
     serial->println(strlen_P((const prog_char *)str)+2,HEX);
@@ -1979,20 +2059,37 @@ void WiFly::sendChunkln(const __FlashStringHelper *str)
     serial->println();
 }
 
-/** Send a chunk string without newline */
+/**
+ * Send a string as an HTTP chunk without a newline
+ * An HTTP chunk is the length of the string in HEX followed
+ * by the string.
+ * @param str the string to send
+ */
 void WiFly::sendChunk(const char *str)
 {
     serial->println(strlen(str),HEX);
     serial->println(str);
 }
 
-/** Send a progmem chunk string without newline */
+/**
+ * Send a progmem string as an HTTP chunk without a newline.
+ * An HTTP chunk is the length of the string in HEX followed
+ * by the string.
+ * @param str the string to send
+ */
 void WiFly::sendChunk(const __FlashStringHelper *str)
 {
     serial->println(strlen_P((const prog_char *)str),HEX);
     serial->println(str);
 }
 
+/**
+ * Ping the specified host. Return true if a ping response
+ * is received, else false.
+ * @param host the host or IP address to ping
+ * @retval true - received ping response
+ * @retval false - no response from host
+ */
 boolean WiFly::ping(const char *host)
 {
     char ip[16];
@@ -2034,7 +2131,8 @@ boolean WiFly::ping(const char *host)
  * The WiFly is assigned IP address 169.254.1.1.
  * @param ssid the SSID to use for the network
  * @param channel the WiFi channel to use; 1 to 13.
- * @returns true on success, else false.
+ * @retval true - successfully create Ad Hoc network
+ * @retval false - failed
  * @note the WiFly is rebooted as the final step of this command.
  */
 boolean WiFly::createAdhocNetwork(const char *ssid, uint8_t channel)
@@ -2054,15 +2152,16 @@ boolean WiFly::createAdhocNetwork(const char *ssid, uint8_t channel)
 }
 
 /**
- * Open a TCP connection
+ * Open a TCP connection.
  * If there is already an open connection then that is closed first.
- * @param addr - the IP address or hostname to connect 
+ * @param addr - the IP address or hostname to connect. A DNS lookup will be peformed
+ *               for the hostname.
  * @param port - the TCP port to connect to
  * @param block - true = wait for the connection to complete
- *                false = start the connection, but use openComplete() 
+ *                false = start the connection and return. Use openComplete() 
  *                        to determine the result.
- * @returns true - success
- *          false - failed, or connection already in progress
+ * @retval true - success, the connection is open
+ * @retval false - failed, or connection already in progress
  */
 boolean WiFly::open(const char *addr, int port, boolean block)
 {
@@ -2145,6 +2244,17 @@ boolean WiFly::open(const char *addr, int port, boolean block)
     return false;
 }
 
+/**
+ * Open a TCP connection.
+ * If there is already an open connection then that is closed first.
+ * @param addr - the IP address to connect to
+ * @param port - the TCP port to connect to
+ * @param block - true = wait for the connection to complete
+ *                false = start the connection and return. Use openComplete() 
+ *                        to determine the result.
+ * @retval true - success, the connection is open
+ * @retval false - failed, or connection already in progress
+ */
 boolean WiFly::open(IPAddress addr, int port, boolean block)
 {
     char buf[16];
@@ -2166,6 +2276,7 @@ boolean WiFly::isInCommandMode()
     return inCommandMode;
 }
 
+/** Internal UPD sendto function */
 boolean WiFly::sendto(
     const uint8_t *data,
     uint16_t size,
@@ -2209,11 +2320,30 @@ boolean WiFly::sendto(
     return true;
 }
 
+/**
+ * Send binary data as a UDP packet to a host.
+ * @param data - pointer to an array of data to send
+ * @param size - then number of bytes of data to send
+ * @param host - the IP or hostname to send the packet to. If this is a hostname 
+ *               then a DNS lookup will be performed to find the IP address.
+ * @param port - the UDP port to send the packet to
+ * @retval true - packet send successfully
+ * @retval false - failed to send packet
+ */
 boolean WiFly::sendto(const uint8_t *data, uint16_t size, const char *host, uint16_t port)
 {
     return sendto(data, size, NULL, host, port);
 }
 
+/**
+ * Send binary data as a UDP packet to a host.
+ * @param data - pointer to an array of data to send
+ * @param size - then number of bytes of data to send
+ * @param host - the IP address to send the packet to.
+ * @param port - the UDP port to send the packet to
+ * @retval true - packet send successfully
+ * @retval false - failed to send packet
+ */
 boolean WiFly::sendto(const uint8_t *data, uint16_t size, IPAddress host, uint16_t port)
 {
     char buf[16];
@@ -2221,21 +2351,55 @@ boolean WiFly::sendto(const uint8_t *data, uint16_t size, IPAddress host, uint16
     return sendto(data, size, iptoa(host, buf, sizeof(buf)) , port);
 }
 
+/**
+ * Send a string as a UDP packet to a host.
+ * @param data - the null terminated string to send
+ * @param host - the IP or hostname to send the packet to. If this is a hostname 
+ *               then a DNS lookup will be performed to find the IP address.
+ * @param port - the UDP port to send the packet to
+ * @retval true - packet send successfully
+ * @retval false - failed to send packet
+ */
 boolean WiFly::sendto(const char *data, const char *host, uint16_t port)
 {
     return sendto((uint8_t *)data, strlen(data), host, port);
 }
 
+/**
+ * Send a string as a UDP packet to a host.
+ * @param data - the null terminated string to send
+ * @param host - the IP address to send the packet to.
+ * @param port - the UDP port to send the packet to
+ * @retval true - packet send successfully
+ * @retval false - failed to send packet
+ */
 boolean WiFly::sendto(const char *data, IPAddress host, uint16_t port)
 {
     return sendto((uint8_t *)data, strlen(data), host, port);
 }
 
+/**
+ * Send a string as a UDP packet to a host.
+ * @param data - the null terminated flash string to send
+ * @param host - the IP or hostname to send the packet to. If this is a hostname 
+ *               then a DNS lookup will be performed to find the IP address.
+ * @param port - the UDP port to send the packet to
+ * @retval true - packet send successfully
+ * @retval false - failed to send packet
+ */
 boolean WiFly::sendto(const __FlashStringHelper *flashData, const char *host, uint16_t port)
 {
     return sendto(NULL, 0, flashData, host, port);
 }
 
+/**
+ * Send a string as a UDP packet to a host.
+ * @param data - the null terminated flash string to send
+ * @param host - the IP address to send the packet to.
+ * @param port - the UDP port to send the packet to
+ * @retval true - packet send successfully
+ * @retval false - failed to send packet
+ */
 boolean WiFly::sendto(const __FlashStringHelper *flashData, IPAddress host, uint16_t port)
 {
     char buf[16];
@@ -2243,11 +2407,19 @@ boolean WiFly::sendto(const __FlashStringHelper *flashData, IPAddress host, uint
     return sendto(NULL, 0, flashData, iptoa(host, buf, sizeof(buf)), port);
 }
 
+/**
+ * Preserve the IP and Port set via setIP() and setPort() when using
+ * sendto() function.
+ */
 void WiFly::enableHostRestore()
 {
     restoreHost = true;
 }
 
+/**
+ * Don't preserve the IP and Port set via setIP() and setPort() when using
+ * sendto() function. The IP and Port will be left set by the last sendto() call.
+ */
 void WiFly::disableHostRestore()
 {
     restoreHost = false;
@@ -2258,6 +2430,8 @@ void WiFly::disableHostRestore()
  * When this returns true the open has finished with either
  * success or failure. You can use isConnected() to see
  * if the open was successful.
+ * @retval true - the open operation has completed
+ * @retval false - the open is still in progress
  */
 boolean WiFly::openComplete()
 {
@@ -2313,7 +2487,12 @@ boolean WiFly::openComplete()
     return false;
 }
 
-
+/**
+ * Start a simple terminal that connects the debug stream
+ * to the WiFly.
+ * Useful for debugging and manually setting and reading
+ * WiFly options.
+ */
 void WiFly::terminal()
 {
     debug.println(F("Terminal ready"));
@@ -2328,7 +2507,11 @@ void WiFly::terminal()
     }
 }
 
-/** Close the TCP connection */
+/**
+ * Close the TCP connection
+ * @retval true - connection closed
+ * @retval false - failed to close
+ */
 boolean WiFly::close()
 {
     if (!connected) {
