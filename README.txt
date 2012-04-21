@@ -55,6 +55,8 @@ Limitations with WiFly RN-XV rev 2.32 firmware
    arduino.
 4. Only supports one TCP connection at a time, which means its easy
    for a web browser to lock out other users.
+5. Changing the flush timeout (set comm time x) does not take affect until 
+   after a save and reboot.
 
 To do:
 1. Add FTP support.
