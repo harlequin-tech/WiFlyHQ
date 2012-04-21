@@ -2031,6 +2031,7 @@ boolean WiFly::ping(const char *host)
 
 /**
  * Create an Adhoc WiFi network.
+ * The WiFly is assigned IP address 169.254.1.1.
  * @param ssid the SSID to use for the network
  * @param channel the WiFi channel to use; 1 to 13.
  * @returns true on success, else false.

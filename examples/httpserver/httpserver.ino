@@ -171,10 +171,10 @@ void sendIndex()
     wifly.sendChunkln();
 }
 
-/** Send an greeting HTML page with the user's name and an analog reading */
+/** Send a greeting HTML page with the user's name and an analog reading */
 void sendGreeting(char *name)
 {
-    /* Send the header direclty with print */
+    /* Send the header directly with print */
     wifly.println(F("HTTP/1.1 200 OK"));
     wifly.println(F("Content-Type: text/html"));
     wifly.println(F("Transfer-Encoding: chunked"));
