@@ -38,6 +38,15 @@
  *                         isConnected() can now be polled until a client connects.
  *                       - made the match() function public, handy for matching text in a stream.
  *                       - Added a getProtocol() function to get current set of protocols.
+ * 0.3      21-Apr-2012  Added createAdhocNetwork() to create an Ad Hoc WiFi network.
+ * 			 Optimised the setopt() and getopt() function so they handle
+ * 			 integer conversions and refactored all of the set and get functions.
+ * 			 Added a multMatch_P() function to match serial data against multiple
+ * 			 progmem strings.
+ * 			 Added failure detection to the join() function to quickly detect
+ * 			 a failure rather than relying on a timeout.
+ * 			 Added setJoin() and getJoin() function for access to the wlan join parameter.
+ * 			 Refactored getres() to use the new multiMatch_P() function.
  *
  */
 
@@ -81,6 +90,13 @@
 #define WIFLY_DHCP_MODE_CACHE		0x03	/* Use previous DHCP address based on lease */
 #define WIFLY_DHCP_MODE_SERVER		0x04	/* Server DHCP IP addresses? */
 
+/* WLAN Join modes */
+#define WIFLY_WLAN_JOIN_MANUAL		0x00	/* Don't auto-join a network */
+#define WIFLY_WLAN_JOIN_AUTO		0x01	/* Auto-join network set in SSID, passkey, and channel. */
+#define WIFLY_WLAN_JOIN_ANY		0x02	/* Ignore SSID and join strongest network using passkey. */
+#define WIFLY_WLAN_JOIN_ADHOC		0x04	/* Create an Adhoc network using SSID, Channel, IP and NetMask */
+#define WIFLY_WLAN_JOIN_MANUAL		0x00	/* */
+
 #define WIFLY_DEFAULT_TIMEOUT		500	/* 500 milliseconds */
 
 class WFDebug : public Stream {
@@ -106,6 +122,7 @@ public:
     boolean begin(Stream *serialdev, Stream *debugPrint = NULL);
     
     char *getSSID(char *buf, int size);
+    uint8_t getJoin();
     char *getDeviceID(char *buf, int size);    
     char *getIP(char *buf, int size);
     uint16_t getPort();
@@ -118,6 +135,7 @@ public:
     uint16_t getConnection();
     int8_t getRSSI();
 
+    bool setJoin(uint8_t join);
     boolean setDeviceID(const char *buf);
     boolean setBaud(uint32_t baud);
     uint32_t getBaud();
@@ -138,7 +156,7 @@ public:
     boolean setNetmask(const char *buf);
     boolean setGateway(const char *buf);
     boolean setDNS(const char *buf);
-    boolean setChannel(const char *buf);
+    boolean setChannel(uint8_t channel);
     boolean setKey(const char *buf);
     boolean setPassphrase(const char *buf);
     boolean setSpaceReplace(const char *buf);
@@ -160,9 +178,15 @@ public:
     boolean setTimezone(const uint8_t zone);
     boolean setTimeEnable(const uint16_t enable);
 
+    boolean setAdhocBeacon(const uint16_t msecs);
+    boolean setAdhocProbe(const uint16_t secs);
+    uint16_t getAdhocBeacon();
+    uint16_t getAdhocProbe();
+    uint16_t getAdhocReboot();
+
     boolean setFlushTimeout(const uint16_t timeout);
     boolean setFlushChar(const char flushChar);
-    boolean setFlushSize(const uint16_t size);
+    boolean setFlushSize(uint16_t size);
     boolean enableDataTrigger(const uint16_t flushtime=10, const char flushChar=0, const uint16_t flushSize=64);
     boolean disableDataTrigger();
 
@@ -179,8 +203,9 @@ public:
     boolean enableDHCP();
     boolean disableDHCP();
     
-    boolean join(const char *ssid);
-    boolean join(void);
+    boolean createAdhocNetwork(const char *ssid, uint8_t channel);
+    boolean join(const char *ssid, uint16_t timeout=20000);
+    boolean join(uint16_t timeout=20000);
     boolean leave();
     boolean isAssociated();
 
@@ -248,6 +273,7 @@ public:
 	uint16_t port);
 
     boolean match_P(const prog_char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    int8_t multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
 
     void send_P(const prog_char *str);
     void send(const char *str);
@@ -262,7 +288,9 @@ public:
     boolean startCommand();
     boolean finishCommand();
     char *getopt(int opt, char *buf, int size);
+    uint32_t getopt(int opt, uint8_t base=DEC);
     boolean setopt(const prog_char *cmd, const char *buf);
+    boolean setopt(const prog_char *opt, const uint32_t value, uint8_t base=DEC);
     boolean getres(char *buf, int size);
 
     boolean checkStream(const prog_char *str, boolean peeked);
