@@ -1423,8 +1423,17 @@ boolean WiFly::getres(char *buf, int size)
     return false;
 }
 
+/** Set an option to an unsigned integer value */
+boolean WiFly::setopt(const prog_char *opt, const uint32_t value, uint8_t base)
+{
+    char buf[11];
+    simple_utoa(value, base, buf, sizeof(buf));
+    return setopt(opt, buf);
+}
+
+
 /* Set an option, confirm ok status */
-boolean WiFly::setopt(const prog_char *cmd, const char *buf)
+boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashStringHelper *buf_P)
 {
     char rbuf[16];
     boolean res;
@@ -1434,7 +1443,10 @@ boolean WiFly::setopt(const prog_char *cmd, const char *buf)
     }
 
     send_P(cmd);
-    if (buf != NULL) {
+    if (buf_P != NULL) {
+	send(' ');
+	send_P((const prog_char *)buf_P);
+    } else if (buf != NULL) {
 	send(' ');
 	send(buf);
     }
@@ -1520,6 +1532,11 @@ boolean WiFly::setIP(const char *buf)
     return setopt(PSTR("set ip address"), buf);
 }
 
+boolean WiFly::setIP(const __FlashStringHelper *buf)
+{
+    return setopt(PSTR("set ip address"), NULL, buf);
+}
+
 /** Set local port */
 boolean WiFly::setPort(const uint16_t port)
 {
@@ -1557,6 +1574,11 @@ boolean WiFly::setHost(const char *buf, uint16_t port)
 boolean WiFly::setNetmask(const char *buf)
 {
     return setopt(PSTR("set ip netmask"), buf);
+}
+
+boolean WiFly::setNetmask(const __FlashStringHelper *buf)
+{
+    return setopt(PSTR("set ip netmask"), NULL, buf);
 }
 
 boolean WiFly::setGateway(const char *buf)
@@ -1786,14 +1808,6 @@ boolean WiFly::setSpaceReplace(const char *buf)
     return setopt(PSTR("set opt replace"), buf);
 }
 
-/** Set an option to an unsigned integer value */
-boolean WiFly::setopt(const prog_char *opt, const uint32_t value, uint8_t base)
-{
-    char buf[11];
-    simple_utoa(value, base, buf, sizeof(buf));
-    return setopt(opt, buf);
-}
-
 /**
  * Set the ad hoc beacon period in milliseconds.
  * The beacon is a management frame needed to keep the network alive.
@@ -1859,6 +1873,7 @@ boolean WiFly::join(const char *ssid, uint16_t timeout)
 	if (dhcp) {
 	    // need some time to complete DHCP request
 	    match_P(PSTR("GW="), 15000);
+	    flushRx(100);
 	}
 	gets(NULL,0);
 	finishCommand();
@@ -2025,8 +2040,8 @@ boolean WiFly::createAdhocNetwork(const char *ssid, uint8_t channel)
 {
     startCommand();
     setDHCP(WIFLY_DHCP_MODE_OFF);
-    setIP("169.254.1.1");
-    setNetmask("255.255.0.0");
+    setIP(F("169.254.1.1"));
+    setNetmask(F("255.255.0.0"));
 
     setJoin(WIFLY_WLAN_JOIN_ADHOC);
     setSSID(ssid);

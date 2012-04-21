@@ -152,8 +152,10 @@ public:
 
     boolean setSSID(const char *buf);
     boolean setIP(const char *buf);
+    boolean setIP(const __FlashStringHelper *buf);
     boolean setPort(const uint16_t port);
     boolean setNetmask(const char *buf);
+    boolean setNetmask(const __FlashStringHelper *buf);
     boolean setGateway(const char *buf);
     boolean setDNS(const char *buf);
     boolean setChannel(uint8_t channel);
@@ -289,7 +291,7 @@ public:
     boolean finishCommand();
     char *getopt(int opt, char *buf, int size);
     uint32_t getopt(int opt, uint8_t base=DEC);
-    boolean setopt(const prog_char *cmd, const char *buf);
+    boolean setopt(const prog_char *cmd, const char *buf, const __FlashStringHelper *buf_P=NULL);
     boolean setopt(const prog_char *opt, const uint32_t value, uint8_t base=DEC);
     boolean getres(char *buf, int size);
 

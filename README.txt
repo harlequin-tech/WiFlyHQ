@@ -57,4 +57,4 @@ Limitations with WiFly RN-XV rev 2.32 firmware
    for a web browser to lock out other users.
 
 To do:
-1. Add support for adhoc mode.
+1. Add FTP support.
