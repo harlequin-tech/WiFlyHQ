@@ -91,6 +91,8 @@ Public Member Functions</h2></td></tr>
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>begin</b> (Stream *serialdev, Stream *debugPrint=NULL)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af23b59ec55f076da89d7a8a627c97454"></a><!-- doxytag: member="WiFly::getSSID" ref="af23b59ec55f076da89d7a8a627c97454" args="(char *buf, int size)" -->
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>getSSID</b> (char *buf, int size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5bf8bd0b7a162b2a00c61fa28fd4eca9"></a><!-- doxytag: member="WiFly::getJoin" ref="a5bf8bd0b7a162b2a00c61fa28fd4eca9" args="()" -->
+uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getJoin</b> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aebbda57bcc32cf90c9d4d56b042043dd"></a><!-- doxytag: member="WiFly::getDeviceID" ref="aebbda57bcc32cf90c9d4d56b042043dd" args="(char *buf, int size)" -->
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>getDeviceID</b> (char *buf, int size)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">char *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a0071323aefaaf3b77ee6972cb166a118">getIP</a> (char *buf, int size)</td></tr>
@@ -109,6 +111,8 @@ int8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getDHCPMode</b> ()<
 uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>getConnection</b> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e55b330d5624f417cd0ec6f8b3c3b52"></a><!-- doxytag: member="WiFly::getRSSI" ref="a2e55b330d5624f417cd0ec6f8b3c3b52" args="()" -->
 int8_t&#160;</td><td class="memItemRight" valign="bottom"><b>getRSSI</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a8b2c1074ef4dfa2d050f8c6d561d03e8"></a><!-- doxytag: member="WiFly::setJoin" ref="a8b2c1074ef4dfa2d050f8c6d561d03e8" args="(uint8_t join)" -->
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>setJoin</b> (uint8_t join)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a95baf95ff13c86ede901c532e9cf8cf8"></a><!-- doxytag: member="WiFly::setDeviceID" ref="a95baf95ff13c86ede901c532e9cf8cf8" args="(const char *buf)" -->
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setDeviceID</b> (const char *buf)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af6ea7d05f3b9da59dd830e30d5ca1ca5"></a><!-- doxytag: member="WiFly::setBaud" ref="af6ea7d05f3b9da59dd830e30d5ca1ca5" args="(uint32_t baud)" -->
@@ -140,8 +144,7 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setNetmask</b> (co
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setGateway</b> (const char *buf)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a4cecfc4bd7a4292e9f40fd4374ca9c72"></a><!-- doxytag: member="WiFly::setDNS" ref="a4cecfc4bd7a4292e9f40fd4374ca9c72" args="(const char *buf)" -->
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setDNS</b> (const char *buf)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="abfacc21f7fb2e8b1cf4b0d64e42a1cf2"></a><!-- doxytag: member="WiFly::setChannel" ref="abfacc21f7fb2e8b1cf4b0d64e42a1cf2" args="(const char *buf)" -->
-boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setChannel</b> (const char *buf)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#ab6a52d6d0258e487a4bc972f852a7406">setChannel</a> (uint8_t channel)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#acbf5067803dd7e371ae3fcdbb68e7936">setKey</a> (const char *buf)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a73216bb0fe3d30b076fcf7f7dd02ef7e">setPassphrase</a> (const char *buf)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a6e59a2453a7aa87f99477e1032e5cbcb">setSpaceReplace</a> (const char *buf)</td></tr>
@@ -166,9 +169,17 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setUartMode</b> (c
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a20453217520ae24b523c3bfc92096ec8">setTimePort</a> (const uint16_t port)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a48ed5f8e44678412dddab96be9dc339d">setTimezone</a> (const uint8_t zone)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#ac8b3704b10a605f63d2caba603c65680">setTimeEnable</a> (const uint16_t enable)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a7f2e7c6d1834ec3cd179dea3733786ca">setAdhocBeacon</a> (const uint16_t msecs)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#aedbdb2520f6c3ec621a1c78eec685c68">setAdhocProbe</a> (const uint16_t secs)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ac361abf5f62b28bb544d458b3e17a789"></a><!-- doxytag: member="WiFly::getAdhocBeacon" ref="ac361abf5f62b28bb544d458b3e17a789" args="()" -->
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>getAdhocBeacon</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a352ca2d2f7d32b2fe2b437b8596edbca"></a><!-- doxytag: member="WiFly::getAdhocProbe" ref="a352ca2d2f7d32b2fe2b437b8596edbca" args="()" -->
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>getAdhocProbe</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a551afee44365577637b502360100492d"></a><!-- doxytag: member="WiFly::getAdhocReboot" ref="a551afee44365577637b502360100492d" args="()" -->
+uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>getAdhocReboot</b> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#ae7cdd4d36010ead8a1a49f7d6c7654bc">setFlushTimeout</a> (const uint16_t timeout)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a4df072b7a2808652f4a802ba45bfa5f9">setFlushChar</a> (const char flushChar)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a7d2052dd07bb45f5e98bcfaed53984b6">setFlushSize</a> (const uint16_t size)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a120a70541f1fac6d70b462607599038d">setFlushSize</a> (uint16_t size)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#aa253afdc746f88821ea5aaebd544d0ff">enableDataTrigger</a> (const uint16_t flushtime=10, const char flushChar=0, const uint16_t flushSize=64)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8cce3e97b24ab373386bc4b5f201454"></a><!-- doxytag: member="WiFly::disableDataTrigger" ref="ae8cce3e97b24ab373386bc4b5f201454" args="()" -->
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>disableDataTrigger</b> ()</td></tr>
@@ -188,8 +199,9 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><b>ping</b> (const ch
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>enableDHCP</b> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e593b9f61123bb7c2ea33819d7be920"></a><!-- doxytag: member="WiFly::disableDHCP" ref="a2e593b9f61123bb7c2ea33819d7be920" args="()" -->
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>disableDHCP</b> ()</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a4b1847c349f422439aaa74034fdfbe34">join</a> (const char *ssid)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#afa926831f05ea8ed7a94ee01b8b5636f">join</a> (void)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#ac84cdf8e1dd3c544bb935548af9d114e">createAdhocNetwork</a> (const char *ssid, uint8_t channel)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a1a557580eae627aa0f0f6b111e908003">join</a> (const char *ssid, uint16_t timeout=20000)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a59fb81c1c9522534b8539dad374e7f69">join</a> (uint16_t timeout=20000)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#ac05d1f877b0b40d53cdedb7ad5065ab2">leave</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#abcf1fa74650fcfa4d0cbddfa289d3cd4">isAssociated</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2fd8dc483004913d7d2eb36ea6a138ce"></a><!-- doxytag: member="WiFly::save" ref="a2fd8dc483004913d7d2eb36ea6a138ce" args="()" -->
@@ -318,6 +330,43 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 </div>
 <div class="memdoc">
 <p>Close the TCP connection </p>
+
+</div>
+</div>
+<a class="anchor" id="ac84cdf8e1dd3c544bb935548af9d114e"></a><!-- doxytag: member="WiFly::createAdhocNetwork" ref="ac84cdf8e1dd3c544bb935548af9d114e" args="(const char *ssid, uint8_t channel)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean WiFly::createAdhocNetwork </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>ssid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>channel</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Create an Adhoc WiFi network. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ssid</td><td>the SSID to use for the network </td></tr>
+    <tr><td class="paramname">channel</td><td>the WiFi channel to use; 1 to 13. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>true on success, else false. </dd></dl>
+<dl class="note"><dt><b>Note:</b></dt><dd>the <a class="el" href="class_wi_fly.html">WiFly</a> is rebooted as the final step of this command. </dd></dl>
 
 </div>
 </div>
@@ -619,7 +668,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 
 </div>
 </div>
-<a class="anchor" id="a4b1847c349f422439aaa74034fdfbe34"></a><!-- doxytag: member="WiFly::join" ref="a4b1847c349f422439aaa74034fdfbe34" args="(const char *ssid)" -->
+<a class="anchor" id="a1a557580eae627aa0f0f6b111e908003"></a><!-- doxytag: member="WiFly::join" ref="a1a557580eae627aa0f0f6b111e908003" args="(const char *ssid, uint16_t timeout=20000)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -627,8 +676,18 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
           <td class="memname">boolean WiFly::join </td>
           <td>(</td>
           <td class="paramtype">const char *&#160;</td>
-          <td class="paramname"><em>ssid</em></td><td>)</td>
+          <td class="paramname"><em>ssid</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>timeout</em> = <code>20000</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div>
@@ -637,15 +696,15 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 
 </div>
 </div>
-<a class="anchor" id="afa926831f05ea8ed7a94ee01b8b5636f"></a><!-- doxytag: member="WiFly::join" ref="afa926831f05ea8ed7a94ee01b8b5636f" args="(void)" -->
+<a class="anchor" id="a59fb81c1c9522534b8539dad374e7f69"></a><!-- doxytag: member="WiFly::join" ref="a59fb81c1c9522534b8539dad374e7f69" args="(uint16_t timeout=20000)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">boolean WiFly::join </td>
           <td>(</td>
-          <td class="paramtype">void&#160;</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>timeout</em> = <code>20000</code></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -910,6 +969,56 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 
 </div>
 </div>
+<a class="anchor" id="a7f2e7c6d1834ec3cd179dea3733786ca"></a><!-- doxytag: member="WiFly::setAdhocBeacon" ref="a7f2e7c6d1834ec3cd179dea3733786ca" args="(const uint16_t msecs)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean WiFly::setAdhocBeacon </td>
+          <td>(</td>
+          <td class="paramtype">const uint16_t&#160;</td>
+          <td class="paramname"><em>msecs</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Set the ad hoc beacon period in milliseconds. The beacon is a management frame needed to keep the network alive. Default is 100 milliseconds. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">msecs</td><td>the number of milliseconds between beacon </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>true on success, false on failure. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="aedbdb2520f6c3ec621a1c78eec685c68"></a><!-- doxytag: member="WiFly::setAdhocProbe" ref="aedbdb2520f6c3ec621a1c78eec685c68" args="(const uint16_t secs)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean WiFly::setAdhocProbe </td>
+          <td>(</td>
+          <td class="paramtype">const uint16_t&#160;</td>
+          <td class="paramname"><em>secs</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Set the ad hoc network probe period. When this number of seconds passes since last receiving a beacon then the network is declared lost. Default is 5 seconds.. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">secs</td><td>the number of seconds in the probe period. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>true on success, false on failure. </dd></dl>
+
+</div>
+</div>
 <a class="anchor" id="a74493dbef1319125e8e83fed96f597ea"></a><!-- doxytag: member="WiFly::setBroadcastInterval" ref="a74493dbef1319125e8e83fed96f597ea" args="(const uint8_t seconds)" -->
 <div class="memitem">
 <div class="memproto">
@@ -932,6 +1041,31 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>true if sucessful, else false. </dd></dl>
+
+</div>
+</div>
+<a class="anchor" id="ab6a52d6d0258e487a4bc972f852a7406"></a><!-- doxytag: member="WiFly::setChannel" ref="ab6a52d6d0258e487a4bc972f852a7406" args="(uint8_t channel)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean WiFly::setChannel </td>
+          <td>(</td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>channel</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Set the WiFi channel. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">channel</td><td>the wifi channel from 0 to 13. 0 means auto channel scan. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>true if successful, else false. </dd></dl>
 
 </div>
 </div>
@@ -959,14 +1093,14 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 
 </div>
 </div>
-<a class="anchor" id="a7d2052dd07bb45f5e98bcfaed53984b6"></a><!-- doxytag: member="WiFly::setFlushSize" ref="a7d2052dd07bb45f5e98bcfaed53984b6" args="(const uint16_t size)" -->
+<a class="anchor" id="a120a70541f1fac6d70b462607599038d"></a><!-- doxytag: member="WiFly::setFlushSize" ref="a120a70541f1fac6d70b462607599038d" args="(uint16_t size)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
           <td class="memname">boolean WiFly::setFlushSize </td>
           <td>(</td>
-          <td class="paramtype">const uint16_t&#160;</td>
+          <td class="paramtype">uint16_t&#160;</td>
           <td class="paramname"><em>size</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1192,7 +1326,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 11 2012 23:15:42 for WifiHQ by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 21 2012 17:14:15 for WifiHQ by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>

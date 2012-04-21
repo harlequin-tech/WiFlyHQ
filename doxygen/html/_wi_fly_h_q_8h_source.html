@@ -116,268 +116,296 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00038"></a>00038 <span class="comment"> *                         isConnected() can now be polled until a client connects.</span>
 <a name="l00039"></a>00039 <span class="comment"> *                       - made the match() function public, handy for matching text in a stream.</span>
 <a name="l00040"></a>00040 <span class="comment"> *                       - Added a getProtocol() function to get current set of protocols.</span>
-<a name="l00041"></a>00041 <span class="comment"> *</span>
-<a name="l00042"></a>00042 <span class="comment"> */</span>
-<a name="l00043"></a>00043 
-<a name="l00044"></a>00044 <span class="preprocessor">#ifndef _WIFLYHQ_H_</span>
-<a name="l00045"></a>00045 <span class="preprocessor"></span><span class="preprocessor">#define _WIFLYHQ_H_</span>
-<a name="l00046"></a>00046 <span class="preprocessor"></span>
-<a name="l00047"></a>00047 <span class="preprocessor">#include &lt;Arduino.h&gt;</span>
-<a name="l00048"></a>00048 <span class="preprocessor">#include &lt;Stream.h&gt;</span>
-<a name="l00049"></a>00049 <span class="preprocessor">#include &lt;avr/pgmspace.h&gt;</span>
-<a name="l00050"></a>00050 <span class="preprocessor">#include &lt;IPAddress.h&gt;</span>
-<a name="l00051"></a>00051 
-<a name="l00052"></a>00052 <span class="comment">/* IP Protocol bits */</span>
-<a name="l00053"></a>00053 <span class="preprocessor">#define WIFLY_PROTOCOL_UDP              0x01</span>
-<a name="l00054"></a>00054 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_TCP              0x02</span>
-<a name="l00055"></a>00055 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_SECURE           0x04</span>
-<a name="l00056"></a>00056 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_TCP_CLIENT       0x08</span>
-<a name="l00057"></a>00057 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_HTTP             0x10    </span><span class="comment">/* HTTP Client mode */</span>
-<a name="l00058"></a>00058 <span class="preprocessor">#define WIFLY_PROTOCOL_RAW              0x20</span>
-<a name="l00059"></a>00059 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_SMTP             0x40</span>
-<a name="l00060"></a>00060 <span class="preprocessor"></span>
-<a name="l00061"></a>00061 <span class="comment">/* IP Flag bits */</span>
-<a name="l00062"></a>00062 <span class="preprocessor">#define WIFLY_FLAG_TCP_KEEP             0x01    </span><span class="comment">/* Keep TCP connection alive when wifi lost */</span>
-<a name="l00063"></a>00063 <span class="preprocessor">#define WIFLY_FLAG_TCP_NODELAY          0x02</span>
-<a name="l00064"></a>00064 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_TCP_RETRY            0x04</span>
-<a name="l00065"></a>00065 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_UDP_RETRY            0x08</span>
-<a name="l00066"></a>00066 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_DNS_CACHING          0x10</span>
-<a name="l00067"></a>00067 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_ARP_CACHING          0x20</span>
-<a name="l00068"></a>00068 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_UDP_AUTO_PAIR        0x40</span>
-<a name="l00069"></a>00069 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_ADD_TIMESTAMP        0x80</span>
-<a name="l00070"></a>00070 <span class="preprocessor"></span>
-<a name="l00071"></a>00071 <span class="comment">/* UART mode bits */</span>
-<a name="l00072"></a>00072 <span class="preprocessor">#define WIFLY_UART_MODE_NOECHO          0x01</span>
-<a name="l00073"></a>00073 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_UART_MODE_DATA_TRIGGER    0x02</span>
-<a name="l00074"></a>00074 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_UART_MODE_SLEEP_RX_BREAK  0x08</span>
-<a name="l00075"></a>00075 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_UART_MODE_RX_BUFFER       0x10</span>
-<a name="l00076"></a>00076 <span class="preprocessor"></span>
-<a name="l00077"></a>00077 <span class="comment">/* DHCP modes */</span>
-<a name="l00078"></a>00078 <span class="preprocessor">#define WIFLY_DHCP_MODE_OFF             0x00    </span><span class="comment">/* No DHCP, static IP mode */</span>
-<a name="l00079"></a>00079 <span class="preprocessor">#define WIFLY_DHCP_MODE_ON              0x01    </span><span class="comment">/* get IP, Gateway, and DNS from AP */</span>
-<a name="l00080"></a>00080 <span class="preprocessor">#define WIFLY_DHCP_MODE_AUTOIP          0x02    </span><span class="comment">/* Used with Adhoc networks */</span>
-<a name="l00081"></a>00081 <span class="preprocessor">#define WIFLY_DHCP_MODE_CACHE           0x03    </span><span class="comment">/* Use previous DHCP address based on lease */</span>
-<a name="l00082"></a>00082 <span class="preprocessor">#define WIFLY_DHCP_MODE_SERVER          0x04    </span><span class="comment">/* Server DHCP IP addresses? */</span>
-<a name="l00083"></a>00083 
-<a name="l00084"></a>00084 <span class="preprocessor">#define WIFLY_DEFAULT_TIMEOUT           500     </span><span class="comment">/* 500 milliseconds */</span>
-<a name="l00085"></a>00085 
-<a name="l00086"></a><a class="code" href="class_w_f_debug.html">00086</a> <span class="keyword">class </span><a class="code" href="class_w_f_debug.html">WFDebug</a> : <span class="keyword">public</span> Stream {
-<a name="l00087"></a>00087 <span class="keyword">public</span>:
-<a name="l00088"></a>00088     <a class="code" href="class_w_f_debug.html">WFDebug</a>();
-<a name="l00089"></a>00089     <span class="keywordtype">void</span> begin(Stream *debugPrint);
-<a name="l00090"></a>00090 
-<a name="l00091"></a>00091     <span class="keyword">virtual</span> <span class="keywordtype">size_t</span> write(uint8_t byte);
-<a name="l00092"></a>00092     <span class="keyword">virtual</span> <span class="keywordtype">int</span> read() { <span class="keywordflow">return</span> debug-&gt;read(); }
-<a name="l00093"></a>00093     <span class="keyword">virtual</span> <span class="keywordtype">int</span> available() { <span class="keywordflow">return</span> debug-&gt;available(); }
-<a name="l00094"></a>00094     <span class="keyword">virtual</span> <span class="keywordtype">void</span> flush() { <span class="keywordflow">return</span> debug-&gt;flush(); }
-<a name="l00095"></a>00095     <span class="keyword">virtual</span> <span class="keywordtype">int</span> peek() { <span class="keywordflow">return</span> debug-&gt;peek(); }
-<a name="l00096"></a>00096 
-<a name="l00097"></a>00097     <span class="keyword">using</span> Print::write;
-<a name="l00098"></a>00098 <span class="keyword">private</span>:
-<a name="l00099"></a>00099     Stream *debug;
-<a name="l00100"></a>00100 };
+<a name="l00041"></a>00041 <span class="comment"> * 0.3      21-Apr-2012  Added createAdhocNetwork() to create an Ad Hoc WiFi network.</span>
+<a name="l00042"></a>00042 <span class="comment"> *                       Optimised the setopt() and getopt() function so they handle</span>
+<a name="l00043"></a>00043 <span class="comment"> *                       integer conversions and refactored all of the set and get functions.</span>
+<a name="l00044"></a>00044 <span class="comment"> *                       Added a multMatch_P() function to match serial data against multiple</span>
+<a name="l00045"></a>00045 <span class="comment"> *                       progmem strings.</span>
+<a name="l00046"></a>00046 <span class="comment"> *                       Added failure detection to the join() function to quickly detect</span>
+<a name="l00047"></a>00047 <span class="comment"> *                       a failure rather than relying on a timeout.</span>
+<a name="l00048"></a>00048 <span class="comment"> *                       Added setJoin() and getJoin() function for access to the wlan join parameter.</span>
+<a name="l00049"></a>00049 <span class="comment"> *                       Refactored getres() to use the new multiMatch_P() function.</span>
+<a name="l00050"></a>00050 <span class="comment"> *</span>
+<a name="l00051"></a>00051 <span class="comment"> */</span>
+<a name="l00052"></a>00052 
+<a name="l00053"></a>00053 <span class="preprocessor">#ifndef _WIFLYHQ_H_</span>
+<a name="l00054"></a>00054 <span class="preprocessor"></span><span class="preprocessor">#define _WIFLYHQ_H_</span>
+<a name="l00055"></a>00055 <span class="preprocessor"></span>
+<a name="l00056"></a>00056 <span class="preprocessor">#include &lt;Arduino.h&gt;</span>
+<a name="l00057"></a>00057 <span class="preprocessor">#include &lt;Stream.h&gt;</span>
+<a name="l00058"></a>00058 <span class="preprocessor">#include &lt;avr/pgmspace.h&gt;</span>
+<a name="l00059"></a>00059 <span class="preprocessor">#include &lt;IPAddress.h&gt;</span>
+<a name="l00060"></a>00060 
+<a name="l00061"></a>00061 <span class="comment">/* IP Protocol bits */</span>
+<a name="l00062"></a>00062 <span class="preprocessor">#define WIFLY_PROTOCOL_UDP              0x01</span>
+<a name="l00063"></a>00063 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_TCP              0x02</span>
+<a name="l00064"></a>00064 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_SECURE           0x04</span>
+<a name="l00065"></a>00065 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_TCP_CLIENT       0x08</span>
+<a name="l00066"></a>00066 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_HTTP             0x10    </span><span class="comment">/* HTTP Client mode */</span>
+<a name="l00067"></a>00067 <span class="preprocessor">#define WIFLY_PROTOCOL_RAW              0x20</span>
+<a name="l00068"></a>00068 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_PROTOCOL_SMTP             0x40</span>
+<a name="l00069"></a>00069 <span class="preprocessor"></span>
+<a name="l00070"></a>00070 <span class="comment">/* IP Flag bits */</span>
+<a name="l00071"></a>00071 <span class="preprocessor">#define WIFLY_FLAG_TCP_KEEP             0x01    </span><span class="comment">/* Keep TCP connection alive when wifi lost */</span>
+<a name="l00072"></a>00072 <span class="preprocessor">#define WIFLY_FLAG_TCP_NODELAY          0x02</span>
+<a name="l00073"></a>00073 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_TCP_RETRY            0x04</span>
+<a name="l00074"></a>00074 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_UDP_RETRY            0x08</span>
+<a name="l00075"></a>00075 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_DNS_CACHING          0x10</span>
+<a name="l00076"></a>00076 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_ARP_CACHING          0x20</span>
+<a name="l00077"></a>00077 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_UDP_AUTO_PAIR        0x40</span>
+<a name="l00078"></a>00078 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_FLAG_ADD_TIMESTAMP        0x80</span>
+<a name="l00079"></a>00079 <span class="preprocessor"></span>
+<a name="l00080"></a>00080 <span class="comment">/* UART mode bits */</span>
+<a name="l00081"></a>00081 <span class="preprocessor">#define WIFLY_UART_MODE_NOECHO          0x01</span>
+<a name="l00082"></a>00082 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_UART_MODE_DATA_TRIGGER    0x02</span>
+<a name="l00083"></a>00083 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_UART_MODE_SLEEP_RX_BREAK  0x08</span>
+<a name="l00084"></a>00084 <span class="preprocessor"></span><span class="preprocessor">#define WIFLY_UART_MODE_RX_BUFFER       0x10</span>
+<a name="l00085"></a>00085 <span class="preprocessor"></span>
+<a name="l00086"></a>00086 <span class="comment">/* DHCP modes */</span>
+<a name="l00087"></a>00087 <span class="preprocessor">#define WIFLY_DHCP_MODE_OFF             0x00    </span><span class="comment">/* No DHCP, static IP mode */</span>
+<a name="l00088"></a>00088 <span class="preprocessor">#define WIFLY_DHCP_MODE_ON              0x01    </span><span class="comment">/* get IP, Gateway, and DNS from AP */</span>
+<a name="l00089"></a>00089 <span class="preprocessor">#define WIFLY_DHCP_MODE_AUTOIP          0x02    </span><span class="comment">/* Used with Adhoc networks */</span>
+<a name="l00090"></a>00090 <span class="preprocessor">#define WIFLY_DHCP_MODE_CACHE           0x03    </span><span class="comment">/* Use previous DHCP address based on lease */</span>
+<a name="l00091"></a>00091 <span class="preprocessor">#define WIFLY_DHCP_MODE_SERVER          0x04    </span><span class="comment">/* Server DHCP IP addresses? */</span>
+<a name="l00092"></a>00092 
+<a name="l00093"></a>00093 <span class="comment">/* WLAN Join modes */</span>
+<a name="l00094"></a>00094 <span class="preprocessor">#define WIFLY_WLAN_JOIN_MANUAL          0x00    </span><span class="comment">/* Don&#39;t auto-join a network */</span>
+<a name="l00095"></a>00095 <span class="preprocessor">#define WIFLY_WLAN_JOIN_AUTO            0x01    </span><span class="comment">/* Auto-join network set in SSID, passkey, and channel. */</span>
+<a name="l00096"></a>00096 <span class="preprocessor">#define WIFLY_WLAN_JOIN_ANY             0x02    </span><span class="comment">/* Ignore SSID and join strongest network using passkey. */</span>
+<a name="l00097"></a>00097 <span class="preprocessor">#define WIFLY_WLAN_JOIN_ADHOC           0x04    </span><span class="comment">/* Create an Adhoc network using SSID, Channel, IP and NetMask */</span>
+<a name="l00098"></a>00098 <span class="preprocessor">#define WIFLY_WLAN_JOIN_MANUAL          0x00    </span><span class="comment">/* */</span>
+<a name="l00099"></a>00099 
+<a name="l00100"></a>00100 <span class="preprocessor">#define WIFLY_DEFAULT_TIMEOUT           500     </span><span class="comment">/* 500 milliseconds */</span>
 <a name="l00101"></a>00101 
-<a name="l00102"></a><a class="code" href="class_wi_fly.html">00102</a> <span class="keyword">class </span><a class="code" href="class_wi_fly.html">WiFly</a> : <span class="keyword">public</span> Stream {
+<a name="l00102"></a><a class="code" href="class_w_f_debug.html">00102</a> <span class="keyword">class </span><a class="code" href="class_w_f_debug.html">WFDebug</a> : <span class="keyword">public</span> Stream {
 <a name="l00103"></a>00103 <span class="keyword">public</span>:
-<a name="l00104"></a>00104     <a class="code" href="class_wi_fly.html">WiFly</a>();
-<a name="l00105"></a>00105     
-<a name="l00106"></a>00106     <span class="keywordtype">boolean</span> begin(Stream *serialdev, Stream *debugPrint = NULL);
-<a name="l00107"></a>00107     
-<a name="l00108"></a>00108     <span class="keywordtype">char</span> *getSSID(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00109"></a>00109     <span class="keywordtype">char</span> *getDeviceID(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);    
-<a name="l00110"></a>00110     <span class="keywordtype">char</span> *<a class="code" href="class_wi_fly.html#a0071323aefaaf3b77ee6972cb166a118">getIP</a>(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00111"></a>00111     uint16_t <a class="code" href="class_wi_fly.html#abb057301f5856eb70ea4a5acbf04fc5a">getPort</a>();
-<a name="l00112"></a>00112     <span class="keywordtype">char</span> *getNetmask(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00113"></a>00113     <span class="keywordtype">char</span> *getGateway(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00114"></a>00114     <span class="keywordtype">char</span> *getDNS(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00115"></a>00115     <span class="keywordtype">char</span> *getMAC(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00116"></a>00116     int8_t getDHCPMode();
+<a name="l00104"></a>00104     <a class="code" href="class_w_f_debug.html">WFDebug</a>();
+<a name="l00105"></a>00105     <span class="keywordtype">void</span> begin(Stream *debugPrint);
+<a name="l00106"></a>00106 
+<a name="l00107"></a>00107     <span class="keyword">virtual</span> <span class="keywordtype">size_t</span> write(uint8_t byte);
+<a name="l00108"></a>00108     <span class="keyword">virtual</span> <span class="keywordtype">int</span> read() { <span class="keywordflow">return</span> debug-&gt;read(); }
+<a name="l00109"></a>00109     <span class="keyword">virtual</span> <span class="keywordtype">int</span> available() { <span class="keywordflow">return</span> debug-&gt;available(); }
+<a name="l00110"></a>00110     <span class="keyword">virtual</span> <span class="keywordtype">void</span> flush() { <span class="keywordflow">return</span> debug-&gt;flush(); }
+<a name="l00111"></a>00111     <span class="keyword">virtual</span> <span class="keywordtype">int</span> peek() { <span class="keywordflow">return</span> debug-&gt;peek(); }
+<a name="l00112"></a>00112 
+<a name="l00113"></a>00113     <span class="keyword">using</span> Print::write;
+<a name="l00114"></a>00114 <span class="keyword">private</span>:
+<a name="l00115"></a>00115     Stream *debug;
+<a name="l00116"></a>00116 };
 <a name="l00117"></a>00117 
-<a name="l00118"></a>00118     uint16_t getConnection();
-<a name="l00119"></a>00119     int8_t getRSSI();
-<a name="l00120"></a>00120 
-<a name="l00121"></a>00121     <span class="keywordtype">boolean</span> setDeviceID(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00122"></a>00122     <span class="keywordtype">boolean</span> setBaud(uint32_t baud);
-<a name="l00123"></a>00123     uint32_t getBaud();
-<a name="l00124"></a>00124     uint8_t getUartMode();
-<a name="l00125"></a>00125     uint8_t getIpFlags();
-<a name="l00126"></a>00126     uint8_t getProtocol();
-<a name="l00127"></a>00127 
-<a name="l00128"></a>00128     uint8_t getFlushChar();
-<a name="l00129"></a>00129     uint16_t getFlushSize();
-<a name="l00130"></a>00130     uint16_t getFlushTimeout();
-<a name="l00131"></a>00131 
-<a name="l00132"></a>00132     <span class="keywordtype">char</span> *<a class="code" href="class_wi_fly.html#a50a16eb3932125449e67643697c4fca8">getHostIP</a>(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00133"></a>00133     uint16_t <a class="code" href="class_wi_fly.html#add5ef6940763d8b4326c2e530bf81a73">getHostPort</a>();
+<a name="l00118"></a><a class="code" href="class_wi_fly.html">00118</a> <span class="keyword">class </span><a class="code" href="class_wi_fly.html">WiFly</a> : <span class="keyword">public</span> Stream {
+<a name="l00119"></a>00119 <span class="keyword">public</span>:
+<a name="l00120"></a>00120     <a class="code" href="class_wi_fly.html">WiFly</a>();
+<a name="l00121"></a>00121     
+<a name="l00122"></a>00122     <span class="keywordtype">boolean</span> begin(Stream *serialdev, Stream *debugPrint = NULL);
+<a name="l00123"></a>00123     
+<a name="l00124"></a>00124     <span class="keywordtype">char</span> *getSSID(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00125"></a>00125     uint8_t getJoin();
+<a name="l00126"></a>00126     <span class="keywordtype">char</span> *getDeviceID(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);    
+<a name="l00127"></a>00127     <span class="keywordtype">char</span> *<a class="code" href="class_wi_fly.html#a0071323aefaaf3b77ee6972cb166a118">getIP</a>(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00128"></a>00128     uint16_t <a class="code" href="class_wi_fly.html#abb057301f5856eb70ea4a5acbf04fc5a">getPort</a>();
+<a name="l00129"></a>00129     <span class="keywordtype">char</span> *getNetmask(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00130"></a>00130     <span class="keywordtype">char</span> *getGateway(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00131"></a>00131     <span class="keywordtype">char</span> *getDNS(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00132"></a>00132     <span class="keywordtype">char</span> *getMAC(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00133"></a>00133     int8_t getDHCPMode();
 <a name="l00134"></a>00134 
-<a name="l00135"></a>00135     <span class="keywordtype">boolean</span> setSSID(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00136"></a>00136     <span class="keywordtype">boolean</span> setIP(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00137"></a>00137     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ab9e31e9faafe941dc2777f023ae332b6">setPort</a>(<span class="keyword">const</span> uint16_t port);
-<a name="l00138"></a>00138     <span class="keywordtype">boolean</span> setNetmask(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00139"></a>00139     <span class="keywordtype">boolean</span> setGateway(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00140"></a>00140     <span class="keywordtype">boolean</span> setDNS(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00141"></a>00141     <span class="keywordtype">boolean</span> setChannel(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00142"></a>00142     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#acbf5067803dd7e371ae3fcdbb68e7936">setKey</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00143"></a>00143     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a73216bb0fe3d30b076fcf7f7dd02ef7e">setPassphrase</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00144"></a>00144     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a6e59a2453a7aa87f99477e1032e5cbcb">setSpaceReplace</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00145"></a>00145     <span class="keywordtype">boolean</span> setDHCP(<span class="keyword">const</span> uint8_t mode);
-<a name="l00146"></a>00146 
-<a name="l00147"></a>00147     <span class="keywordtype">boolean</span> setHostIP(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00148"></a>00148     <span class="keywordtype">boolean</span> setHostPort(<span class="keyword">const</span> uint16_t port);
-<a name="l00149"></a>00149     <span class="keywordtype">boolean</span> setHost(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf, uint16_t port);
-<a name="l00150"></a>00150 
-<a name="l00151"></a>00151     <span class="keywordtype">boolean</span> setProtocol(<span class="keyword">const</span> uint8_t protocol);
-<a name="l00152"></a>00152     <span class="keywordtype">boolean</span> setIpProtocol(<span class="keyword">const</span> uint8_t protocol);      <span class="comment">/* obsolete */</span>
-<a name="l00153"></a>00153     <span class="keywordtype">boolean</span> setIpFlags(<span class="keyword">const</span> uint8_t flags);
-<a name="l00154"></a>00154     <span class="keywordtype">boolean</span> setUartMode(<span class="keyword">const</span> uint8_t mode);
-<a name="l00155"></a>00155 
-<a name="l00156"></a>00156     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a74493dbef1319125e8e83fed96f597ea">setBroadcastInterval</a>(<span class="keyword">const</span> uint8_t seconds);
-<a name="l00157"></a>00157 
-<a name="l00158"></a>00158     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a677c7457fa01700dfed099a5640be163">setTimeAddress</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00159"></a>00159     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a20453217520ae24b523c3bfc92096ec8">setTimePort</a>(<span class="keyword">const</span> uint16_t port);
-<a name="l00160"></a>00160     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a48ed5f8e44678412dddab96be9dc339d">setTimezone</a>(<span class="keyword">const</span> uint8_t zone);
-<a name="l00161"></a>00161     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac8b3704b10a605f63d2caba603c65680">setTimeEnable</a>(<span class="keyword">const</span> uint16_t enable);
-<a name="l00162"></a>00162 
-<a name="l00163"></a>00163     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ae7cdd4d36010ead8a1a49f7d6c7654bc">setFlushTimeout</a>(<span class="keyword">const</span> uint16_t timeout);
-<a name="l00164"></a>00164     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a4df072b7a2808652f4a802ba45bfa5f9">setFlushChar</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> flushChar);
-<a name="l00165"></a>00165     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a7d2052dd07bb45f5e98bcfaed53984b6">setFlushSize</a>(<span class="keyword">const</span> uint16_t size);
-<a name="l00166"></a>00166     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#aa253afdc746f88821ea5aaebd544d0ff">enableDataTrigger</a>(<span class="keyword">const</span> uint16_t flushtime=10, <span class="keyword">const</span> <span class="keywordtype">char</span> flushChar=0, <span class="keyword">const</span> uint16_t flushSize=64);
-<a name="l00167"></a>00167     <span class="keywordtype">boolean</span> disableDataTrigger();
+<a name="l00135"></a>00135     uint16_t getConnection();
+<a name="l00136"></a>00136     int8_t getRSSI();
+<a name="l00137"></a>00137 
+<a name="l00138"></a>00138     <span class="keywordtype">bool</span> setJoin(uint8_t <a class="code" href="class_wi_fly.html#a1a557580eae627aa0f0f6b111e908003">join</a>);
+<a name="l00139"></a>00139     <span class="keywordtype">boolean</span> setDeviceID(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00140"></a>00140     <span class="keywordtype">boolean</span> setBaud(uint32_t baud);
+<a name="l00141"></a>00141     uint32_t getBaud();
+<a name="l00142"></a>00142     uint8_t getUartMode();
+<a name="l00143"></a>00143     uint8_t getIpFlags();
+<a name="l00144"></a>00144     uint8_t getProtocol();
+<a name="l00145"></a>00145 
+<a name="l00146"></a>00146     uint8_t getFlushChar();
+<a name="l00147"></a>00147     uint16_t getFlushSize();
+<a name="l00148"></a>00148     uint16_t getFlushTimeout();
+<a name="l00149"></a>00149 
+<a name="l00150"></a>00150     <span class="keywordtype">char</span> *<a class="code" href="class_wi_fly.html#a50a16eb3932125449e67643697c4fca8">getHostIP</a>(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00151"></a>00151     uint16_t <a class="code" href="class_wi_fly.html#add5ef6940763d8b4326c2e530bf81a73">getHostPort</a>();
+<a name="l00152"></a>00152 
+<a name="l00153"></a>00153     <span class="keywordtype">boolean</span> setSSID(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00154"></a>00154     <span class="keywordtype">boolean</span> setIP(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00155"></a>00155     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ab9e31e9faafe941dc2777f023ae332b6">setPort</a>(<span class="keyword">const</span> uint16_t port);
+<a name="l00156"></a>00156     <span class="keywordtype">boolean</span> setNetmask(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00157"></a>00157     <span class="keywordtype">boolean</span> setGateway(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00158"></a>00158     <span class="keywordtype">boolean</span> setDNS(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00159"></a>00159     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ab6a52d6d0258e487a4bc972f852a7406">setChannel</a>(uint8_t channel);
+<a name="l00160"></a>00160     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#acbf5067803dd7e371ae3fcdbb68e7936">setKey</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00161"></a>00161     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a73216bb0fe3d30b076fcf7f7dd02ef7e">setPassphrase</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00162"></a>00162     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a6e59a2453a7aa87f99477e1032e5cbcb">setSpaceReplace</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00163"></a>00163     <span class="keywordtype">boolean</span> setDHCP(<span class="keyword">const</span> uint8_t mode);
+<a name="l00164"></a>00164 
+<a name="l00165"></a>00165     <span class="keywordtype">boolean</span> setHostIP(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00166"></a>00166     <span class="keywordtype">boolean</span> setHostPort(<span class="keyword">const</span> uint16_t port);
+<a name="l00167"></a>00167     <span class="keywordtype">boolean</span> setHost(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf, uint16_t port);
 <a name="l00168"></a>00168 
-<a name="l00169"></a>00169     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a50d5f995521c363ccb090b622a9e7650">setIOFunc</a>(<span class="keyword">const</span> uint8_t func);
-<a name="l00170"></a>00170 
-<a name="l00171"></a>00171     <span class="keywordtype">char</span> *getTime(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00172"></a>00172     uint32_t getUptime();
-<a name="l00173"></a>00173     uint8_t getTimezone();
-<a name="l00174"></a>00174     uint32_t getRTC();
+<a name="l00169"></a>00169     <span class="keywordtype">boolean</span> setProtocol(<span class="keyword">const</span> uint8_t protocol);
+<a name="l00170"></a>00170     <span class="keywordtype">boolean</span> setIpProtocol(<span class="keyword">const</span> uint8_t protocol);      <span class="comment">/* obsolete */</span>
+<a name="l00171"></a>00171     <span class="keywordtype">boolean</span> setIpFlags(<span class="keyword">const</span> uint8_t flags);
+<a name="l00172"></a>00172     <span class="keywordtype">boolean</span> setUartMode(<span class="keyword">const</span> uint8_t mode);
+<a name="l00173"></a>00173 
+<a name="l00174"></a>00174     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a74493dbef1319125e8e83fed96f597ea">setBroadcastInterval</a>(<span class="keyword">const</span> uint8_t seconds);
 <a name="l00175"></a>00175 
-<a name="l00176"></a>00176     <span class="keywordtype">bool</span> <a class="code" href="class_wi_fly.html#a2051052a072928e2ba37bd93cc3e3c20">getHostByName</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *hostname, <span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00177"></a>00177     <span class="keywordtype">boolean</span> ping(<span class="keyword">const</span> <span class="keywordtype">char</span> *host);
-<a name="l00178"></a>00178 
-<a name="l00179"></a>00179     <span class="keywordtype">boolean</span> enableDHCP();
-<a name="l00180"></a>00180     <span class="keywordtype">boolean</span> disableDHCP();
-<a name="l00181"></a>00181     
-<a name="l00182"></a>00182     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#afa926831f05ea8ed7a94ee01b8b5636f">join</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *ssid);
-<a name="l00183"></a>00183     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#afa926831f05ea8ed7a94ee01b8b5636f">join</a>(<span class="keywordtype">void</span>);
-<a name="l00184"></a>00184     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac05d1f877b0b40d53cdedb7ad5065ab2">leave</a>();
-<a name="l00185"></a>00185     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#abcf1fa74650fcfa4d0cbddfa289d3cd4">isAssociated</a>();
+<a name="l00176"></a>00176     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a677c7457fa01700dfed099a5640be163">setTimeAddress</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00177"></a>00177     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a20453217520ae24b523c3bfc92096ec8">setTimePort</a>(<span class="keyword">const</span> uint16_t port);
+<a name="l00178"></a>00178     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a48ed5f8e44678412dddab96be9dc339d">setTimezone</a>(<span class="keyword">const</span> uint8_t zone);
+<a name="l00179"></a>00179     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac8b3704b10a605f63d2caba603c65680">setTimeEnable</a>(<span class="keyword">const</span> uint16_t enable);
+<a name="l00180"></a>00180 
+<a name="l00181"></a>00181     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a7f2e7c6d1834ec3cd179dea3733786ca">setAdhocBeacon</a>(<span class="keyword">const</span> uint16_t msecs);
+<a name="l00182"></a>00182     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#aedbdb2520f6c3ec621a1c78eec685c68">setAdhocProbe</a>(<span class="keyword">const</span> uint16_t secs);
+<a name="l00183"></a>00183     uint16_t getAdhocBeacon();
+<a name="l00184"></a>00184     uint16_t getAdhocProbe();
+<a name="l00185"></a>00185     uint16_t getAdhocReboot();
 <a name="l00186"></a>00186 
-<a name="l00187"></a>00187     <span class="keywordtype">boolean</span> save();
-<a name="l00188"></a>00188     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#aa64722671a775b2cbbbb031395397505">reboot</a>();
-<a name="l00189"></a>00189     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#acb22ff2535fb4cdb14fa76a225da918c">factoryRestore</a>();
-<a name="l00190"></a>00190 
-<a name="l00191"></a>00191     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> uint8_t *data, uint16_t size, <span class="keyword">const</span> <span class="keywordtype">char</span> *host, uint16_t port);
-<a name="l00192"></a>00192     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> uint8_t *data, uint16_t size, IPAddress host, uint16_t port);
-<a name="l00193"></a>00193     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> <span class="keywordtype">char</span> *data, <span class="keyword">const</span> <span class="keywordtype">char</span> *host, uint16_t port);
-<a name="l00194"></a>00194     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> <span class="keywordtype">char</span> *data, IPAddress host, uint16_t port);
-<a name="l00195"></a>00195     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> __FlashStringHelper *data, <span class="keyword">const</span> <span class="keywordtype">char</span> *host, uint16_t port);
-<a name="l00196"></a>00196     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> __FlashStringHelper *data, IPAddress host, uint16_t port);
-<a name="l00197"></a>00197 
-<a name="l00198"></a>00198     <span class="keywordtype">void</span> enableHostRestore();
-<a name="l00199"></a>00199     <span class="keywordtype">void</span> disableHostRestore();
-<a name="l00200"></a>00200 
-<a name="l00201"></a>00201     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a06969fe6f0008d0fc9e8b927e3cd2077">open</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *addr, <span class="keywordtype">int</span> port=80, <span class="keywordtype">boolean</span> block=<span class="keyword">true</span>);
-<a name="l00202"></a>00202     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a06969fe6f0008d0fc9e8b927e3cd2077">open</a>(IPAddress addr, <span class="keywordtype">int</span> port=80, <span class="keywordtype">boolean</span> block=<span class="keyword">true</span>);
-<a name="l00203"></a>00203     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#adf4138137065fd78de83a18825f47795">close</a>();
-<a name="l00204"></a>00204     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a457a8823a24ce0199787249971c58090">openComplete</a>();
-<a name="l00205"></a>00205     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ab5581857d54ac66c1bab4fdff59b1d74">isConnected</a>();
-<a name="l00206"></a>00206     <span class="keywordtype">boolean</span> isInCommandMode();
-<a name="l00207"></a>00207     
-<a name="l00208"></a>00208     <span class="keyword">virtual</span> <span class="keywordtype">size_t</span> write(uint8_t byte);
-<a name="l00209"></a>00209     <span class="keyword">virtual</span> <span class="keywordtype">int</span> read();
-<a name="l00210"></a>00210     <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_wi_fly.html#a3babea7066b250401d82afbfb6f52432">available</a>();
-<a name="l00211"></a>00211     <span class="keyword">virtual</span> <span class="keywordtype">void</span> flush();
-<a name="l00212"></a>00212     <span class="keyword">virtual</span> <span class="keywordtype">int</span> peek();
-<a name="l00213"></a>00213 
-<a name="l00214"></a>00214     <span class="keywordtype">char</span> *<a class="code" href="class_wi_fly.html#ae07a90b6e1deee53de6686696152b7b5">iptoa</a>(IPAddress addr, <span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00215"></a>00215     IPAddress <a class="code" href="class_wi_fly.html#a00f0a87632d12230861b45acb243094d">atoip</a>(<span class="keywordtype">char</span> *buf);
-<a name="l00216"></a>00216     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a3fbcf8315dea83ef0b8215a9255b4d08">isDotQuad</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *addr);
-<a name="l00217"></a>00217 
-<a name="l00218"></a>00218     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a45a7b120975fe4374baceef7cd63c215">sendChunk</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
-<a name="l00219"></a>00219     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a45a7b120975fe4374baceef7cd63c215">sendChunk</a>(<span class="keyword">const</span> __FlashStringHelper *str);
-<a name="l00220"></a>00220     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a273335cd3b1dc955cd1eafc918f3a714">sendChunkln</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
-<a name="l00221"></a>00221     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a273335cd3b1dc955cd1eafc918f3a714">sendChunkln</a>(<span class="keyword">const</span> __FlashStringHelper *str);
-<a name="l00222"></a>00222     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a273335cd3b1dc955cd1eafc918f3a714">sendChunkln</a>(<span class="keywordtype">void</span>);
-<a name="l00223"></a>00223 
-<a name="l00224"></a>00224     <span class="keywordtype">int</span> <a class="code" href="class_wi_fly.html#a7988965adc898268d2eb52548f38c673">getFreeMemory</a>();
-<a name="l00225"></a>00225     <span class="keywordtype">void</span> terminal();
-<a name="l00226"></a>00226   
-<a name="l00227"></a>00227     <span class="keyword">using</span> Print::write;
-<a name="l00228"></a>00228 
-<a name="l00229"></a>00229     <span class="keywordtype">void</span> dbgBegin(<span class="keywordtype">int</span> size=256);
-<a name="l00230"></a>00230     <span class="keywordtype">void</span> dbgDump();
-<a name="l00231"></a>00231     <span class="keywordtype">boolean</span> debugOn;
-<a name="l00232"></a>00232 
-<a name="l00233"></a>00233     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac5e433e67b7412389784bcee0ed37a57">match</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-<a name="l00234"></a>00234     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac5e433e67b7412389784bcee0ed37a57">match</a>(<span class="keyword">const</span> __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-<a name="l00235"></a>00235     <span class="keywordtype">int</span> gets(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-<a name="l00236"></a>00236     <span class="keywordtype">void</span> flushRx(<span class="keywordtype">int</span> timeout=WIFLY_DEFAULT_TIMEOUT);
-<a name="l00237"></a>00237 
-<a name="l00238"></a>00238   <span class="keyword">private</span>:
-<a name="l00239"></a>00239     <span class="keywordtype">void</span> init(<span class="keywordtype">void</span>);
-<a name="l00240"></a>00240 
-<a name="l00241"></a>00241     <span class="keywordtype">void</span> dump(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
+<a name="l00187"></a>00187     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ae7cdd4d36010ead8a1a49f7d6c7654bc">setFlushTimeout</a>(<span class="keyword">const</span> uint16_t timeout);
+<a name="l00188"></a>00188     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a4df072b7a2808652f4a802ba45bfa5f9">setFlushChar</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> flushChar);
+<a name="l00189"></a>00189     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a120a70541f1fac6d70b462607599038d">setFlushSize</a>(uint16_t size);
+<a name="l00190"></a>00190     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#aa253afdc746f88821ea5aaebd544d0ff">enableDataTrigger</a>(<span class="keyword">const</span> uint16_t flushtime=10, <span class="keyword">const</span> <span class="keywordtype">char</span> flushChar=0, <span class="keyword">const</span> uint16_t flushSize=64);
+<a name="l00191"></a>00191     <span class="keywordtype">boolean</span> disableDataTrigger();
+<a name="l00192"></a>00192 
+<a name="l00193"></a>00193     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a50d5f995521c363ccb090b622a9e7650">setIOFunc</a>(<span class="keyword">const</span> uint8_t func);
+<a name="l00194"></a>00194 
+<a name="l00195"></a>00195     <span class="keywordtype">char</span> *getTime(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00196"></a>00196     uint32_t getUptime();
+<a name="l00197"></a>00197     uint8_t getTimezone();
+<a name="l00198"></a>00198     uint32_t getRTC();
+<a name="l00199"></a>00199 
+<a name="l00200"></a>00200     <span class="keywordtype">bool</span> <a class="code" href="class_wi_fly.html#a2051052a072928e2ba37bd93cc3e3c20">getHostByName</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *hostname, <span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00201"></a>00201     <span class="keywordtype">boolean</span> ping(<span class="keyword">const</span> <span class="keywordtype">char</span> *host);
+<a name="l00202"></a>00202 
+<a name="l00203"></a>00203     <span class="keywordtype">boolean</span> enableDHCP();
+<a name="l00204"></a>00204     <span class="keywordtype">boolean</span> disableDHCP();
+<a name="l00205"></a>00205     
+<a name="l00206"></a>00206     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac84cdf8e1dd3c544bb935548af9d114e">createAdhocNetwork</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *ssid, uint8_t channel);
+<a name="l00207"></a>00207     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a1a557580eae627aa0f0f6b111e908003">join</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *ssid, uint16_t timeout=20000);
+<a name="l00208"></a>00208     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a1a557580eae627aa0f0f6b111e908003">join</a>(uint16_t timeout=20000);
+<a name="l00209"></a>00209     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac05d1f877b0b40d53cdedb7ad5065ab2">leave</a>();
+<a name="l00210"></a>00210     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#abcf1fa74650fcfa4d0cbddfa289d3cd4">isAssociated</a>();
+<a name="l00211"></a>00211 
+<a name="l00212"></a>00212     <span class="keywordtype">boolean</span> save();
+<a name="l00213"></a>00213     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#aa64722671a775b2cbbbb031395397505">reboot</a>();
+<a name="l00214"></a>00214     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#acb22ff2535fb4cdb14fa76a225da918c">factoryRestore</a>();
+<a name="l00215"></a>00215 
+<a name="l00216"></a>00216     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> uint8_t *data, uint16_t size, <span class="keyword">const</span> <span class="keywordtype">char</span> *host, uint16_t port);
+<a name="l00217"></a>00217     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> uint8_t *data, uint16_t size, IPAddress host, uint16_t port);
+<a name="l00218"></a>00218     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> <span class="keywordtype">char</span> *data, <span class="keyword">const</span> <span class="keywordtype">char</span> *host, uint16_t port);
+<a name="l00219"></a>00219     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> <span class="keywordtype">char</span> *data, IPAddress host, uint16_t port);
+<a name="l00220"></a>00220     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> __FlashStringHelper *data, <span class="keyword">const</span> <span class="keywordtype">char</span> *host, uint16_t port);
+<a name="l00221"></a>00221     <span class="keywordtype">boolean</span> sendto(<span class="keyword">const</span> __FlashStringHelper *data, IPAddress host, uint16_t port);
+<a name="l00222"></a>00222 
+<a name="l00223"></a>00223     <span class="keywordtype">void</span> enableHostRestore();
+<a name="l00224"></a>00224     <span class="keywordtype">void</span> disableHostRestore();
+<a name="l00225"></a>00225 
+<a name="l00226"></a>00226     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a06969fe6f0008d0fc9e8b927e3cd2077">open</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *addr, <span class="keywordtype">int</span> port=80, <span class="keywordtype">boolean</span> block=<span class="keyword">true</span>);
+<a name="l00227"></a>00227     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a06969fe6f0008d0fc9e8b927e3cd2077">open</a>(IPAddress addr, <span class="keywordtype">int</span> port=80, <span class="keywordtype">boolean</span> block=<span class="keyword">true</span>);
+<a name="l00228"></a>00228     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#adf4138137065fd78de83a18825f47795">close</a>();
+<a name="l00229"></a>00229     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a457a8823a24ce0199787249971c58090">openComplete</a>();
+<a name="l00230"></a>00230     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ab5581857d54ac66c1bab4fdff59b1d74">isConnected</a>();
+<a name="l00231"></a>00231     <span class="keywordtype">boolean</span> isInCommandMode();
+<a name="l00232"></a>00232     
+<a name="l00233"></a>00233     <span class="keyword">virtual</span> <span class="keywordtype">size_t</span> write(uint8_t byte);
+<a name="l00234"></a>00234     <span class="keyword">virtual</span> <span class="keywordtype">int</span> read();
+<a name="l00235"></a>00235     <span class="keyword">virtual</span> <span class="keywordtype">int</span> <a class="code" href="class_wi_fly.html#a3babea7066b250401d82afbfb6f52432">available</a>();
+<a name="l00236"></a>00236     <span class="keyword">virtual</span> <span class="keywordtype">void</span> flush();
+<a name="l00237"></a>00237     <span class="keyword">virtual</span> <span class="keywordtype">int</span> peek();
+<a name="l00238"></a>00238 
+<a name="l00239"></a>00239     <span class="keywordtype">char</span> *<a class="code" href="class_wi_fly.html#ae07a90b6e1deee53de6686696152b7b5">iptoa</a>(IPAddress addr, <span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00240"></a>00240     IPAddress <a class="code" href="class_wi_fly.html#a00f0a87632d12230861b45acb243094d">atoip</a>(<span class="keywordtype">char</span> *buf);
+<a name="l00241"></a>00241     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#a3fbcf8315dea83ef0b8215a9255b4d08">isDotQuad</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *addr);
 <a name="l00242"></a>00242 
-<a name="l00243"></a>00243     <span class="keywordtype">boolean</span> sendto(
-<a name="l00244"></a>00244         <span class="keyword">const</span> uint8_t *data,
-<a name="l00245"></a>00245         uint16_t size,
-<a name="l00246"></a>00246         <span class="keyword">const</span> __FlashStringHelper *flashData,
-<a name="l00247"></a>00247         <span class="keyword">const</span> <span class="keywordtype">char</span> *host,
-<a name="l00248"></a>00248         uint16_t port);
-<a name="l00249"></a>00249 
-<a name="l00250"></a>00250     <span class="keywordtype">boolean</span> match_P(<span class="keyword">const</span> prog_char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-<a name="l00251"></a>00251 
-<a name="l00252"></a>00252     <span class="keywordtype">void</span> send_P(<span class="keyword">const</span> prog_char *str);
-<a name="l00253"></a>00253     <span class="keywordtype">void</span> send(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
-<a name="l00254"></a>00254     <span class="keywordtype">void</span> send(<span class="keyword">const</span> <span class="keywordtype">char</span> ch);
-<a name="l00255"></a>00255     <span class="keywordtype">boolean</span> enterCommandMode();
-<a name="l00256"></a>00256     <span class="keywordtype">boolean</span> exitCommandMode();
-<a name="l00257"></a>00257     <span class="keywordtype">boolean</span> setPrompt();
-<a name="l00258"></a>00258     <span class="keywordtype">boolean</span> getPrompt(uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-<a name="l00259"></a>00259     <span class="keywordtype">boolean</span> checkPrompt(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
-<a name="l00260"></a>00260     <span class="keywordtype">int</span> getResponse(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-<a name="l00261"></a>00261     <span class="keywordtype">boolean</span> readTimeout(<span class="keywordtype">char</span> *ch, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-<a name="l00262"></a>00262     <span class="keywordtype">boolean</span> startCommand();
-<a name="l00263"></a>00263     <span class="keywordtype">boolean</span> finishCommand();
-<a name="l00264"></a>00264     <span class="keywordtype">char</span> *getopt(<span class="keywordtype">int</span> opt, <span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
-<a name="l00265"></a>00265     <span class="keywordtype">boolean</span> setopt(<span class="keyword">const</span> prog_char *cmd, <span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
-<a name="l00266"></a>00266     <span class="keywordtype">boolean</span> getres(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00243"></a>00243     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a45a7b120975fe4374baceef7cd63c215">sendChunk</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
+<a name="l00244"></a>00244     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a45a7b120975fe4374baceef7cd63c215">sendChunk</a>(<span class="keyword">const</span> __FlashStringHelper *str);
+<a name="l00245"></a>00245     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a273335cd3b1dc955cd1eafc918f3a714">sendChunkln</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
+<a name="l00246"></a>00246     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a273335cd3b1dc955cd1eafc918f3a714">sendChunkln</a>(<span class="keyword">const</span> __FlashStringHelper *str);
+<a name="l00247"></a>00247     <span class="keywordtype">void</span> <a class="code" href="class_wi_fly.html#a273335cd3b1dc955cd1eafc918f3a714">sendChunkln</a>(<span class="keywordtype">void</span>);
+<a name="l00248"></a>00248 
+<a name="l00249"></a>00249     <span class="keywordtype">int</span> <a class="code" href="class_wi_fly.html#a7988965adc898268d2eb52548f38c673">getFreeMemory</a>();
+<a name="l00250"></a>00250     <span class="keywordtype">void</span> terminal();
+<a name="l00251"></a>00251   
+<a name="l00252"></a>00252     <span class="keyword">using</span> Print::write;
+<a name="l00253"></a>00253 
+<a name="l00254"></a>00254     <span class="keywordtype">void</span> dbgBegin(<span class="keywordtype">int</span> size=256);
+<a name="l00255"></a>00255     <span class="keywordtype">void</span> dbgDump();
+<a name="l00256"></a>00256     <span class="keywordtype">boolean</span> debugOn;
+<a name="l00257"></a>00257 
+<a name="l00258"></a>00258     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac5e433e67b7412389784bcee0ed37a57">match</a>(<span class="keyword">const</span> <span class="keywordtype">char</span> *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00259"></a>00259     <span class="keywordtype">boolean</span> <a class="code" href="class_wi_fly.html#ac5e433e67b7412389784bcee0ed37a57">match</a>(<span class="keyword">const</span> __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00260"></a>00260     <span class="keywordtype">int</span> gets(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00261"></a>00261     <span class="keywordtype">void</span> flushRx(<span class="keywordtype">int</span> timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00262"></a>00262 
+<a name="l00263"></a>00263   <span class="keyword">private</span>:
+<a name="l00264"></a>00264     <span class="keywordtype">void</span> init(<span class="keywordtype">void</span>);
+<a name="l00265"></a>00265 
+<a name="l00266"></a>00266     <span class="keywordtype">void</span> dump(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
 <a name="l00267"></a>00267 
-<a name="l00268"></a>00268     <span class="keywordtype">boolean</span> checkStream(<span class="keyword">const</span> prog_char *str, <span class="keywordtype">boolean</span> peeked);
-<a name="l00269"></a>00269     <span class="keywordtype">boolean</span> checkClose(<span class="keywordtype">boolean</span> peeked);
-<a name="l00270"></a>00270     <span class="keywordtype">boolean</span> checkOpen(<span class="keywordtype">boolean</span> peeked);
-<a name="l00271"></a>00271 
-<a name="l00272"></a>00272     <span class="keywordtype">boolean</span> hide();
-<a name="l00273"></a>00273 
-<a name="l00274"></a>00274     <span class="keywordtype">boolean</span> inCommandMode;
-<a name="l00275"></a>00275     <span class="keywordtype">int</span>  exitCommand;
-<a name="l00276"></a>00276     <span class="keywordtype">boolean</span> dhcp;
-<a name="l00277"></a>00277     <span class="keywordtype">bool</span> restoreHost;
-<a name="l00278"></a>00278 
-<a name="l00279"></a>00279     <span class="keywordtype">boolean</span> tcpMode;
-<a name="l00280"></a>00280 
-<a name="l00281"></a>00281     <span class="keywordtype">boolean</span> connected;
-<a name="l00282"></a>00282     <span class="keywordtype">boolean</span> connecting;
-<a name="l00283"></a>00283     <span class="keyword">struct </span>{
-<a name="l00284"></a>00284         uint8_t tcp;
-<a name="l00285"></a>00285         uint8_t assoc;
-<a name="l00286"></a>00286         uint8_t authen;
-<a name="l00287"></a>00287         uint8_t dnsServer;
-<a name="l00288"></a>00288         uint8_t dnsFound;
-<a name="l00289"></a>00289         uint8_t channel;
-<a name="l00290"></a>00290     } status;
-<a name="l00291"></a>00291 
-<a name="l00292"></a>00292     Stream *serial;     <span class="comment">/* Serial interface to WiFly */</span>
-<a name="l00293"></a>00293     
-<a name="l00294"></a>00294     <a class="code" href="class_w_f_debug.html">WFDebug</a> debug;      <span class="comment">/* Internal debug channel. */</span>
+<a name="l00268"></a>00268     <span class="keywordtype">boolean</span> sendto(
+<a name="l00269"></a>00269         <span class="keyword">const</span> uint8_t *data,
+<a name="l00270"></a>00270         uint16_t size,
+<a name="l00271"></a>00271         <span class="keyword">const</span> __FlashStringHelper *flashData,
+<a name="l00272"></a>00272         <span class="keyword">const</span> <span class="keywordtype">char</span> *host,
+<a name="l00273"></a>00273         uint16_t port);
+<a name="l00274"></a>00274 
+<a name="l00275"></a>00275     <span class="keywordtype">boolean</span> match_P(<span class="keyword">const</span> prog_char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00276"></a>00276     int8_t multiMatch_P(<span class="keyword">const</span> prog_char *str[], uint8_t count, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00277"></a>00277 
+<a name="l00278"></a>00278     <span class="keywordtype">void</span> send_P(<span class="keyword">const</span> prog_char *str);
+<a name="l00279"></a>00279     <span class="keywordtype">void</span> send(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
+<a name="l00280"></a>00280     <span class="keywordtype">void</span> send(<span class="keyword">const</span> <span class="keywordtype">char</span> ch);
+<a name="l00281"></a>00281     <span class="keywordtype">boolean</span> enterCommandMode();
+<a name="l00282"></a>00282     <span class="keywordtype">boolean</span> exitCommandMode();
+<a name="l00283"></a>00283     <span class="keywordtype">boolean</span> setPrompt();
+<a name="l00284"></a>00284     <span class="keywordtype">boolean</span> getPrompt(uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00285"></a>00285     <span class="keywordtype">boolean</span> checkPrompt(<span class="keyword">const</span> <span class="keywordtype">char</span> *str);
+<a name="l00286"></a>00286     <span class="keywordtype">int</span> getResponse(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00287"></a>00287     <span class="keywordtype">boolean</span> readTimeout(<span class="keywordtype">char</span> *ch, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+<a name="l00288"></a>00288     <span class="keywordtype">boolean</span> startCommand();
+<a name="l00289"></a>00289     <span class="keywordtype">boolean</span> finishCommand();
+<a name="l00290"></a>00290     <span class="keywordtype">char</span> *getopt(<span class="keywordtype">int</span> opt, <span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
+<a name="l00291"></a>00291     uint32_t getopt(<span class="keywordtype">int</span> opt, uint8_t base=DEC);
+<a name="l00292"></a>00292     <span class="keywordtype">boolean</span> setopt(<span class="keyword">const</span> prog_char *cmd, <span class="keyword">const</span> <span class="keywordtype">char</span> *buf);
+<a name="l00293"></a>00293     <span class="keywordtype">boolean</span> setopt(<span class="keyword">const</span> prog_char *opt, <span class="keyword">const</span> uint32_t value, uint8_t base=DEC);
+<a name="l00294"></a>00294     <span class="keywordtype">boolean</span> getres(<span class="keywordtype">char</span> *buf, <span class="keywordtype">int</span> size);
 <a name="l00295"></a>00295 
-<a name="l00296"></a>00296     <span class="comment">/*  for dbgDump() */</span>
-<a name="l00297"></a>00297     <span class="keywordtype">char</span> *dbgBuf;
-<a name="l00298"></a>00298     <span class="keywordtype">int</span> dbgInd;
-<a name="l00299"></a>00299     <span class="keywordtype">int</span> dbgMax;
-<a name="l00300"></a>00300 };
+<a name="l00296"></a>00296     <span class="keywordtype">boolean</span> checkStream(<span class="keyword">const</span> prog_char *str, <span class="keywordtype">boolean</span> peeked);
+<a name="l00297"></a>00297     <span class="keywordtype">boolean</span> checkClose(<span class="keywordtype">boolean</span> peeked);
+<a name="l00298"></a>00298     <span class="keywordtype">boolean</span> checkOpen(<span class="keywordtype">boolean</span> peeked);
+<a name="l00299"></a>00299 
+<a name="l00300"></a>00300     <span class="keywordtype">boolean</span> hide();
 <a name="l00301"></a>00301 
-<a name="l00302"></a>00302 <span class="preprocessor">#endif</span>
+<a name="l00302"></a>00302     <span class="keywordtype">boolean</span> inCommandMode;
+<a name="l00303"></a>00303     <span class="keywordtype">int</span>  exitCommand;
+<a name="l00304"></a>00304     <span class="keywordtype">boolean</span> dhcp;
+<a name="l00305"></a>00305     <span class="keywordtype">bool</span> restoreHost;
+<a name="l00306"></a>00306 
+<a name="l00307"></a>00307     <span class="keywordtype">boolean</span> tcpMode;
+<a name="l00308"></a>00308 
+<a name="l00309"></a>00309     <span class="keywordtype">boolean</span> connected;
+<a name="l00310"></a>00310     <span class="keywordtype">boolean</span> connecting;
+<a name="l00311"></a>00311     <span class="keyword">struct </span>{
+<a name="l00312"></a>00312         uint8_t tcp;
+<a name="l00313"></a>00313         uint8_t assoc;
+<a name="l00314"></a>00314         uint8_t authen;
+<a name="l00315"></a>00315         uint8_t dnsServer;
+<a name="l00316"></a>00316         uint8_t dnsFound;
+<a name="l00317"></a>00317         uint8_t channel;
+<a name="l00318"></a>00318     } status;
+<a name="l00319"></a>00319 
+<a name="l00320"></a>00320     Stream *serial;     <span class="comment">/* Serial interface to WiFly */</span>
+<a name="l00321"></a>00321     
+<a name="l00322"></a>00322     <a class="code" href="class_w_f_debug.html">WFDebug</a> debug;      <span class="comment">/* Internal debug channel. */</span>
+<a name="l00323"></a>00323 
+<a name="l00324"></a>00324     <span class="comment">/*  for dbgDump() */</span>
+<a name="l00325"></a>00325     <span class="keywordtype">char</span> *dbgBuf;
+<a name="l00326"></a>00326     <span class="keywordtype">int</span> dbgInd;
+<a name="l00327"></a>00327     <span class="keywordtype">int</span> dbgMax;
+<a name="l00328"></a>00328 };
+<a name="l00329"></a>00329 
+<a name="l00330"></a>00330 <span class="preprocessor">#endif</span>
 </pre></div></div>
 </div>
 <!-- window showing the filter options -->
@@ -397,7 +425,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Apr 11 2012 23:15:42 for WifiHQ by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sat Apr 21 2012 17:14:15 for WifiHQ by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>
