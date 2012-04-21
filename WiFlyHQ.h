@@ -95,7 +95,6 @@
 #define WIFLY_WLAN_JOIN_AUTO		0x01	/* Auto-join network set in SSID, passkey, and channel. */
 #define WIFLY_WLAN_JOIN_ANY		0x02	/* Ignore SSID and join strongest network using passkey. */
 #define WIFLY_WLAN_JOIN_ADHOC		0x04	/* Create an Adhoc network using SSID, Channel, IP and NetMask */
-#define WIFLY_WLAN_JOIN_MANUAL		0x00	/* */
 
 #define WIFLY_DEFAULT_TIMEOUT		500	/* 500 milliseconds */
 
