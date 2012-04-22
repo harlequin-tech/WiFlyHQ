@@ -933,6 +933,10 @@ int8_t WiFly::multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeo
 	    } else {
 		/* Restart match */
 		match[ind].str = str[ind];
+		/* unmatched character might be the start of the string */
+		if (ch == pgm_read_byte(match[ind].str)) {
+		    match[ind].str++;
+		}
 	    }
 
 	    if (pgm_read_byte(match[ind].str) == '\0') {
