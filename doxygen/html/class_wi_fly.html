@@ -1099,11 +1099,14 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
       </table>
 </div>
 <div class="memdoc">
-<p>Read characters from the <a class="el" href="class_wi_fly.html">WiFly</a> and match them against the set of progmem strings. Ignore any leading characters that don't match. Keep reading, discarding the input, until one of the strings is matched or until no characters are received for the timeout duration. </p>
+<p>Read characters from the <a class="el" href="class_wi_fly.html">WiFly</a> and match them against the set of progmem strings. Ignore any leading characters that don't match. Keep reading, discarding the input, until one of the strings is matched or until no characters are received for the timeout duration.<br/>
+ Example: res = multiMatch_P(500, 3, F("first="), F("second="), F("closed"));<br/>
+ Will return 0 if "first=" is matched, 1 if "second=" is matched, 2 if "closed" is matched, or -1 if nothing is matched and no data is received for 500 milliseconds. </p>
 <dl><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">timeout</td><td>- fail if no data received for this period (in milliseconds). </td></tr>
-    <tr><td class="paramname">count</td><td>- the number of strings in the str array  A list of count progmem strings to match </td></tr>
+    <tr><td class="paramname">count</td><td>- the number of strings in the str array </td></tr>
+    <tr><td class="paramname">...</td><td>A list of count progmem strings to match </td></tr>
   </table>
   </dd>
 </dl>
@@ -2157,7 +2160,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 22 2012 15:46:20 for WifiHQ by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 22 2012 15:56:25 for WifiHQ by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>
