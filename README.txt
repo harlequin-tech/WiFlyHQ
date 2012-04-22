@@ -49,7 +49,8 @@ Receive UDP or TCP data (assumes software serial interface):
 Easy handling of multiple receive options with multiMatch_P()::
 
         if (wifly.available() > 0) {
-	    int match = wifly.multiMatch_P(100, 3, F("button"), F("slider="), F("switch="));
+	    int match = wifly.multiMatch_P(100, 3,
+			    F("button"), F("slider="), F("switch="));
 	    switch (match) {
 	    case 0: /* button */
 		Serial.print(F("button: pressed"));
