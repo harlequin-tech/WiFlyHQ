@@ -46,6 +46,29 @@ Receive UDP or TCP data (assumes software serial interface):
 	    Serial.write(wifly.read());
 	}
 
+Easy handling of multiple receive options with multiMatch_P()::
+
+        if (wifly.available() > 0) {
+	    int match = wifly.multiMatch_P(100, 3, F("button"), F("slider="), F("switch="));
+	    switch (match) {
+	    case 0: /* button */
+		Serial.print(F("button: pressed"));
+		break;
+	    case 1: /* slider */
+		int slider = wifly.parseInt();
+		Serial.print(F("slider: "));
+		Serial.println(slider);
+		break;
+	    case 2: /* switch */
+		char ch = wifly.read();
+		Serial.print(F("switch: "));
+		Serial.println(ch);
+		break;
+	    default: /* timeout */
+		break;
+	    }
+	}
+
 Limitations with WiFly RN-XV rev 2.32 firmware
 1. Cannot determine the IP address of the TCP client that has connected.
 2. Changing the local port does not take effect until after a save and reboot.
