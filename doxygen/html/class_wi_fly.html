@@ -155,6 +155,8 @@ boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setDNS</b> (const 
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setDHCP</b> (const uint8_t mode)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a55043e802c6bdadf785700cf186c5f5f"></a><!-- doxytag: member="WiFly::setHostIP" ref="a55043e802c6bdadf785700cf186c5f5f" args="(const char *buf)" -->
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setHostIP</b> (const char *buf)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a834ac317d7980ec67eaf425abba1399a"></a><!-- doxytag: member="WiFly::setHostIP" ref="a834ac317d7980ec67eaf425abba1399a" args="(const __FlashStringHelper *buf)" -->
+boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setHostIP</b> (const __FlashStringHelper *buf)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9c4e9871eee6453d55183eb227611bd2"></a><!-- doxytag: member="WiFly::setHostPort" ref="a9c4e9871eee6453d55183eb227611bd2" args="(const uint16_t port)" -->
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>setHostPort</b> (const uint16_t port)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e6c2a4e46fa5557801bafe9e1dca861"></a><!-- doxytag: member="WiFly::setHost" ref="a2e6c2a4e46fa5557801bafe9e1dca861" args="(const char *buf, uint16_t port)" -->
@@ -186,6 +188,9 @@ uint16_t&#160;</td><td class="memItemRight" valign="bottom"><b>getAdhocReboot</b
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#aa253afdc746f88821ea5aaebd544d0ff">enableDataTrigger</a> (const uint16_t flushtime=10, const char flushChar=0, const uint16_t flushSize=64)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ae8cce3e97b24ab373386bc4b5f201454"></a><!-- doxytag: member="WiFly::disableDataTrigger" ref="ae8cce3e97b24ab373386bc4b5f201454" args="()" -->
 boolean&#160;</td><td class="memItemRight" valign="bottom"><b>disableDataTrigger</b> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#aab833439842045058c7a5112a5fa8c38">enableUdpAutoPair</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af7d04b095b56646bbe1c41cd560f2cfb"></a><!-- doxytag: member="WiFly::disableUdpAutoPair" ref="af7d04b095b56646bbe1c41cd560f2cfb" args="()" -->
+boolean&#160;</td><td class="memItemRight" valign="bottom"><b>disableUdpAutoPair</b> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a50d5f995521c363ccb090b622a9e7650">setIOFunc</a> (const uint8_t func)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a455d4524e3279b8f26953da826e99cd1"></a><!-- doxytag: member="WiFly::getTime" ref="a455d4524e3279b8f26953da826e99cd1" args="(char *buf, int size)" -->
 char *&#160;</td><td class="memItemRight" valign="bottom"><b>getTime</b> (char *buf, int size)</td></tr>
@@ -243,9 +248,13 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>flush</b> ()<
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#af607bded1fb1f4b6fdf994b2b1b9d45f">terminal</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a1ab9fb5e4cd9c0a9d3177c02a96c4a27">dbgBegin</a> (int size=256)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a08a7b42ffa0575921ca662e8b06a7f6f">dbgDump</a> ()</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a9ed6efac7d59a4a6c9c36fb8cf4f24e2">dbgEnd</a> ()</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#ac5e433e67b7412389784bcee0ed37a57">match</a> (const char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">boolean&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a3d644dbb4d52d6beb75f325e5986b8de">match</a> (const __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a0bea886de94a92cafee3730d182f1914">multiMatch_P</a> (uint16_t timeout, uint8_t count,...)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#a762add6265dd90032287b8865a8a817f">gets</a> (char *buf, int size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a5ac68b8b3ef09b146737e6db574230e7"></a><!-- doxytag: member="WiFly::getsTerm" ref="a5ac68b8b3ef09b146737e6db574230e7" args="(char *buf, int size, char term, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT)" -->
+int&#160;</td><td class="memItemRight" valign="bottom"><b>getsTerm</b> (char *buf, int size, char term, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_wi_fly.html#adbdb13ed907cad0d608e950ead08c19e">flushRx</a> (int timeout=WIFLY_DEFAULT_TIMEOUT)</td></tr>
 <tr><td colspan="2"><h2><a name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
@@ -465,6 +474,23 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 
 </div>
 </div>
+<a class="anchor" id="a9ed6efac7d59a4a6c9c36fb8cf4f24e2"></a><!-- doxytag: member="WiFly::dbgEnd" ref="a9ed6efac7d59a4a6c9c36fb8cf4f24e2" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void WiFly::dbgEnd </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Stop debug capture and free buffer </p>
+
+</div>
+</div>
 <a class="anchor" id="afa9e95b9bbd6820de142adc8abc16170"></a><!-- doxytag: member="WiFly::disableHostRestore" ref="afa9e95b9bbd6820de142adc8abc16170" args="()" -->
 <div class="memitem">
 <div class="memproto">
@@ -540,6 +566,23 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 </div>
 <div class="memdoc">
 <p>Preserve the IP and Port set via setIP() and <a class="el" href="class_wi_fly.html#ab9e31e9faafe941dc2777f023ae332b6">setPort()</a> when using <a class="el" href="class_wi_fly.html#a635f8ce5f71b13285cbd3c713b2f19c6">sendto()</a> function. </p>
+
+</div>
+</div>
+<a class="anchor" id="aab833439842045058c7a5112a5fa8c38"></a><!-- doxytag: member="WiFly::enableUdpAutoPair" ref="aab833439842045058c7a5112a5fa8c38" args="()" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">boolean WiFly::enableUdpAutoPair </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Enable the UDP auto-pair functionality. The <a class="el" href="class_wi_fly.html">WiFly</a> will automatically set the Host IP and port to match the sender of the last UDP packet. </p>
 
 </div>
 </div>
@@ -775,6 +818,12 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>the number of characters read into the buffer. </dd></dl>
+<dl><dt><b>Return values:</b></dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">0</td><td>- timeout reading newline </td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="note"><dt><b>Note:</b></dt><dd>The buffer will be null terminated, and in effect can hold size-1 characters. </dd></dl>
 
 </div>
@@ -1014,6 +1063,54 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
   <table class="retval">
     <tr><td class="paramname">true</td><td>- a match was found </td></tr>
     <tr><td class="paramname">false</td><td>- no match found, timeout reached </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a class="anchor" id="a0bea886de94a92cafee3730d182f1914"></a><!-- doxytag: member="WiFly::multiMatch_P" ref="a0bea886de94a92cafee3730d182f1914" args="(uint16_t timeout, uint8_t count,...)" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int WiFly::multiMatch_P </td>
+          <td>(</td>
+          <td class="paramtype">uint16_t&#160;</td>
+          <td class="paramname"><em>timeout</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint8_t&#160;</td>
+          <td class="paramname"><em>count</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">&#160;</td>
+          <td class="paramname"><em>...</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<p>Read characters from the <a class="el" href="class_wi_fly.html">WiFly</a> and match them against the set of progmem strings. Ignore any leading characters that don't match. Keep reading, discarding the input, until one of the strings is matched or until no characters are received for the timeout duration. </p>
+<dl><dt><b>Parameters:</b></dt><dd>
+  <table class="params">
+    <tr><td class="paramname">timeout</td><td>- fail if no data received for this period (in milliseconds). </td></tr>
+    <tr><td class="paramname">count</td><td>- the number of strings in the str array  A list of count progmem strings to match </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="return"><dt><b>Returns:</b></dt><dd>the index of the matching string </dd></dl>
+<dl><dt><b>Return values:</b></dt><dd>
+  <table class="retval">
+    <tr><td class="paramname">-1</td><td>- no match found, timeout reached </td></tr>
   </table>
   </dd>
 </dl>
@@ -2060,7 +2157,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><b>channel</b></td></
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 22 2012 11:17:25 for WifiHQ by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 22 2012 15:46:20 for WifiHQ by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.5.1
 </small></address>

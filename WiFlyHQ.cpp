@@ -912,6 +912,17 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
     return false;
 }
 
+/**
+ * Read characters from the WiFly and match them against the set of
+ * progmem strings. Ignore any leading characters that don't match. Keep
+ * reading, discarding the input, until one of the strings is matched
+ * or until no characters are received for the timeout duration.
+ * @param timeout - fail if no data received for this period (in milliseconds).
+ * @param count - the number of strings in the str array
+ * @varargs A list of count progmem strings to match
+ * @returns the index of the matching string
+ * @retval -1 - no match found, timeout reached
+ */
 int WiFly::multiMatch_P(uint16_t timeout, uint8_t count, ...)
 {
     const prog_char *str[20];
