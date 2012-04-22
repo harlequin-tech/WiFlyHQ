@@ -317,6 +317,9 @@ void WiFly::init()
 {
     int8_t dhcpMode=0;
 
+    lastPort = 0;
+    lastHost[0] = 0;
+
     if (!setopt(PSTR("set u m 1"), (char *)NULL)) {
 	debug.println(F("Failed to turn off echo"));
     }
@@ -405,7 +408,10 @@ void WiFly::flushRx(int timeout)
  */
 size_t WiFly::write(uint8_t byte)
 {
-   return serial->write(byte);
+    if (dbgInd < dbgMax) {
+	dbgBuf[dbgInd++] = byte;
+    }
+    return serial->write(byte);
 }
 
 /* Read-ahead for checking for TCP stream close 
@@ -639,14 +645,15 @@ void WiFly::dump(const char *str)
 void WiFly::send(const char *str)
 {
     DPRINT(F("send: ")); DPRINT(str); DPRINT("\n\r");
-
-    serial->print(str);
+    print(str);
+    //serial->print(str);
 }
 
 /** Send a character to the WiFly */
 void WiFly::send(const char ch)
 {
-    serial->write(ch);
+    write(ch);
+    //serial->write(ch);
 }
 
 /** Send a string from PROGMEM to the WiFly */
@@ -655,7 +662,7 @@ void WiFly::send_P(const prog_char *str)
     DPRINT(F("send_P: "));
     DPRINTLN((const __FlashStringHelper *)str);
 
-    serial->print((const __FlashStringHelper *)str);
+    print((const __FlashStringHelper *)str);
 }
 
 /**
@@ -670,6 +677,17 @@ void WiFly::dbgBegin(int size)
     dbgBuf = (char *)malloc(size);
     dbgInd = 0;
     dbgMax = size;
+}
+
+/** Stop debug capture and free buffer */
+void WiFly::dbgEnd()
+{
+    if (dbgBuf != NULL) {
+	free(dbgBuf);
+	dbgBuf = NULL;
+    }
+    dbgInd = 0;
+    dbgMax = 0;
 }
 
 /** Do a hex and ASCII dump of the capture buffer, and free the buffer.  */
@@ -894,6 +912,25 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
     return false;
 }
 
+int WiFly::multiMatch_P(uint16_t timeout, uint8_t count, ...)
+{
+    const prog_char *str[20];
+    int ind;
+    va_list ap;
+    va_start(ap, count);
+
+    if (count > 20) {
+	count = 20;
+    }
+
+    for (ind=0; ind<count; ind++) {
+	str[ind] = va_arg(ap, const prog_char *);
+    }
+    va_end(ap);
+
+    return multiMatch_P(str, count, timeout);
+}
+
 /**
  * Read characters from the WiFly and match them against the set of
  * progmem strings. Ignore any leading characters that don't match. Keep
@@ -1032,6 +1069,7 @@ boolean WiFly::enterCommandMode()
 
     for (retry=0; retry<5; retry++) {
 	DPRINT(F("send $$$ ")); DPRINT(retry); DPRINT("\n\r");
+	delay(250);
 	send_P(PSTR("$$$"));
 	delay(250);
 	if (match_P(PSTR("CMD\r\n"), 500)) {
@@ -1061,6 +1099,33 @@ boolean WiFly::exitCommandMode()
     }
 }
 
+int WiFly::getsTerm(char *buf, int size, char term, uint16_t timeout)
+{
+    char ch;
+    int ind=0;
+
+    DPRINTLN(F("getsTerm:"));
+
+    while (readTimeout(&ch, timeout)) {
+	if (ch == 'term') {
+	    if (buf) {
+		buf[ind] = 0;
+	    }
+	    return ind;
+	}
+
+	/* Truncate to buffer size */
+	if ((ind < (size-1)) && buf) {
+	    buf[ind++] = ch;
+	}
+    }
+
+    if (buf) {
+	buf[ind] = 0;
+    }
+    return 0;
+}
+
 /**
  * Read characters into the buffer until a carriage-return and newline is reached.
  * If the buffer is too small, the remaining characters in the line are discarded.
@@ -1068,6 +1133,7 @@ boolean WiFly::exitCommandMode()
  * @param size - the size of the buffer (max number of characters it can store)
  * @param timeout - the number of milliseconds to wait for a new character to arrive
  * @returns the number of characters read into the buffer.
+ * @retval 0 - timeout reading newline
  * @note The buffer will be null terminated, and in effect can hold size-1 characters.
  */
 int WiFly::gets(char *buf, int size, uint16_t timeout)
@@ -1194,10 +1260,10 @@ uint16_t WiFly::getConnection()
 
     if (status.tcp == WIFLY_TCP_CONNECTED) {
 	connected = true;
-	debug.println(F("getCon: TCP connected"));
+	if (debugOn) debug.println(F("getCon: TCP connected"));
     } else {
 	connected = false;
-	debug.println(F("getCon: TCP disconnected"));
+	if (debugOn) debug.println(F("getCon: TCP disconnected"));
     }
 
     return res;
@@ -1617,6 +1683,10 @@ boolean WiFly::setPort(const uint16_t port)
     return setopt(PSTR("set ip localport"), port);
 }
 
+boolean WiFly::setHostIP(const __FlashStringHelper *buf)
+{
+    return setopt(PSTR("set ip host"), NULL, buf);
+}
 
 boolean WiFly::setHostIP(const char *buf)
 {
@@ -1732,6 +1802,25 @@ boolean WiFly::setUartMode(const uint8_t mode)
 boolean WiFly::setBroadcastInterval(const uint8_t seconds)
 {
     return setopt(PSTR("set broadcast interval"), seconds, HEX);
+}
+
+/**
+ * Enable the UDP auto-pair functionality.
+ * The WiFly will automatically set the Host IP and port
+ * to match the sender of the last UDP packet.
+ */
+boolean WiFly::enableUdpAutoPair()
+{
+   udpAutoPair = true;
+   setHostIP(F("0.0.0.0"));
+   setIpFlags(getIpFlags() | WIFLY_FLAG_UDP_AUTO_PAIR);
+   disableHostRestore();
+}
+
+boolean WiFly::disableUdpAutoPair()
+{
+   udpAutoPair = false;
+   setIpFlags(getIpFlags() & ~WIFLY_FLAG_UDP_AUTO_PAIR);
 }
 
 /**
@@ -2288,24 +2377,32 @@ boolean WiFly::sendto(
     const char *host,
     uint16_t port)
 {
-    char lastHost[16];
-    uint16_t lastPort;
-    bool restore = restoreHost;
+    bool restore = true;
 
     if (!startCommand()) {
 	debug.println(F("sendto: failed to start command"));
 	return false;
     }
 
-    getHostIP(lastHost, sizeof(lastHost));
-    lastPort = getHostPort();
-
-    if ((port != lastPort) && (strcmp(host, lastHost) != 0)) {
-	setHostIP(host);
-	setHostPort(port);
+    if (udpAutoPair || (port != lastPort) || (strcmp(host, lastHost) != 0)) {
+	setHost(host,port);
+	if (!restoreHost) {
+	    /* Keep a copy of this for reference for the next call */
+	    lastPort = port;
+	    strncpy(lastHost, host, sizeof(lastHost));
+	    restore = false;
+	}
+#ifdef DEBUG
+	debug.print(F("sendto: set host and port "));
+	debug.print(host); debug.print(':'); debug.println(port);
+#endif
     } else {
 	/* same host and port, no need to restore */
 	restore = false;
+#ifdef DEBUG
+	debug.print(F("sendto: same host and port "));
+	debug.print(host); debug.print(':'); debug.println(port);
+#endif
     }
 
     finishCommand();
@@ -2319,7 +2416,22 @@ boolean WiFly::sendto(
     /* Restore original host and port */
     if (restore) {
 	setHost(lastHost,lastPort);
+#ifdef DEBUG
+	debug.print(F("sendto: restored "));
+	debug.print(lastHost); debug.print(':'); debug.println(lastPort);
+#endif
+    } else if (udpAutoPair) {
+       setHostIP(F("0.0.0.0"));
     }
+
+#ifdef DEBUG
+    debug.print(F("sendto: send "));
+    if (data) {
+	debug.println((char *)data);
+    } else if (flashData) {
+	debug.println(flashData);
+    }
+#endif
 
     return true;
 }
@@ -2418,6 +2530,10 @@ boolean WiFly::sendto(const __FlashStringHelper *flashData, IPAddress host, uint
 void WiFly::enableHostRestore()
 {
     restoreHost = true;
+    getHostIP(lastHost, sizeof(lastHost));
+    lastPort = getHostPort();
+    debug.print(F("enableHostRestore: stored "));
+    debug.print(lastHost); debug.print(':'); debug.println(lastPort);
 }
 
 /**

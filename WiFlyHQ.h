@@ -164,6 +164,7 @@ public:
     boolean setDHCP(const uint8_t mode);
 
     boolean setHostIP(const char *buf);
+    boolean setHostIP(const __FlashStringHelper *buf);
     boolean setHostPort(const uint16_t port);
     boolean setHost(const char *buf, uint16_t port);
 
@@ -190,6 +191,8 @@ public:
     boolean setFlushSize(uint16_t size);
     boolean enableDataTrigger(const uint16_t flushtime=10, const char flushChar=0, const uint16_t flushSize=64);
     boolean disableDataTrigger();
+    boolean enableUdpAutoPair();
+    boolean disableUdpAutoPair();
 
     boolean setIOFunc(const uint8_t func);
 
@@ -254,11 +257,14 @@ public:
 
     void dbgBegin(int size=256);
     void dbgDump();
+    void dbgEnd();
     boolean debugOn;
 
     boolean match(const char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     boolean match(const __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    int multiMatch_P(uint16_t timeout, uint8_t count, ...);
     int gets(char *buf, int size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    int getsTerm(char *buf, int size, char term, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     void flushRx(int timeout=WIFLY_DEFAULT_TIMEOUT);
 
   private:
@@ -304,8 +310,12 @@ public:
     int  exitCommand;
     boolean dhcp;
     bool restoreHost;
+    bool restoreHostStored;
+    char lastHost[32];
+    uint16_t lastPort;
 
     boolean tcpMode;
+    boolean udpAutoPair;
 
     boolean connected;
     boolean connecting;
