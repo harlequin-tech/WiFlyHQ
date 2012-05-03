@@ -130,6 +130,8 @@ public:
     char *getDNS(char *buf, int size);
     char *getMAC(char *buf, int size);
     int8_t getDHCPMode();
+    uint32_t getRate();
+    uint8_t getTxPower();
 
     uint16_t getConnection();
     int8_t getRSSI();
@@ -162,6 +164,8 @@ public:
     boolean setPassphrase(const char *buf);
     boolean setSpaceReplace(const char *buf);
     boolean setDHCP(const uint8_t mode);
+    boolean setRate(uint32_t rate);
+    boolean setTxPower(uint8_t dBm);
 
     boolean setHostIP(const char *buf);
     boolean setHostIP(const __FlashStringHelper *buf);

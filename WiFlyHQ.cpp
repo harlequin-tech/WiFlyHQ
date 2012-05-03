@@ -62,6 +62,20 @@ extern void *__brkval;
 #define WIFLY_TCP_NOIP		3
 #define WIFLY_TCP_CONNECTING	4
 
+/* WiFi data rates */
+#define WIFLY_RATE_1MBPS	0
+#define WIFLY_RATE_2MBPS	1
+#define WIFLY_RATE_5_5MBPS	2	/* 5.5 MBps */
+#define WIFLY_RATE_6MBPS	8
+#define WIFLY_RATE_9MBPS	9
+#define WIFLY_RATE_11MBPS	3
+#define WIFLY_RATE_12MBPS	10
+#define WIFLY_RATE_18MBPS	11
+#define WIFLY_RATE_24MBPS	12	/* Default */
+#define WIFLY_RATE_36MBPS	13
+#define WIFLY_RATE_48MBPS	14
+#define WIFLY_RATE_54MBPS	15
+
 /* Work around a bug with PROGMEM and PSTR where the compiler always
  * generates warnings.
  */
@@ -109,6 +123,8 @@ const prog_char resp_Beacon[] PROGMEM = "Beacon=";
 const prog_char resp_Probe[] PROGMEM = "Probe=";
 const prog_char resp_Reboot[] PROGMEM = "Reboot=";
 const prog_char resp_Join[] PROGMEM = "Join=";
+const prog_char resp_Rate[] PROGMEM = "Rate=";
+const prog_char resp_Power[] PROGMEM = "TxPower=";
 
 /* Request and response for specific info */
 static struct {
@@ -140,6 +156,8 @@ static struct {
     { req_GetAdhoc,	resp_Probe },    /* 22 */
     { req_GetAdhoc,	resp_Reboot },   /* 23 */
     { req_GetWLAN,	resp_Join },	 /* 24 */
+    { req_GetWLAN,	resp_Rate },	 /* 25 */
+    { req_GetWLAN,	resp_Power },	 /* 26 */
 };
 
 /* Request indices, must match table above */
@@ -169,6 +187,8 @@ typedef enum {
     WIFLY_GET_PROBE	= 22,
     WIFLY_GET_REBOOT	= 23,
     WIFLY_GET_JOIN	= 24,
+    WIFLY_GET_RATE	= 25,
+    WIFLY_GET_POWER	= 26,
 } e_wifly_requests;
 
 /** Convert a unsigned int to a string */
@@ -1984,6 +2004,95 @@ boolean WiFly::setSpaceReplace(const char *buf)
 {
     return setopt(PSTR("set opt replace"), buf);
 }
+
+/* data rates to register setting */
+static struct {
+    uint32_t rate;
+    uint8_t setting;
+} rateMap[] __attribute__((__progmem__)) = {
+    {  1000000, WIFLY_RATE_1MBPS   },
+    {  2000000, WIFLY_RATE_2MBPS   },
+    {  5500000, WIFLY_RATE_5_5MBPS },
+    {  6000000, WIFLY_RATE_6MBPS   },
+    {  9000000, WIFLY_RATE_9MBPS   },
+    { 11000000, WIFLY_RATE_11MBPS  },
+    { 12000000, WIFLY_RATE_12MBPS  },
+    { 18000000, WIFLY_RATE_18MBPS  },
+    { 24000000, WIFLY_RATE_24MBPS  },
+    { 36000000, WIFLY_RATE_36MBPS  },
+    { 48000000, WIFLY_RATE_48MBPS  },
+    { 54000000, WIFLY_RATE_54MBPS  }
+};
+
+/**
+ * Set WiFi data rate
+ * @param rate the data rate to set in bits per second.
+ *             valid values are 1000000, 2000000, 5500000, 
+ *             6000000, 9000000, 11000000, 12000000, 18000000,
+ *             24000000, 36000000, 48000000, 54000000.
+ * @returns true on success, false on failure.
+ * @note rates are rounded up to the nearest valid value
+ */
+boolean WiFly::setRate(uint32_t rate)
+{
+    uint8_t setting = WIFLY_RATE_54MBPS;
+
+    for (uint8_t ind=0; ind < (sizeof(rateMap)/sizeof(rateMap[0])); ind++) {
+	if (rate <= pgm_read_dword(&rateMap[ind].rate)) {
+	    setting = pgm_read_byte(&rateMap[ind].setting);
+	    break;
+	}
+    }
+    return setopt(PSTR("set wlan rate"), setting);
+}
+
+/**
+ * Return the current WiFi data rate in bits/sec
+ * @returns current data rate in bits/sec
+ */
+uint32_t WiFly::getRate()
+{
+    uint8_t rate = getopt(WIFLY_GET_RATE);
+
+    debug.print("rate: "); debug.println(rate);
+
+    for (uint8_t ind=0; ind < (sizeof(rateMap)/sizeof(rateMap[0])); ind++) {
+	if (rate == pgm_read_byte(&rateMap[ind].setting)) {
+	    return pgm_read_dword(&rateMap[ind].rate);
+	}
+    }
+
+    return 0;	/* Unknown */
+}
+
+/**
+ * Set the transmit power level.
+ * @param dBm power level from 1 to 12 dBm
+ * @returns true on success, false on failure.
+ * @ Note: a setting of 0 means max power which is 12 dBm.
+ */
+boolean WiFly::setTxPower(uint8_t dBm)
+{
+    if (dBm > 12) {
+	dBm = 12;
+    }
+    return setopt(PSTR("set wlan tx"), dBm);
+}
+
+/**
+ * Get the current transmit power.
+ * @returns tx power in dBm
+ */
+uint8_t WiFly::getTxPower()
+{
+    uint8_t power = getopt(WIFLY_GET_POWER);
+    if (power == 0) {
+	/* 0 means max power, or 12 dBm */
+	power = 12;
+    }
+    return power;
+}
+
 
 /**
  * Set the ad hoc beacon period in milliseconds.
