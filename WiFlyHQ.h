@@ -98,6 +98,9 @@
 
 #define WIFLY_DEFAULT_TIMEOUT		500	/* 500 milliseconds */
 
+#define WIFLY_MODE_WPA			0	
+#define WIFLY_MODE_WEP			1
+
 class WFDebug : public Stream {
 public:
     WFDebug();
@@ -214,6 +217,7 @@ public:
     boolean createAdhocNetwork(const char *ssid, uint8_t channel);
     boolean join(const char *ssid, uint16_t timeout=20000);
     boolean join(uint16_t timeout=20000);
+    boolean join(const char *ssid, const char *password, bool dhcp=true, uint8_t mode=WIFLY_MODE_WPA, uint16_t timeout=20000);
     boolean leave();
     boolean isAssociated();
 
@@ -271,6 +275,23 @@ public:
     int getsTerm(char *buf, int size, char term, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     void flushRx(int timeout=WIFLY_DEFAULT_TIMEOUT);
 
+    boolean setFtpDefaults(void);
+    boolean setFtpAddress(const char *addr);
+    boolean setFtpPort(uint16_t port);
+    boolean setFtpDirectory(const char *dir);
+    boolean setFtpUser(const char *user);
+    boolean setFtpPassword(const char *password);
+    boolean setFtpFilename(const char *filename);
+    boolean setFtpTimer(uint16_t msecs);
+    boolean setFtpMode(uint8_t mode);
+
+    boolean ftpGet(
+	const char *addr,
+	const char *dir,
+	const char *user,
+	const char *password,
+	const char *filename);
+
   private:
     void init(void);
 
@@ -300,7 +321,7 @@ public:
     boolean finishCommand();
     char *getopt(int opt, char *buf, int size);
     uint32_t getopt(int opt, uint8_t base=DEC);
-    boolean setopt(const prog_char *cmd, const char *buf, const __FlashStringHelper *buf_P=NULL);
+    boolean setopt(const prog_char *cmd, const char *buf=NULL, const __FlashStringHelper *buf_P=NULL);
     boolean setopt(const prog_char *opt, const uint32_t value, uint8_t base=DEC);
     boolean getres(char *buf, int size);
 

@@ -719,17 +719,18 @@ void WiFly::dbgDump()
 	return;
     }
 
-    debug.println(F("debug dump"));
-
-    for (ind=0; ind<dbgInd; ind++) {
-	debug.print(ind);
-	debug.print(F(": "));
-	debug.print(dbgBuf[ind],HEX);
-	if (isprint(dbgBuf[ind])) {
-	    debug.print(' ');
-	    debug.print(dbgBuf[ind]);
+    if (dbgInd > 0) {
+	debug.println(F("debug dump"));
+	for (ind=0; ind<dbgInd; ind++) {
+	    debug.print(ind);
+	    debug.print(F(": "));
+	    debug.print(dbgBuf[ind],HEX);
+	    if (isprint(dbgBuf[ind])) {
+		debug.print(' ');
+		debug.print(dbgBuf[ind]);
+	    }
+	    debug.println();
 	}
-	debug.println();
     }
     free(dbgBuf);
     dbgBuf = NULL;
@@ -1141,7 +1142,7 @@ int WiFly::getsTerm(char *buf, int size, char term, uint16_t timeout)
     DPRINTLN(F("getsTerm:"));
 
     while (readTimeout(&ch, timeout)) {
-	if (ch == 'term') {
+	if (ch == term) {
 	    if (buf) {
 		buf[ind] = 0;
 	    }
@@ -1849,12 +1850,16 @@ boolean WiFly::enableUdpAutoPair()
    setHostIP(F("0.0.0.0"));
    setIpFlags(getIpFlags() | WIFLY_FLAG_UDP_AUTO_PAIR);
    disableHostRestore();
+
+   return true;
 }
 
 boolean WiFly::disableUdpAutoPair()
 {
    udpAutoPair = false;
    setIpFlags(getIpFlags() & ~WIFLY_FLAG_UDP_AUTO_PAIR);
+
+   return true;
 }
 
 /**
@@ -1976,6 +1981,12 @@ boolean WiFly::setChannel(uint8_t channel)
 boolean WiFly::setKey(const char *buf)
 {
     boolean res;
+
+    if ((buf[1] == 'x') || (buf[1] == 'X')) {
+	/* Skip over the 0x leader */
+	buf += 2;
+    }
+
     res = setopt(PSTR("set wlan key"), buf);
 
     hide();	/* hide the key */
@@ -2133,6 +2144,87 @@ uint16_t WiFly::getAdhocReboot()
     return getopt(WIFLY_GET_REBOOT);
 }
 
+#if 0
+/** Restore the default ftp settings. These
+ * are the settings needed to upgrade the firmware.
+ * Is this needed? Why not just use factory defaults?
+ */
+boolean WiFly::setFtpDefaults(void)
+{
+    setFtpAddress("208.109.78.34");
+    setFtpDirectory("public");
+    setFtpUser("roving");
+    setFtpPassword("Pass123");
+    setFtpFilename("wifly-EZX.img");
+    setFtpTimer(10000);
+    setFtpPort(21);
+    setFtpMode(0);
+
+    return true;
+}
+
+boolean WiFly::setFtpAddress(const char *addr)
+{
+    return setopt(PSTR("set ftp address"), addr);
+}
+
+boolean WiFly::setFtpPort(uint16_t port)
+{
+    return setopt(PSTR("set ftp remote"),port);
+}
+
+boolean WiFly::setFtpDirectory(const char *dir)
+{
+    return setopt(PSTR("set ftp dir"), dir);
+}
+
+boolean WiFly::setFtpUser(const char *user)
+{
+    return setopt(PSTR("set ftp user"), user);
+}
+
+boolean WiFly::setFtpPassword(const char *password)
+{
+    return setopt(PSTR("set ftp password"), password);
+}
+
+boolean WiFly::setFtpFilename(const char *filename)
+{
+    return setopt(PSTR("set ftp filename"), filename);
+}
+
+boolean WiFly::setFtpTimer(uint16_t msecs)
+{
+    return setopt(PSTR("set ftp timer"), msecs / 125);
+}
+
+boolean WiFly::setFtpMode(uint8_t mode)
+{
+    return setopt(PSTR("set ftp mode"), mode, HEX);
+}
+
+boolean WiFly::ftpGet(
+    const char *addr,
+    const char *dir,
+    const char *user,
+    const char *password,
+    const char *filename)
+{
+    setFtpAddress(addr);
+    setFtpDirectory(dir);
+    setFtpUser(user);
+    setFtpPassword(password);
+
+    send_P(PSTR("ftp get "));
+    println(filename);
+
+    /* Wait for *OPEN* */
+    /* XXX TBD */
+
+    return true;
+}
+#endif
+
 /** join a wireless network */
 boolean WiFly::join(const char *ssid, uint16_t timeout)
 {
@@ -2177,6 +2269,22 @@ boolean WiFly::join(uint16_t timeout)
     getSSID(ssid, sizeof(ssid));
 
     return join(ssid);
+}
+
+boolean WiFly::join(const char *ssid, const char *password, bool dhcp, uint8_t mode, uint16_t timeout)
+{
+    setSSID(ssid);
+    if (mode == WIFLY_MODE_WPA) {
+	setPassphrase(password);
+    } else {
+	setKey(password);
+    }
+
+    if (dhcp) {
+	enableDHCP();
+    }
+
+    return join(ssid, timeout);
 }
 
 /** leave the wireless network */
