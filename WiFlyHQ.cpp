@@ -2192,18 +2192,27 @@ boolean WiFly::join(uint16_t timeout)
 
 boolean WiFly::join(const char *ssid, const char *password, bool dhcp, uint8_t mode, uint16_t timeout)
 {
-    setSSID(ssid);
-    if (mode == WIFLY_MODE_WPA) {
-	setPassphrase(password);
-    } else {
-	setKey(password);
-    }
+  String temp = ssid;
+  temp.replace(' ', '$');
+  char escapedSSID[strlen(ssid) + 1];
+  temp.toCharArray(escapedSSID, strlen(ssid) + 1);
+  setSSID(escapedSSID);
 
-    if (dhcp) {
-	enableDHCP();
-    }
+  if (mode == WIFLY_MODE_WPA) {
+    temp = password;
+    temp.replace(' ', '$');
+    char escapedPassphrase[strlen(password) + 1];
+    temp.toCharArray(escapedPassphrase, strlen(password) + 1);
+    setPassphrase(escapedPassphrase);
+  } else {
+    setKey(password);
+  }
 
-    return join(ssid, timeout);
+  if (dhcp) {
+    enableDHCP();
+  }
+
+  return join(ssid, timeout);
 }
 
 /** leave the wireless network */
@@ -2809,7 +2818,6 @@ boolean WiFly::close()
 
     return !connected;
 }
-
 
 WFDebug::WFDebug()
 {
