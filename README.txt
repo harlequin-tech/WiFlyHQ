@@ -46,7 +46,7 @@ Receive UDP or TCP data (assumes software serial interface):
 	    Serial.write(wifly.read());
 	}
 
-Easy handling of multiple receive options with multiMatch_P()::
+Easy handling of multiple receive options with multiMatch_P():
 
         if (wifly.available() > 0) {
 	    int match = wifly.multiMatch_P(100, 3,
