@@ -125,6 +125,7 @@ const prog_char resp_Reboot[] PROGMEM = "Reboot=";
 const prog_char resp_Join[] PROGMEM = "Join=";
 const prog_char resp_Rate[] PROGMEM = "Rate=";
 const prog_char resp_Power[] PROGMEM = "TxPower=";
+const prog_char resp_Replace[] PROGMEM = "Replace=";
 
 /* Request and response for specific info */
 static struct {
@@ -158,6 +159,7 @@ static struct {
     { req_GetWLAN,	resp_Join },	 /* 24 */
     { req_GetWLAN,	resp_Rate },	 /* 25 */
     { req_GetWLAN,	resp_Power },	 /* 26 */
+    { req_GetOpt,	resp_Replace },	 /* 27 */
 };
 
 /* Request indices, must match table above */
@@ -189,6 +191,7 @@ typedef enum {
     WIFLY_GET_JOIN	= 24,
     WIFLY_GET_RATE	= 25,
     WIFLY_GET_POWER	= 26,
+    WIFLY_GET_REPLACE	= 27,
 } e_wifly_requests;
 
 /** Convert a unsigned int to a string */
@@ -363,6 +366,7 @@ void WiFly::init()
     dhcpMode = getDHCPMode();
     dhcp = !((dhcpMode == WIFLY_DHCP_MODE_OFF) || (dhcpMode == WIFLY_DHCP_MODE_SERVER));
 
+    replaceChar = getSpaceReplace();
 }
 
 /**
@@ -1608,7 +1612,7 @@ boolean WiFly::setopt(const prog_char *opt, const uint32_t value, uint8_t base)
 
 
 /* Set an option, confirm ok status */
-boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashStringHelper *buf_P)
+boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashStringHelper *buf_P, bool spacesub)
 {
     char rbuf[16];
     boolean res;
@@ -1620,10 +1624,35 @@ boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashString
     send_P(cmd);
     if (buf_P != NULL) {
 	send(' ');
-	send_P((const prog_char *)buf_P);
+	if (spacesub) {
+	    const prog_char *str = (const prog_char *)buf_P;
+	    char ch;
+	    while ((ch = pgm_read_byte(str++)) != 0) {
+		if (ch == ' ') {
+		    write(replaceChar);
+		} else {
+		    write(ch);
+		}
+	    }
+	} else {
+	    send_P((const prog_char *)buf_P);
+	}
     } else if (buf != NULL) {
 	send(' ');
-	send(buf);
+	if (spacesub) {
+	    const char *str = buf;
+	    char ch;
+	    /* spaces must be replaced */
+	    while ((ch = *str++) != 0) {
+		if (ch == ' ') {
+		    write(replaceChar);
+		} else {
+		    write(ch);
+		}
+	    }
+	} else {
+	    send(buf);
+        }
     }
     send('\r');
 
@@ -1993,15 +2022,18 @@ boolean WiFly::setKey(const char *buf)
     return res;
 }
 
+
 /**
  * Set WPA passphrase.
- * Use '$' instead of spaces.
- * Use setSpaceReplacement() to change the replacement character.
+ * Spaces are automatically replaced with the current space substitution 
+ * character ('$' is the default).
+ * @Note: If your passphrase contains a '$' then use setSpaceReplace() to
+ *        change the replacement character to something you're not using.
  */
 boolean WiFly::setPassphrase(const char *buf)
 {
     boolean res;
-    res = setopt(PSTR("set wlan phrase"), buf);
+    res = setopt(PSTR("set wlan phrase"), buf, NULL, true);
 
     hide();	/* hide the key */
     return res;
@@ -2011,9 +2043,17 @@ boolean WiFly::setPassphrase(const char *buf)
  * Set the space replacement character in WPA passphrase.
  * Default is '$'.
  */
-boolean WiFly::setSpaceReplace(const char *buf)
+boolean WiFly::setSpaceReplace(char ch)
 {
+    char buf[2] = { ch, 0 };
+
+    replaceChar = ch;
     return setopt(PSTR("set opt replace"), buf);
+}
+
+char WiFly::getSpaceReplace(void)
+{
+    return (char)getopt(WIFLY_GET_REPLACE, HEX);
 }
 
 /* data rates to register setting */
@@ -2190,6 +2230,15 @@ boolean WiFly::join(uint16_t timeout)
     return join(ssid);
 }
 
+/**
+ * Join a wireless network.
+ * @param ssid The SSID of the network to join
+ * @param password The WPA passphrase or WEP hex key.
+ * @param dhcp set to true to enable DHCP
+ * @param mode WIFLY_MODE_WPA for WPA security, or WIFLY_MODE_WEP for WEP security.
+ * @param timeout number of milliseconds to try connecting before timing out.
+ * @return true on success, false on failure.
+ */
 boolean WiFly::join(const char *ssid, const char *password, bool dhcp, uint8_t mode, uint16_t timeout)
 {
     setSSID(ssid);

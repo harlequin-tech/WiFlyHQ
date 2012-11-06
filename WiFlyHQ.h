@@ -151,6 +151,8 @@ public:
     uint16_t getFlushSize();
     uint16_t getFlushTimeout();
 
+    char getSpaceReplace(void);
+
     char *getHostIP(char *buf, int size);
     uint16_t getHostPort();
 
@@ -165,7 +167,7 @@ public:
     boolean setChannel(uint8_t channel);
     boolean setKey(const char *buf);
     boolean setPassphrase(const char *buf);
-    boolean setSpaceReplace(const char *buf);
+    boolean setSpaceReplace(char ch);
     boolean setDHCP(const uint8_t mode);
     boolean setRate(uint32_t rate);
     boolean setTxPower(uint8_t dBm);
@@ -321,7 +323,7 @@ public:
     boolean finishCommand();
     char *getopt(int opt, char *buf, int size);
     uint32_t getopt(int opt, uint8_t base=DEC);
-    boolean setopt(const prog_char *cmd, const char *buf=NULL, const __FlashStringHelper *buf_P=NULL);
+    boolean setopt(const prog_char *cmd, const char *buf=NULL, const __FlashStringHelper *buf_P=NULL, bool spacesub=false);
     boolean setopt(const prog_char *opt, const uint32_t value, uint8_t base=DEC);
     boolean getres(char *buf, int size);
 
@@ -356,6 +358,8 @@ public:
     Stream *serial;	/* Serial interface to WiFly */
     
     WFDebug debug;	/* Internal debug channel. */
+
+    char replaceChar;	/* The space replacement character */
 
     /*  for dbgDump() */
     char *dbgBuf;
