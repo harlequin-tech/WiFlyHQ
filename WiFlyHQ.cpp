@@ -194,7 +194,16 @@ typedef enum {
     WIFLY_GET_REPLACE	= 27,
 } e_wifly_requests;
 
-/** Convert a unsigned int to a string */
+/**
+ * Convert a unsigned int to a string
+ * @param val the value to convert to a string
+ * @param base format for string; either DEC for decimal or
+ *             HEX for hexidecimal
+ * @param buf the buffer to write the string to
+ * @param size the size of the buffer
+ * @returns number of characters written to the buffer
+ *          not including the null terminator (i.e. size of the string)
+ **/
 static int simple_utoa(uint32_t val, uint8_t base, char *buf, int size)
 {
     char tmpbuf[16];
@@ -1602,7 +1611,13 @@ boolean WiFly::getres(char *buf, int size)
     return false;
 }
 
-/** Set an option to an unsigned integer value */
+/** 
+ * Set an option to an unsigned integer value
+ * @param opt the set command to use (in Flash)
+ * @param value the value to set
+ * @param base the number format; DEC or HEX
+ * @returns true on success, false on failure
+ */
 boolean WiFly::setopt(const prog_char *opt, const uint32_t value, uint8_t base)
 {
     char buf[11];
@@ -1611,7 +1626,16 @@ boolean WiFly::setopt(const prog_char *opt, const uint32_t value, uint8_t base)
 }
 
 
-/* Set an option, confirm ok status */
+/**
+ * Set an option, confirm ok status
+ * The value to set can either be in RAM or in Flash.
+ * @param cmd the set command to use (string in Flash)
+ * @param buf the value to set the option to (string in RAM). Set to NULL if not used.
+ * @param buf_p the value to set the option to (string in Flash). Set to NULL if not used.
+ * @param spacesub set to true to have spaces replaced with the 
+ *        current replacement character
+ * @returns true on success, false on failure
+ */
 boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashStringHelper *buf_P, bool spacesub)
 {
     char rbuf[16];
@@ -1939,7 +1963,7 @@ boolean WiFly::setIOFunc(const uint8_t func)
 
 /**
  * Enable data trigger mode.  This mode will automatically send a new packet based on several conditions:
- * 1. If no characters are send to the WiFly for at least the flushTimeout period.
+ * 1. If no characters are sent to the WiFly for at least the flushTimeout period.
  * 2. If the character defined by flushChar is sent to the WiFly.
  * 3. If the number of characters sent to the WiFly reaches flushSize.
  * @param flushTimeout Send a packet if no more characters are sent within this many milliseconds. Set
@@ -1991,7 +2015,7 @@ boolean WiFly::enableDHCP()
 
 boolean WiFly::setSSID(const char *buf)
 {
-    return setopt(PSTR("set wlan ssid"), buf);
+    return setopt(PSTR("set wlan ssid"), buf, NULL, true);
 }
 
 /** Set the WiFi channel.
