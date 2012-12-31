@@ -77,18 +77,20 @@ Easy handling of multiple receive options with multiMatch_P():
 
 Known Issues
 ------------
+
 Limitations with WiFly RN-XV rev 2.32 firmware
-# Cannot determine the IP address of the TCP client that has connected.
-# Changing the local port does not take effect until after a save and reboot.
-# Closing a TCP connection may not work. Client may stay connected
+1. Cannot determine the IP address of the TCP client that has connected.
+2. Changing the local port does not take effect until after a save and reboot.
+3. Closing a TCP connection may not work. Client may stay connected
    and send additional data. Packet analysis shows that no FIN is sent
    by the WiFly, but it still sends the *CLOS* message back to the
    arduino.
-# Only supports one TCP connection at a time, which means its easy
+4. Only supports one TCP connection at a time, which means its easy
    for a web browser to lock out other users.
-# Changing the flush timeout (set comm time x) does not take affect until 
+5. Changing the flush timeout (set comm time x) does not take affect until 
    after a save and reboot.
 
 To do
 -----
-# Add FTP support.
+
+1. Add FTP support.
