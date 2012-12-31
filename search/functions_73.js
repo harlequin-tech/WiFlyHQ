@@ -1,0 +1,25 @@
+var searchData=
+[
+  ['sendchunk',['sendChunk',['../class_wi_fly.html#a45a7b120975fe4374baceef7cd63c215',1,'WiFly::sendChunk(const char *str)'],['../class_wi_fly.html#ab4b056adb910a69c94fdaa55df1bf670',1,'WiFly::sendChunk(const __FlashStringHelper *str)']]],
+  ['sendchunkln',['sendChunkln',['../class_wi_fly.html#a5525a237b597251c665cb7af250a82af',1,'WiFly::sendChunkln(const char *str)'],['../class_wi_fly.html#a9aa38ac22106b29abb5314d3acf5fa50',1,'WiFly::sendChunkln(const __FlashStringHelper *str)'],['../class_wi_fly.html#a273335cd3b1dc955cd1eafc918f3a714',1,'WiFly::sendChunkln(void)']]],
+  ['sendto',['sendto',['../class_wi_fly.html#a635f8ce5f71b13285cbd3c713b2f19c6',1,'WiFly::sendto(const uint8_t *data, uint16_t size, const char *host, uint16_t port)'],['../class_wi_fly.html#adce62360f898970feda79c0532e6c8cb',1,'WiFly::sendto(const uint8_t *data, uint16_t size, IPAddress host, uint16_t port)'],['../class_wi_fly.html#ac2f152bece511499607f85be35ae3f81',1,'WiFly::sendto(const char *data, const char *host, uint16_t port)'],['../class_wi_fly.html#a76b6ca17daa3d521cfa6ba4354ea72cc',1,'WiFly::sendto(const char *data, IPAddress host, uint16_t port)'],['../class_wi_fly.html#ac89ffe7c1c66f4cfd7a8074ec9ec115a',1,'WiFly::sendto(const __FlashStringHelper *data, const char *host, uint16_t port)'],['../class_wi_fly.html#a1909f3a97604f7e47c4fa113d74d2ba6',1,'WiFly::sendto(const __FlashStringHelper *data, IPAddress host, uint16_t port)']]],
+  ['setadhocbeacon',['setAdhocBeacon',['../class_wi_fly.html#a7f2e7c6d1834ec3cd179dea3733786ca',1,'WiFly']]],
+  ['setadhocprobe',['setAdhocProbe',['../class_wi_fly.html#aedbdb2520f6c3ec621a1c78eec685c68',1,'WiFly']]],
+  ['setbroadcastinterval',['setBroadcastInterval',['../class_wi_fly.html#a74493dbef1319125e8e83fed96f597ea',1,'WiFly']]],
+  ['setchannel',['setChannel',['../class_wi_fly.html#ab6a52d6d0258e487a4bc972f852a7406',1,'WiFly']]],
+  ['setflushchar',['setFlushChar',['../class_wi_fly.html#a4df072b7a2808652f4a802ba45bfa5f9',1,'WiFly']]],
+  ['setflushsize',['setFlushSize',['../class_wi_fly.html#a120a70541f1fac6d70b462607599038d',1,'WiFly']]],
+  ['setflushtimeout',['setFlushTimeout',['../class_wi_fly.html#ae7cdd4d36010ead8a1a49f7d6c7654bc',1,'WiFly']]],
+  ['setftpdefaults',['setFtpDefaults',['../class_wi_fly.html#a2e58e606ea078a949f542d23792303c6',1,'WiFly']]],
+  ['setiofunc',['setIOFunc',['../class_wi_fly.html#a50d5f995521c363ccb090b622a9e7650',1,'WiFly']]],
+  ['setkey',['setKey',['../class_wi_fly.html#acbf5067803dd7e371ae3fcdbb68e7936',1,'WiFly']]],
+  ['setpassphrase',['setPassphrase',['../class_wi_fly.html#a73216bb0fe3d30b076fcf7f7dd02ef7e',1,'WiFly']]],
+  ['setport',['setPort',['../class_wi_fly.html#ab9e31e9faafe941dc2777f023ae332b6',1,'WiFly']]],
+  ['setrate',['setRate',['../class_wi_fly.html#a76a2777a661fcc0f9fe2e568d37e4b8d',1,'WiFly']]],
+  ['setspacereplace',['setSpaceReplace',['../class_wi_fly.html#ae8756d5a967447b844ec4fb4747348b7',1,'WiFly']]],
+  ['settimeaddress',['setTimeAddress',['../class_wi_fly.html#a677c7457fa01700dfed099a5640be163',1,'WiFly']]],
+  ['settimeenable',['setTimeEnable',['../class_wi_fly.html#ac8b3704b10a605f63d2caba603c65680',1,'WiFly']]],
+  ['settimeport',['setTimePort',['../class_wi_fly.html#a20453217520ae24b523c3bfc92096ec8',1,'WiFly']]],
+  ['settimezone',['setTimezone',['../class_wi_fly.html#a48ed5f8e44678412dddab96be9dc339d',1,'WiFly']]],
+  ['settxpower',['setTxPower',['../class_wi_fly.html#a6f5aadd656313daf43ba4335ff4184ac',1,'WiFly']]]
+];
