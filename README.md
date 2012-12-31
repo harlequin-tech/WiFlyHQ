@@ -79,6 +79,7 @@ Known Issues
 ------------
 
 Limitations with WiFly RN-XV rev 2.32 firmware
+
 1. Cannot determine the IP address of the TCP client that has connected.
 2. Changing the local port does not take effect until after a save and reboot.
 3. Closing a TCP connection may not work. Client may stay connected
