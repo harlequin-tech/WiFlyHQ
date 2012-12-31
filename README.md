@@ -4,6 +4,10 @@ The library provides functions for setting up and managing the WiFly module,
 sending UDP packets, opening TCP connections and sending and receiving data
 over the TCP connection.
 
+Doxygen [documentation for WiFlyHQ][dox]
+
+    [dox]: http://harlequin-tech.github.com/WiFlyHQ
+
 Example code to setup and use the hardware serial interface:
 
 	Serial.begin(9600);
