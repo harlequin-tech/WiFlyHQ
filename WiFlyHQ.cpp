@@ -2577,13 +2577,16 @@ boolean WiFly::open(IPAddress addr, int port, boolean block)
     return open(iptoa(addr, buf, sizeof(buf)), port, block);
 }
 
-/** Check to see if there is a tcp connection. */
+/**
+ * Check to see if there is a tcp connection.
+ * @retval true connected
+ * @retval false not connected
+ */
 boolean WiFly::isConnected()
 {
-    if (!connected) {
-	/* Check for a connection */
-	available();
-    }
+    /* Check for a connect or disconnect */
+    available();
+
     return connected;
 }
 
