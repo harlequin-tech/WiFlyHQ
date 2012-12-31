@@ -23,7 +23,7 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
+/**
  * @file WiFly RN-XV Library
  */
 

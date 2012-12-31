@@ -50,6 +50,22 @@
  *
  */
 
+/**
+ * @mainpage WiFlyHQ WiFly RN-XV Arduino library
+ * 
+ * This library provides functions for setting up and managing the WiFly module,
+ * sending UDP packets, opening TCP connections and sending and receiving data
+ * over the TCP connection.
+ * 
+ * @author Harlequin-Tech
+ */ 
+
+/**
+ * @file WiFlyHQ.h
+ *
+ * @brief The WiFly class definition.
+ */
+
 #ifndef _WIFLYHQ_H_
 #define _WIFLYHQ_H_
 
