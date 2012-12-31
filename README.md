@@ -4,9 +4,10 @@ The library provides functions for setting up and managing the WiFly module,
 sending UDP packets, opening TCP connections and sending and receiving data
 over the TCP connection.
 
-Doxygen [documentation for WiFlyHQ][dox]
+Doxygen <a href="http://harlequin-tech.github.com/WiFlyHQ">documentation for WiFlyHQ</a>
 
-    [dox]: http://harlequin-tech.github.com/WiFlyHQ
+Examples
+--------
 
 Example code to setup and use the hardware serial interface:
 
@@ -74,6 +75,8 @@ Easy handling of multiple receive options with multiMatch_P():
 	    }
 	}
 
+Known Issues
+------------
 Limitations with WiFly RN-XV rev 2.32 firmware
 1. Cannot determine the IP address of the TCP client that has connected.
 2. Changing the local port does not take effect until after a save and reboot.
@@ -86,5 +89,6 @@ Limitations with WiFly RN-XV rev 2.32 firmware
 5. Changing the flush timeout (set comm time x) does not take affect until 
    after a save and reboot.
 
-To do:
+To do
+-----
 1. Add FTP support.
