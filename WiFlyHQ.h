@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2012 Darran Hunt (darran [at] hunt dot net dot nz)
+ * Copyright (c) 2012,2013 Darran Hunt (darran [at] hunt dot net dot nz)
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
