@@ -2312,6 +2312,7 @@ boolean WiFly::leave()
 /** Check to see if the WiFly is connected to a wireless network */
 boolean WiFly::isAssociated()
 {
+    getConnection();
     return (status.assoc == 1);
 }
 
