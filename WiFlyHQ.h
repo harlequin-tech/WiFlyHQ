@@ -220,7 +220,10 @@ public:
     boolean disableUdpAutoPair();
 
     boolean setIOFunc(const uint8_t func);
-
+    
+    boolean sleep(uint16_t seconds = NULL);
+    
+    boolean time();
     char *getTime(char *buf, int size);
     uint32_t getUptime();
     uint8_t getTimezone();
