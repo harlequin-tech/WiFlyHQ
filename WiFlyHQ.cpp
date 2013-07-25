@@ -1445,6 +1445,22 @@ uint32_t WiFly::getBaud()
     return getopt(WIFLY_GET_BAUD);
 }
 
+/**
+ * This command sets the real-time clock by synchronizing
+ * with the time server specified with the time server
+ * (set time) parameters. This command sends a UDP time
+ * server request packet.
+ */
+boolean WiFly::time()
+{
+    if (!startCommand()) {
+        return false;
+    }
+    send_P(PSTR("time\r"));
+    finishCommand();
+    return true;
+}
+
 char *WiFly::getTime(char *buf, int size)
 {
     return getopt(WIFLY_GET_TIME, buf, size);
