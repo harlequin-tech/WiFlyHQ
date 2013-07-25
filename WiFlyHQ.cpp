@@ -1445,6 +1445,42 @@ uint32_t WiFly::getBaud()
     return getopt(WIFLY_GET_BAUD);
 }
 
+/**
+ * This command puts the module to sleep. You can wake
+ * the module by sending characters over the UART or by
+ * using the wake timer (supplied in seconds).
+ */
+boolean WiFly::sleep(uint16_t seconds)
+{
+    if (seconds != NULL) {
+        if(!setopt(PSTR("set sys wake"), seconds)) {
+            return false;
+        }
+    }
+    if (!startCommand()) {
+        return false;
+    }
+    send_P(PSTR("sleep\r"));
+    inCommandMode = false;
+    return true;
+}
+
+/**
+ * This command sets the real-time clock by synchronizing
+ * with the time server specified with the time server
+ * (set time) parameters. This command sends a UDP time
+ * server request packet.
+ */
+boolean WiFly::time()
+{
+    if (!startCommand()) {
+        return false;
+    }
+    send_P(PSTR("time\r"));
+    finishCommand();
+    return true;
+}
+
 char *WiFly::getTime(char *buf, int size)
 {
     return getopt(WIFLY_GET_TIME, buf, size);
