@@ -260,8 +260,8 @@ public:
     void enableHostRestore();
     void disableHostRestore();
 
-    boolean open(const char *addr, int port=80, boolean block=true);
-    boolean open(IPAddress addr, int port=80, boolean block=true);
+    boolean open(const char *addr, uint16_t port=80, boolean block=true);
+    boolean open(IPAddress addr, uint16_t port=80, boolean block=true);
     boolean close();
     boolean openComplete();
     boolean isConnected();
