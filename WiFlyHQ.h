@@ -74,6 +74,10 @@
 #include <avr/pgmspace.h>
 #include <IPAddress.h>
 
+#if (ARDUINO >= 103)
+typedef char prog_char;
+#endif
+
 /* IP Protocol bits */
 #define WIFLY_PROTOCOL_UDP		0x01
 #define WIFLY_PROTOCOL_TCP		0x02

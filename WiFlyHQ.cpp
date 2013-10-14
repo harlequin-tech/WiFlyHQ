@@ -1563,7 +1563,7 @@ int8_t WiFly::getDHCPMode()
     return mode;
 }
 
-static struct {
+const static struct {
     uint8_t protocol;
     char name[6];
 } protmap[] __attribute__((__progmem__)) = {
@@ -2131,7 +2131,7 @@ char WiFly::getSpaceReplace(void)
 }
 
 /* data rates to register setting */
-static struct {
+const static struct {
     uint32_t rate;
     uint8_t setting;
 } rateMap[] __attribute__((__progmem__)) = {
