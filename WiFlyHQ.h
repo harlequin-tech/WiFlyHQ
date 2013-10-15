@@ -75,7 +75,7 @@
 #include <IPAddress.h>
 
 #if (ARDUINO >= 103)
-typedef char prog_char;
+typedef const char PROGMEM prog_char;
 #endif
 
 /* IP Protocol bits */
@@ -161,6 +161,7 @@ public:
 
     bool setJoin(uint8_t join);
     boolean setDeviceID(const char *buf);
+    boolean setDeviceID(const __FlashStringHelper *buf);
     boolean setBaud(uint32_t baud);
     uint32_t getBaud();
     uint8_t getUartMode();

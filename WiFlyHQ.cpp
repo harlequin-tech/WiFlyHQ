@@ -1781,6 +1781,11 @@ boolean WiFly::factoryRestore()
     return res;
 }
 
+boolean WiFly::setDeviceID(const __FlashStringHelper *buf)
+{
+    return setopt(PSTR("set o d"), NULL, buf);
+}
+
 boolean WiFly::setDeviceID(const char *buf)
 {
     return setopt(PSTR("set o d"), buf);
