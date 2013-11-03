@@ -529,7 +529,7 @@ boolean WiFly::checkStream(const prog_char *str, boolean peeked)
     next = pgm_read_byte(str++);
     while (readTimeout(&peekBuf[peekHead]),50) {
 	if (peekBuf[peekHead] != next) {
-	    if (++peekHead > sizeof(peekBuf)) {
+	    if (++peekHead >= sizeof(peekBuf)) {
 		peekHead = 0;
 	    }
 	    peekCount++;
@@ -538,7 +538,7 @@ boolean WiFly::checkStream(const prog_char *str, boolean peeked)
 	    }
 	    break;
 	}
-	if (++peekHead > sizeof(peekBuf)) {
+	if (++peekHead >= sizeof(peekBuf)) {
 	    peekHead = 0;
 	}
 	peekCount++;
@@ -600,7 +600,7 @@ int WiFly::read()
     /* Any data in peek buffer? */
     if (peekCount) {
 	data = (uint8_t)peekBuf[peekTail++];
-	if (peekTail > sizeof(peekBuf)) {
+	if (peekTail >= sizeof(peekBuf)) {
 	    peekTail = 0;
 	}
 	peekCount--;
@@ -612,7 +612,7 @@ int WiFly::read()
 		return -1;
 	    } else {
 		data = (uint8_t)peekBuf[peekTail++];
-		if (peekTail > sizeof(peekBuf)) {
+		if (peekTail >= sizeof(peekBuf)) {
 		    peekTail = 0;
 		}
 		peekCount--;
