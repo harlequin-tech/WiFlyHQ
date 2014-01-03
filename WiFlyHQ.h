@@ -226,7 +226,7 @@ public:
 
     boolean setIOFunc(const uint8_t func);
     
-    boolean sleep(uint16_t seconds = NULL);
+    boolean sleep(uint16_t seconds = 0);
     
     boolean time();
     char *getTime(char *buf, int size);

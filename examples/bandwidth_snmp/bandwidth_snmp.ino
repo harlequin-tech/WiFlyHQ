@@ -50,7 +50,7 @@ char buf[WF_MAX_MSG_SIZE];
 char str[32];
 
 /* SNMP Message */
-struct { 
+struct snmp_s { 
     uint8_t buf[WF_MAX_MSG_SIZE];
     size_t size;
 } snmp_ifInOctets;
@@ -69,8 +69,8 @@ uint8_t msglen = sizeof(buf);
 		     ((uint32_t)((uint8_t *)&data)[2]) << 8 | \
 		     (uint32_t)((uint8_t *)&data)[3])
 
-const char mySSID[] = "my_ssid";
-const char myPassword[] = "my_wpa_password";
+const char mySSID[] = "tht100";
+const char myPassword[] = "free29pwd#3";
 
 uint16_t ind=0; // input buffer index
 
@@ -106,6 +106,9 @@ void setup()
 
     wifly.setDeviceID(F("WiFly-Bandwidth"));
     wifly.setHostIP(F("192.168.1.1"));		// Address of router
+    wifly.setHostPort(161);			// SNMP UDP port
+    wifly.setUartMode(WIFLY_UART_MODE_DATA_TRIGGER);
+    wifly.save();
 
     /* Build an SNMP request for the IF_MIB ifInOctets count for interface 2 (eth0).
      * This is the total number of bytes that have been received
