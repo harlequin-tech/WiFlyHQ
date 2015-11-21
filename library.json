@@ -1,5 +1,5 @@
 {
-  "name": "Arduino-WiFlyHQ",
+  "name": "WiFlyHQ",
   "keywords": "wifi, wi-fi, wifly, http, web, server, client",
   "description": "The library provides functions for setting up and managing the WiFly module (Roving Networks WiFly RN-XV), sending UDP packets, opening TCP connections and sending and receiving data over the TCP connection",
   "repository":
@@ -7,5 +7,7 @@
     "type": "git",
     "url": "https://github.com/harlequin-tech/WiFlyHQ.git"
   },
-  "exclude": "doxygen"
+  "exclude": "doxygen",
+  "frameworks": "arduino",
+  "platforms": "atmelavr"
 }
