@@ -2563,7 +2563,7 @@ boolean WiFly::open(const char *addr, uint16_t port, boolean block)
     if (!getPrompt()) {
 	debug.println(F("Failed to get prompt"));
 	debug.println(F("WiFly has crashed and will reboot..."));
-	while (1); /* wait for the reboot */
+	asm volatile ("jmp 0"); /* wait for the reboot */
 	return false;
     }
 
