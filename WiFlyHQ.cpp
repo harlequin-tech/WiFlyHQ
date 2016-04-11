@@ -44,37 +44,37 @@ extern void *__brkval;
 #define DPRINTLN(item)
 #endif
 
-#define WIFLY_STATUS_TCP_MASK 		0x000F
-#define WIFLY_STATUS_TCP_OFFSET		0
-#define WIFLY_STATUS_ASSOC_MASK 	0x0001
-#define WIFLY_STATUS_ASSOC_OFFSET	4
-#define WIFLY_STATUS_AUTHEN_MASK 	0x0001
-#define WIFLY_STATUS_AUTHEN_OFFSET	5
-#define WIFLY_STATUS_DNS_SERVER_MASK	0x0001
-#define WIFLY_STATUS_DNS_SERVER_OFFSET	6
-#define WIFLY_STATUS_DNS_FOUND_MASK	0x0001
-#define WIFLY_STATUS_DNS_FOUND_OFFSET	7
-#define WIFLY_STATUS_CHAN_MASK 		0x000F
-#define WIFLY_STATUS_CHAN_OFFSET	9
+#define WIFLY_STATUS_TCP_MASK          0x000F
+#define WIFLY_STATUS_TCP_OFFSET        0
+#define WIFLY_STATUS_ASSOC_MASK        0x0001
+#define WIFLY_STATUS_ASSOC_OFFSET      4
+#define WIFLY_STATUS_AUTHEN_MASK       0x0001
+#define WIFLY_STATUS_AUTHEN_OFFSET     5
+#define WIFLY_STATUS_DNS_SERVER_MASK   0x0001
+#define WIFLY_STATUS_DNS_SERVER_OFFSET 6
+#define WIFLY_STATUS_DNS_FOUND_MASK    0x0001
+#define WIFLY_STATUS_DNS_FOUND_OFFSET  7
+#define WIFLY_STATUS_CHAN_MASK         0x000F
+#define WIFLY_STATUS_CHAN_OFFSET       9
 
-#define WIFLY_TCP_IDLE		0
-#define WIFLY_TCP_CONNECTED	1
-#define WIFLY_TCP_NOIP		3
-#define WIFLY_TCP_CONNECTING	4
+#define WIFLY_TCP_IDLE        0
+#define WIFLY_TCP_CONNECTED   1
+#define WIFLY_TCP_NOIP        3
+#define WIFLY_TCP_CONNECTING  4
 
 /* WiFi data rates */
-#define WIFLY_RATE_1MBPS	0
-#define WIFLY_RATE_2MBPS	1
-#define WIFLY_RATE_5_5MBPS	2	/* 5.5 MBps */
-#define WIFLY_RATE_6MBPS	8
-#define WIFLY_RATE_9MBPS	9
-#define WIFLY_RATE_11MBPS	3
-#define WIFLY_RATE_12MBPS	10
-#define WIFLY_RATE_18MBPS	11
-#define WIFLY_RATE_24MBPS	12	/* Default */
-#define WIFLY_RATE_36MBPS	13
-#define WIFLY_RATE_48MBPS	14
-#define WIFLY_RATE_54MBPS	15
+#define WIFLY_RATE_1MBPS    0
+#define WIFLY_RATE_2MBPS    1
+#define WIFLY_RATE_5_5MBPS  2    /* 5.5 MBps */
+#define WIFLY_RATE_6MBPS    8
+#define WIFLY_RATE_9MBPS    9
+#define WIFLY_RATE_11MBPS   3
+#define WIFLY_RATE_12MBPS   10
+#define WIFLY_RATE_18MBPS   11
+#define WIFLY_RATE_24MBPS   12    /* Default */
+#define WIFLY_RATE_36MBPS   13
+#define WIFLY_RATE_48MBPS   14
+#define WIFLY_RATE_54MBPS   15
 
 /* Work around a bug with PROGMEM and PSTR where the compiler always
  * generates warnings.
@@ -132,66 +132,66 @@ static struct {
     const prog_char *req;
     const prog_char *resp;
 } requests[] = {
-    { req_GetIP,	resp_IP },	 /* 0 */
-    { req_GetIP,	resp_NM },	 /* 1 */
-    { req_GetIP,	resp_GW },	 /* 2 */
-    { req_GetMAC,	resp_MAC },	 /* 3 */
-    { req_GetWLAN,	resp_SSID },	 /* 4 */
-    { req_GetOpt,	resp_DeviceID }, /* 5 */
-    { req_GetUart,	resp_Baud }, 	 /* 6 */
-    { req_ShowTime,	resp_Time }, 	 /* 7 */
-    { req_ShowTime,	resp_Uptime }, 	 /* 8 */
-    { req_GetTime,	resp_Zone }, 	 /* 9 */
-    { req_GetDNS,	resp_DNSAddr },	 /* 10 */
-    { req_ShowTimeT,	resp_RTC },	 /* 11 */
-    { req_GetIP,	resp_DHCP },	 /* 12 */
-    { req_GetUart,	resp_Mode },	 /* 13 */
-    { req_GetComm,	resp_FlushTimeout }, /* 14 */
-    { req_GetComm,	resp_FlushChar }, /* 15 */
-    { req_GetComm,	resp_FlushSize }, /* 16 */
-    { req_GetRSSI,	resp_RSSI },	 /* 17 */
-    { req_GetIP,	resp_Flags },	 /* 18 */
-    { req_GetIP,	resp_Host },	 /* 19 */
-    { req_GetIP,	resp_Protocol }, /* 20 */
-    { req_GetAdhoc,	resp_Beacon },   /* 21 */
-    { req_GetAdhoc,	resp_Probe },    /* 22 */
-    { req_GetAdhoc,	resp_Reboot },   /* 23 */
-    { req_GetWLAN,	resp_Join },	 /* 24 */
-    { req_GetWLAN,	resp_Rate },	 /* 25 */
-    { req_GetWLAN,	resp_Power },	 /* 26 */
-    { req_GetOpt,	resp_Replace },	 /* 27 */
+    { req_GetIP,     resp_IP },           /* 0 */
+    { req_GetIP,     resp_NM },           /* 1 */
+    { req_GetIP,     resp_GW },           /* 2 */
+    { req_GetMAC,    resp_MAC },          /* 3 */
+    { req_GetWLAN,   resp_SSID },         /* 4 */
+    { req_GetOpt,    resp_DeviceID },     /* 5 */
+    { req_GetUart,   resp_Baud },         /* 6 */
+    { req_ShowTime,  resp_Time },         /* 7 */
+    { req_ShowTime,  resp_Uptime },       /* 8 */
+    { req_GetTime,   resp_Zone },         /* 9 */
+    { req_GetDNS,    resp_DNSAddr },      /* 10 */
+    { req_ShowTimeT, resp_RTC },          /* 11 */
+    { req_GetIP,     resp_DHCP },         /* 12 */
+    { req_GetUart,   resp_Mode },         /* 13 */
+    { req_GetComm,   resp_FlushTimeout }, /* 14 */
+    { req_GetComm,   resp_FlushChar },    /* 15 */
+    { req_GetComm,   resp_FlushSize },    /* 16 */
+    { req_GetRSSI,   resp_RSSI },         /* 17 */
+    { req_GetIP,     resp_Flags },        /* 18 */
+    { req_GetIP,     resp_Host },         /* 19 */
+    { req_GetIP,     resp_Protocol },     /* 20 */
+    { req_GetAdhoc,  resp_Beacon },       /* 21 */
+    { req_GetAdhoc,  resp_Probe },        /* 22 */
+    { req_GetAdhoc,  resp_Reboot },       /* 23 */
+    { req_GetWLAN,   resp_Join },         /* 24 */
+    { req_GetWLAN,   resp_Rate },         /* 25 */
+    { req_GetWLAN,   resp_Power },        /* 26 */
+    { req_GetOpt,    resp_Replace },      /* 27 */
 };
 
 /* Request indices, must match table above */
 typedef enum {
-    WIFLY_GET_IP	= 0,
-    WIFLY_GET_NETMASK	= 1,
-    WIFLY_GET_GATEWAY	= 2,
-    WIFLY_GET_MAC	= 3,
-    WIFLY_GET_SSID	= 4,
-    WIFLY_GET_DEVICEID	= 5,
-    WIFLY_GET_BAUD	= 6,
-    WIFLY_GET_TIME	= 7,
-    WIFLY_GET_UPTIME	= 8,
-    WIFLY_GET_ZONE	= 9,
-    WIFLY_GET_DNS	= 10,
-    WIFLY_GET_RTC	= 11,
-    WIFLY_GET_DHCP	= 12,
-    WIFLY_GET_UART_MODE	= 13,
+    WIFLY_GET_IP           = 0,
+    WIFLY_GET_NETMASK      = 1,
+    WIFLY_GET_GATEWAY      = 2,
+    WIFLY_GET_MAC          = 3,
+    WIFLY_GET_SSID         = 4,
+    WIFLY_GET_DEVICEID     = 5,
+    WIFLY_GET_BAUD         = 6,
+    WIFLY_GET_TIME         = 7,
+    WIFLY_GET_UPTIME       = 8,
+    WIFLY_GET_ZONE         = 9,
+    WIFLY_GET_DNS          = 10,
+    WIFLY_GET_RTC          = 11,
+    WIFLY_GET_DHCP         = 12,
+    WIFLY_GET_UART_MODE    = 13,
     WIFLY_GET_FLUSHTIMEOUT = 14,
-    WIFLY_GET_FLUSHCHAR	= 15,
-    WIFLY_GET_FLUSHSIZE	= 16,
-    WIFLY_GET_RSSI	= 17,
-    WIFLY_GET_IP_FLAGS	= 18,
-    WIFLY_GET_HOST	= 19,
-    WIFLY_GET_PROTOCOL	= 20,
-    WIFLY_GET_BEACON	= 21,
-    WIFLY_GET_PROBE	= 22,
-    WIFLY_GET_REBOOT	= 23,
-    WIFLY_GET_JOIN	= 24,
-    WIFLY_GET_RATE	= 25,
-    WIFLY_GET_POWER	= 26,
-    WIFLY_GET_REPLACE	= 27,
+    WIFLY_GET_FLUSHCHAR    = 15,
+    WIFLY_GET_FLUSHSIZE    = 16,
+    WIFLY_GET_RSSI         = 17,
+    WIFLY_GET_IP_FLAGS     = 18,
+    WIFLY_GET_HOST         = 19,
+    WIFLY_GET_PROTOCOL     = 20,
+    WIFLY_GET_BEACON       = 21,
+    WIFLY_GET_PROBE        = 22,
+    WIFLY_GET_REBOOT       = 23,
+    WIFLY_GET_JOIN         = 24,
+    WIFLY_GET_RATE         = 25,
+    WIFLY_GET_POWER        = 26,
+    WIFLY_GET_REPLACE      = 27,
 } e_wifly_requests;
 
 /**
@@ -212,25 +212,25 @@ static int simple_utoa(uint32_t val, uint8_t base, char *buf, int size)
     int fsize=0;
 
     if (base == DEC) {
-	do {
-	    nval = val / 10;
-	    tmpbuf[ind++] = '0' + val - (nval * 10);
-	    val = nval;
-	} while (val);
+        do {
+            nval = val / 10;
+            tmpbuf[ind++] = '0' + val - (nval * 10);
+            val = nval;
+        } while (val);
     } else {
-	do {
-	    nval = val & 0x0F;
-	    tmpbuf[ind++] = nval + ((nval < 10) ? '0' : 'A');
-	    val >>= 4;
-	} while (val);
-	tmpbuf[ind++] = 'x';
-	tmpbuf[ind++] = '0';
+        do {
+            nval = val & 0x0F;
+            tmpbuf[ind++] = nval + ((nval < 10) ? '0' : 'A');
+            val >>= 4;
+        } while (val);
+        tmpbuf[ind++] = 'x';
+        tmpbuf[ind++] = '0';
     }
 
     ind--;
 
     do {
-	buf[fsize++] = tmpbuf[ind];
+        buf[fsize++] = tmpbuf[ind];
     } while ((ind-- > 0) && (fsize < (size-1)));
     buf[fsize] = '\0';
 
@@ -245,18 +245,18 @@ static uint32_t atoh(char *buf)
     bool gotX = false;
 
     while ((ch=*buf++) != 0) {
-	if (ch >= '0' && ch <= '9') {
-	    res = (res << 4) + ch - '0';
-	} else if (ch >= 'a' && ch <= 'f') {
-	    res = (res << 4) + ch - 'a' + 10;
-	} else if (ch >= 'A' && ch <= 'F') {
-	    res = (res << 4) + ch - 'A' + 10;
-	} else if ((ch == 'x') && !gotX) {
-	    /* Ignore 0x at start */
-	    gotX = true;
-	} else {
-	    break;
-	}
+        if (ch >= '0' && ch <= '9') {
+            res = (res << 4) + ch - '0';
+        } else if (ch >= 'a' && ch <= 'f') {
+            res = (res << 4) + ch - 'a' + 10;
+        } else if (ch >= 'A' && ch <= 'F') {
+            res = (res << 4) + ch - 'A' + 10;
+        } else if ((ch == 'x') && !gotX) {
+            /* Ignore 0x at start */
+            gotX = true;
+        } else {
+            break;
+        }
     }
 
     return res;
@@ -268,11 +268,11 @@ static uint32_t atou(const char *buf)
     uint32_t res=0;
 
     while (*buf) {
-	if ((*buf < '0') || (*buf > '9')) {
-	    break;
-	}
-	res = res * 10 + *buf - '0';
-	buf++;
+        if ((*buf < '0') || (*buf > '9')) {
+            break;
+        }
+        res = res * 10 + *buf - '0';
+        buf++;
     }
 
     return res;
@@ -291,10 +291,10 @@ char *WiFly::iptoa(IPAddress addr, char *buf, int size)
     uint8_t ind;
 
     for (ind=0; ind<3; ind++) {
-	fsize += simple_utoa(addr[ind], 10, &buf[fsize], size-fsize);
-	if (fsize < (size-1)) {
-	    buf[fsize++] = '.';
-	}
+        fsize += simple_utoa(addr[ind], 10, &buf[fsize], size-fsize);
+        if (fsize < (size-1)) {
+            buf[fsize++] = '.';
+        }
     }
     simple_utoa(addr[ind], 10, &buf[fsize], size-fsize);
     return buf;
@@ -311,11 +311,11 @@ IPAddress WiFly::atoip(char *buf)
     IPAddress ip;
 
     for (uint8_t ind=0; ind<3; ind++) {
-	ip[ind] = atou(buf);
-	while (*buf >= '0'  && *buf <= '9') {
-	    buf++;
-	}
-	if (*buf == '\0') break;
+        ip[ind] = atou(buf);
+        while (*buf >= '0'  && *buf <= '9') {
+            buf++;
+        }
+        if (*buf == '\0') break;
     }
 
     return ip;
@@ -353,13 +353,13 @@ void WiFly::init()
     lastHost[0] = 0;
 
     if (!setopt(PSTR("set u m 1"), (char *)NULL)) {
-	debug.println(F("Failed to turn off echo"));
+        debug.println(F("Failed to turn off echo"));
     }
     if (!setopt(PSTR("set sys printlvl 0"), (char *)NULL)) {
-	debug.println(F("Failed to turn off sys print"));
+        debug.println(F("Failed to turn off sys print"));
     }
     if (!setopt(PSTR("set comm remote 0"), (char *)NULL)) {
-	debug.println(F("Failed to set comm remote"));
+        debug.println(F("Failed to set comm remote"));
     }
 
     /* update connection status */
@@ -392,15 +392,15 @@ boolean WiFly::begin(Stream *serialdev, Stream *debugPrint)
     serial = serialdev;
 
     if (!enterCommandMode()) {
-	debug.println(F("Failed to enter command mode"));
-	return false;
+        debug.println(F("Failed to enter command mode"));
+        return false;
     }
 
     init();
 
     if (!exitCommandMode()) {
-	debug.println(F("Failed to exit command mode"));
-	return false;
+        debug.println(F("Failed to exit command mode"));
+        return false;
     }
 
     return true;
@@ -414,11 +414,11 @@ int WiFly::getFreeMemory()
 {
     int free;
 
-    if ((int)__brkval == 0)
-	free = ((int)&free) - ((int)&__bss_end);
-    else
-	free = ((int)&free) - ((int)__brkval);
-
+    if ((int)__brkval == 0) {
+        free = ((int)&free) - ((int)&__bss_end);
+    } else {
+        free = ((int)&free) - ((int)__brkval);
+    }
     return free;
 }
 
@@ -442,7 +442,7 @@ void WiFly::flushRx(int timeout)
 size_t WiFly::write(uint8_t byte)
 {
     if (dbgInd < dbgMax) {
-	dbgBuf[dbgInd++] = byte;
+        dbgBuf[dbgInd++] = byte;
     }
     return serial->write(byte);
 }
@@ -452,9 +452,9 @@ size_t WiFly::write(uint8_t byte)
  * feed them back to the user.
  */
 static char peekBuf[8];
-static uint8_t peekHead = 0;	/* head of buffer; new characters stored here */
-static uint8_t peekTail = 0;	/* Tail of buffer; characters read from here */
-static uint8_t peekCount = 0;	/* Number of characters in peek buffer */
+static uint8_t peekHead = 0;    /* head of buffer; new characters stored here */
+static uint8_t peekTail = 0;    /* Tail of buffer; characters read from here */
+static uint8_t peekCount = 0;    /* Number of characters in peek buffer */
 
 /**
  * Return the next byte that a read() would return, but leave the
@@ -493,66 +493,66 @@ boolean WiFly::checkStream(const prog_char *str, boolean peeked)
 #endif
 
     if (peekCount > 0) {
-	uint8_t ind=0;
-	if (peeked) {
-	    str++;
-	    ind = 1;
-	}
-	for (; ind<peekCount; ind++) {
-	    uint8_t pind = peekTail + ind;
-	    next = pgm_read_byte(str++);
+        uint8_t ind=0;
+        if (peeked) {
+            str++;
+            ind = 1;
+        }
+        for (; ind<peekCount; ind++) {
+            uint8_t pind = peekTail + ind;
+            next = pgm_read_byte(str++);
 
-	    if (next == '\0') {
-		/* Done - got a match */
-		peekCount = 0; // discard peeked bytes
-		peekTail = 0;
-		peekHead = 0;
-		return true;
-	    }
+            if (next == '\0') {
+                /* Done - got a match */
+                peekCount = 0; // discard peeked bytes
+                peekTail = 0;
+                peekHead = 0;
+                return true;
+            }
 
-	    if (pind > sizeof(peekBuf)) {
-		pind = 0;
-	    }
-	    if (peekBuf[pind] != next) {
-		/* Not a match */
-		return false;
-	    }
-	    /* peeked characters match */
-	}
+            if (pind > sizeof(peekBuf)) {
+                pind = 0;
+            }
+            if (peekBuf[pind] != next) {
+                /* Not a match */
+                return false;
+            }
+            /* peeked characters match */
+        }
 
-	/* string matched so far, keep reading */
+        /* string matched so far, keep reading */
     } else if (!peeked) {
-	/* Already read and matched the first character before being called */
-	str++;
+        /* Already read and matched the first character before being called */
+        str++;
     }
 
     next = pgm_read_byte(str++);
     while (readTimeout(&peekBuf[peekHead]),50) {
-	if (peekBuf[peekHead] != next) {
-	    if (++peekHead >= sizeof(peekBuf)) {
-		peekHead = 0;
-	    }
-	    peekCount++;
-	    if (peekCount > sizeof(peekBuf)) {
-		debug.println(F("ERROR peek.1 buffer overlow"));
-	    }
-	    break;
-	}
-	if (++peekHead >= sizeof(peekBuf)) {
-	    peekHead = 0;
-	}
-	peekCount++;
-	if (peekCount > sizeof(peekBuf)) {
-	    debug.println(F("ERROR peek.2 buffer overlow"));
-	}
-	next = pgm_read_byte(str++);
-	if (next == '\0') {
-	    /* Done - got a match */
-	    peekCount = 0; // discard peeked bytes
-	    peekTail = 0;
-	    peekHead = 0;
-	    return true;
-	}
+        if (peekBuf[peekHead] != next) {
+            if (++peekHead >= sizeof(peekBuf)) {
+                peekHead = 0;
+            }
+            peekCount++;
+            if (peekCount > sizeof(peekBuf)) {
+                debug.println(F("ERROR peek.1 buffer overlow"));
+            }
+            break;
+        }
+        if (++peekHead >= sizeof(peekBuf)) {
+            peekHead = 0;
+        }
+        peekCount++;
+        if (peekCount > sizeof(peekBuf)) {
+            debug.println(F("ERROR peek.2 buffer overlow"));
+        }
+        next = pgm_read_byte(str++);
+        if (next == '\0') {
+            /* Done - got a match */
+            peekCount = 0; // discard peeked bytes
+            peekTail = 0;
+            peekHead = 0;
+            return true;
+        }
     }
 
     return false;
@@ -567,9 +567,9 @@ boolean WiFly::checkStream(const prog_char *str, boolean peeked)
 boolean WiFly::checkClose(boolean peeked)
 {
     if (checkStream(PSTR("*CLOS*"), peeked)) {
-	connected = false;
-	DPRINTLN(F("Stream closed"));
-	return true;
+        connected = false;
+        DPRINTLN(F("Stream closed"));
+        return true;
     }
     return false;
 }
@@ -582,9 +582,9 @@ boolean WiFly::checkClose(boolean peeked)
 boolean WiFly::checkOpen(boolean peeked)
 {
     if (checkStream(PSTR("*OPEN*"), peeked)) {
-	connected = true;
-	DPRINTLN(F("Stream opened"));
-	return true;
+        connected = true;
+        DPRINTLN(F("Stream opened"));
+        return true;
     }
     return false;
 }
@@ -599,25 +599,25 @@ int WiFly::read()
 
     /* Any data in peek buffer? */
     if (peekCount) {
-	data = (uint8_t)peekBuf[peekTail++];
-	if (peekTail >= sizeof(peekBuf)) {
-	    peekTail = 0;
-	}
-	peekCount--;
+        data = (uint8_t)peekBuf[peekTail++];
+        if (peekTail >= sizeof(peekBuf)) {
+            peekTail = 0;
+        }
+        peekCount--;
     } else {
-	data = serial->read();
-	/* TCP connected? Check for close */
-	if (connected && data == '*') {
-	    if (checkClose(false)) {
-		return -1;
-	    } else {
-		data = (uint8_t)peekBuf[peekTail++];
-		if (peekTail >= sizeof(peekBuf)) {
-		    peekTail = 0;
-		}
-		peekCount--;
-	    }
-	}
+        data = serial->read();
+        /* TCP connected? Check for close */
+        if (connected && data == '*') {
+            if (checkClose(false)) {
+                return -1;
+            } else {
+                data = (uint8_t)peekBuf[peekTail++];
+                if (peekTail >= sizeof(peekBuf)) {
+                    peekTail = 0;
+                }
+                peekCount--;
+            }
+        }
     }
 
     return data;
@@ -635,23 +635,23 @@ int WiFly::available()
 
     count = serial->available();
     if (count > 0) {
-	if (debugOn) {
-	    debug.print(F("available: peek = "));
-	    debug.println((char)serial->peek());
-	}
-	/* Check for TCP stream closure */
-	if (serial->peek() == '*') {
-	    if (connected) {
-		if (checkClose(true)) {
-		    return -1;
-		} else {
-		    return peekCount + serial->available();
-		}
-	    } else {
-		checkOpen(true);
-		return peekCount + serial->available();
-	    }
-	}
+        if (debugOn) {
+            debug.print(F("available: peek = "));
+            debug.println((char)serial->peek());
+        }
+        /* Check for TCP stream closure */
+        if (serial->peek() == '*') {
+            if (connected) {
+                if (checkClose(true)) {
+                    return -1;
+                } else {
+                    return peekCount + serial->available();
+                }
+            } else {
+                checkOpen(true);
+                return peekCount + serial->available();
+            }
+        }
     }
 
     return count+peekCount;
@@ -667,9 +667,9 @@ void WiFly::flush()
 void WiFly::dump(const char *str)
 {
     while (*str) {
-	debug.print(*str,HEX);
-	debug.print(' ');
-	str++;
+        debug.print(*str,HEX);
+        debug.print(' ');
+        str++;
     }
     debug.println();
 }
@@ -705,7 +705,7 @@ void WiFly::send_P(const prog_char *str)
 void WiFly::dbgBegin(int size)
 {
     if (dbgBuf != NULL) {
-	free(dbgBuf);
+        free(dbgBuf);
     }
     dbgBuf = (char *)malloc(size);
     dbgInd = 0;
@@ -716,8 +716,8 @@ void WiFly::dbgBegin(int size)
 void WiFly::dbgEnd()
 {
     if (dbgBuf != NULL) {
-	free(dbgBuf);
-	dbgBuf = NULL;
+        free(dbgBuf);
+        dbgBuf = NULL;
     }
     dbgInd = 0;
     dbgMax = 0;
@@ -729,21 +729,21 @@ void WiFly::dbgDump()
     int ind;
 
     if (dbgBuf == NULL) {
-	return;
+        return;
     }
 
     if (dbgInd > 0) {
-	debug.println(F("debug dump"));
-	for (ind=0; ind<dbgInd; ind++) {
-	    debug.print(ind);
-	    debug.print(F(": "));
-	    debug.print(dbgBuf[ind],HEX);
-	    if (isprint(dbgBuf[ind])) {
-		debug.print(' ');
-		debug.print(dbgBuf[ind]);
-	    }
-	    debug.println();
-	}
+        debug.println(F("debug dump"));
+        for (ind=0; ind<dbgInd; ind++) {
+            debug.print(ind);
+            debug.print(F(": "));
+            debug.print(dbgBuf[ind],HEX);
+            if (isprint(dbgBuf[ind])) {
+                debug.print(' ');
+                debug.print(dbgBuf[ind]);
+            }
+            debug.println();
+        }
     }
     free(dbgBuf);
     dbgBuf = NULL;
@@ -765,28 +765,28 @@ boolean WiFly::readTimeout(char *chp, uint16_t timeout)
     static int ind=0;
 
     while (millis() - start < timeout) {
-	if (serial->available() > 0) {
-	    ch = serial->read();
-	    *chp = ch;
-	    if (dbgInd < dbgMax) {
-		dbgBuf[dbgInd++] = ch;
-	    }
-	    if (debugOn) {
-		debug.print(ind++);
-		debug.print(F(": "));
-		debug.print(ch,HEX);
-		if (isprint(ch)) {
-		    debug.print(' ');
-		    debug.print(ch);
-		}
-		debug.println();
-	    }
-	    return true;
-	}
+        if (serial->available() > 0) {
+            ch = serial->read();
+            *chp = ch;
+            if (dbgInd < dbgMax) {
+                dbgBuf[dbgInd++] = ch;
+            }
+            if (debugOn) {
+                debug.print(ind++);
+                debug.print(F(": "));
+                debug.print(ch,HEX);
+                if (isprint(ch)) {
+                    debug.print(' ');
+                    debug.print(ch);
+                }
+                debug.println();
+            }
+            return true;
+        }
     }
 
     if (debugOn) {
-	debug.println(F("readTimeout - timed out"));
+        debug.println(F("readTimeout - timed out"));
     }
 
     return false;
@@ -803,40 +803,40 @@ boolean WiFly::setPrompt()
     char ch;
 
     while (readTimeout(&ch,500)) {
-	if (ch == '<') {
-	    uint8_t ind = 1;
-	    prompt[0] = ch;
-	    while (ind < (sizeof(prompt)-4)) {
-		if (readTimeout(&ch,500)) {
-		    prompt[ind++] = ch;
-		    if (ch == '>') {
-			if (readTimeout(&ch,500)) {
-			    if (ch == ' ') {
-				prompt[ind++] = ch;
-				//prompt[ind++] = '\r';
-				//prompt[ind++] = '\n';
-				prompt[ind] = 0;
-				DPRINT(F("setPrompt: ")); DPRINT(prompt); DPRINT("\n\r");
-				gotPrompt = true;
-				gets(NULL,0);
-				return true;
-			    } else {
-				/* wrong character */
-				return false;
-			    }
-			} else {
-			    /* timeout */
-			    return false;
-			}
-		    }
-		} else {
-		    /* timeout */
-		    return false;
-		}
-	    }
+        if (ch == '<') {
+            uint8_t ind = 1;
+            prompt[0] = ch;
+            while (ind < (sizeof(prompt)-4)) {
+                if (readTimeout(&ch,500)) {
+                    prompt[ind++] = ch;
+                    if (ch == '>') {
+                        if (readTimeout(&ch,500)) {
+                            if (ch == ' ') {
+                                prompt[ind++] = ch;
+                                //prompt[ind++] = '\r';
+                                //prompt[ind++] = '\n';
+                                prompt[ind] = 0;
+                                DPRINT(F("setPrompt: ")); DPRINT(prompt); DPRINT("\n\r");
+                                gotPrompt = true;
+                                gets(NULL,0);
+                                return true;
+                            } else {
+                                /* wrong character */
+                                return false;
+                            }
+                        } else {
+                            /* timeout */
+                            return false;
+                        }
+                    }
+                } else {
+                    /* timeout */
+                    return false;
+                }
+            }
 
-	    return false;
-	}
+            return false;
+        }
     }
 
     return false;
@@ -846,9 +846,9 @@ boolean WiFly::setPrompt()
 boolean WiFly::checkPrompt(const char *str)
 {
     if (strstr(str, prompt) != NULL) {
-	return true;
+        return true;
     } else {
-	return false;
+        return false;
     }
 }
 
@@ -869,29 +869,29 @@ boolean WiFly::match(const char *str, uint16_t timeout)
 
 #ifdef DEBUG
     if (debugOn) {
-	debug.print(F("match: "));
-	debug.println(str);
+        debug.print(F("match: "));
+        debug.println(str);
     }
 #endif
 
     if ((match == NULL) || (*match == '\0')) {
-	return true;
+        return true;
     }
 
     /* find first character */
     while (readTimeout(&ch,timeout)) {
-	if (ch == *match) {
-	    match++;
-	} else {
-	    match = str;
-	    if (ch == *match) {
-		match++;
-	    }
-	}
-	if (*match == '\0') {
-	    DPRINT(F("match: true\n\r"));
-	    return true;
-	}
+        if (ch == *match) {
+            match++;
+        } else {
+            match = str;
+            if (ch == *match) {
+                match++;
+            }
+        }
+        if (*match == '\0') {
+            DPRINT(F("match: true\n\r"));
+            return true;
+        }
     }
 
     DPRINT(F("match: false\n\r"));
@@ -914,32 +914,32 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
     char ch, ch_P;
 
     if (debugOn) {
-	debug.print(F("match_P: "));
-	debug.println((const __FlashStringHelper *)str);
+        debug.print(F("match_P: "));
+        debug.println((const __FlashStringHelper *)str);
     }
 
     ch_P = pgm_read_byte(match);
     if (ch_P == '\0') {
-	/* Null string always matches */
-	return true;
+        /* Null string always matches */
+        return true;
     }
 
     while (readTimeout(&ch,timeout)) {
-	if (ch == ch_P) {
-	    match++;
-	} else {
-	    /* Restart match */
-	    match = str;
-	    if (ch == pgm_read_byte(match)) {
-		match++;
-	    }
-	}
+        if (ch == ch_P) {
+            match++;
+        } else {
+            /* Restart match */
+            match = str;
+            if (ch == pgm_read_byte(match)) {
+                match++;
+            }
+        }
 
-	ch_P = pgm_read_byte(match);
-	if (ch_P == '\0') {
-	    DPRINT(F("match_P: true\n\r"));
-	    return true;
-	}
+        ch_P = pgm_read_byte(match);
+        if (ch_P == '\0') {
+            DPRINT(F("match_P: true\n\r"));
+            return true;
+        }
     }
 
     DPRINT(F("match_P: false\n\r"));
@@ -968,11 +968,11 @@ int WiFly::multiMatch_P(uint16_t timeout, uint8_t count, ...)
     va_start(ap, count);
 
     if (count > 20) {
-	count = 20;
+        count = 20;
     }
 
     for (ind=0; ind<count; ind++) {
-	str[ind] = va_arg(ap, const prog_char *);
+        str[ind] = va_arg(ap, const prog_char *);
     }
     va_end(ap);
 
@@ -993,43 +993,43 @@ int WiFly::multiMatch_P(uint16_t timeout, uint8_t count, ...)
 int8_t WiFly::multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeout)
 {
     struct {
-	bool active;
-	const prog_char *str;
+        bool active;
+        const prog_char *str;
     } match[count];
     char ch, ch_P;
     uint8_t ind;
 
     for (ind=0; ind<count; ind++) {
-	match[ind].active = false;
-	match[ind].str = str[ind];
-	if (debugOn) {
-	    debug.print(F("multiMatch_P: "));
-	    debug.print(ind);
-	    debug.print(' ');
-	    debug.println((const __FlashStringHelper *)str[ind]);
-	}
+        match[ind].active = false;
+        match[ind].str = str[ind];
+        if (debugOn) {
+            debug.print(F("multiMatch_P: "));
+            debug.print(ind);
+            debug.print(' ');
+            debug.println((const __FlashStringHelper *)str[ind]);
+        }
     }
 
     while (readTimeout(&ch,timeout)) {
-	for (ind=0; ind<count; ind++) {
-	    ch_P = pgm_read_byte(match[ind].str);
-	    if (ch == ch_P) {
-		match[ind].str++;
-	    } else {
-		/* Restart match */
-		match[ind].str = str[ind];
-		/* unmatched character might be the start of the string */
-		if (ch == pgm_read_byte(match[ind].str)) {
-		    match[ind].str++;
-		}
-	    }
+        for (ind=0; ind<count; ind++) {
+            ch_P = pgm_read_byte(match[ind].str);
+            if (ch == ch_P) {
+                match[ind].str++;
+            } else {
+                /* Restart match */
+                match[ind].str = str[ind];
+                /* unmatched character might be the start of the string */
+                if (ch == pgm_read_byte(match[ind].str)) {
+                    match[ind].str++;
+                }
+            }
 
-	    if (pgm_read_byte(match[ind].str) == '\0') {
-		/* Got a match */
-		DPRINTLN(F("multiMatch_P: true"));
-		return ind;
-	    }
-	}
+            if (pgm_read_byte(match[ind].str) == '\0') {
+                /* Got a match */
+                DPRINTLN(F("multiMatch_P: true"));
+                return ind;
+            }
+        }
     }
 
     DPRINTLN(F("multiMatch_P: failed"));
@@ -1065,15 +1065,15 @@ boolean WiFly::getPrompt(uint16_t timeout)
     boolean res;
 
     if (!gotPrompt) {
-	DPRINT(F("setPrompt\n\r"));
+        DPRINT(F("setPrompt\n\r"));
 
-	res = setPrompt();
-	if (!res) {
-	    debug.println(F("setPrompt failed"));
-	}
+        res = setPrompt();
+        if (!res) {
+            debug.println(F("setPrompt failed"));
+        }
     } else {
-	DPRINT(F("getPrompt \"")); DPRINT(prompt); DPRINT("\"\n\r");
-	res = match(prompt, timeout);
+        DPRINT(F("getPrompt \"")); DPRINT(prompt); DPRINT("\"\n\r");
+        res = match(prompt, timeout);
     }
     return res;
 }
@@ -1084,46 +1084,46 @@ boolean WiFly::enterCommandMode()
     uint8_t retry;
 
     if (inCommandMode) {
-	return true;
+        return true;
     }
 
     delay(250);
     send_P(PSTR("$$$"));
     delay(250);
     if (match_P(PSTR("CMD\r\n"), 500)) {
-	/* Get the prompt */
-	if (gotPrompt) {
-	    inCommandMode = true;
-	    return true;
-	} else {
-	    for (retry=0; retry < 5; retry++) {
-		serial->write('\r');
-		if (getPrompt()) {
-		    inCommandMode = true;
-		    return true;
-		}
-	    }
-	}
+        /* Get the prompt */
+        if (gotPrompt) {
+            inCommandMode = true;
+            return true;
+        } else {
+            for (retry=0; retry < 5; retry++) {
+                serial->write('\r');
+                if (getPrompt()) {
+                    inCommandMode = true;
+                    return true;
+                }
+            }
+        }
     }
 
     /* See if we're already in command mode */
     DPRINT(F("Check in command mode\n\r"));
     serial->write('\r');
     if (getPrompt()) {
-	inCommandMode = true;
-	DPRINT(F("Already in command mode\n\r"));
-	return true;
+        inCommandMode = true;
+        DPRINT(F("Already in command mode\n\r"));
+        return true;
     }
 
     for (retry=0; retry<5; retry++) {
-	DPRINT(F("send $$$ ")); DPRINT(retry); DPRINT("\n\r");
-	delay(250);
-	send_P(PSTR("$$$"));
-	delay(250);
-	if (match_P(PSTR("CMD\r\n"), 500)) {
-	    inCommandMode = true;
-	    return true;
-	}
+        DPRINT(F("send $$$ ")); DPRINT(retry); DPRINT("\n\r");
+        delay(250);
+        send_P(PSTR("$$$"));
+        delay(250);
+        if (match_P(PSTR("CMD\r\n"), 500)) {
+            inCommandMode = true;
+            return true;
+        }
     }
 
     return false;
@@ -1133,17 +1133,17 @@ boolean WiFly::enterCommandMode()
 boolean WiFly::exitCommandMode()
 {
     if (!inCommandMode) {
-	return true;
+        return true;
     }
 
     send_P(PSTR("exit\r"));
 
     if (match_P(PSTR("EXIT\r\n"), 500)) {
-	inCommandMode = false;
-	return true;
+        inCommandMode = false;
+        return true;
     } else {
-	debug.println(F("Failed to exit\n\r"));
-	return false;
+        debug.println(F("Failed to exit\n\r"));
+        return false;
     }
 }
 
@@ -1155,21 +1155,21 @@ int WiFly::getsTerm(char *buf, int size, char term, uint16_t timeout)
     DPRINTLN(F("getsTerm:"));
 
     while (readTimeout(&ch, timeout)) {
-	if (ch == term) {
-	    if (buf) {
-		buf[ind] = 0;
-	    }
-	    return ind;
-	}
+        if (ch == term) {
+            if (buf) {
+                buf[ind] = 0;
+            }
+            return ind;
+        }
 
-	/* Truncate to buffer size */
-	if ((ind < (size-1)) && buf) {
-	    buf[ind++] = ch;
-	}
+        /* Truncate to buffer size */
+        if ((ind < (size-1)) && buf) {
+            buf[ind++] = ch;
+        }
     }
 
     if (buf) {
-	buf[ind] = 0;
+    buf[ind] = 0;
     }
     return 0;
 }
@@ -1192,31 +1192,31 @@ int WiFly::gets(char *buf, int size, uint16_t timeout)
     DPRINTLN(F("gets:"));
 
     while (readTimeout(&ch, timeout)) {
-	if (ch == '\r') {
-	    readTimeout(&ch, timeout);
-	    if (ch == '\n') {
-		if (buf) {
-		    buf[ind] = 0;
-		}
-		return ind;
-	    }
-	    if (buf) {
-		if (ind < (size-2)) {
-		    buf[ind++] = '\r';
-		    buf[ind++] = ch;
-		} else if (ind < (size - 1)) {
-		    buf[ind++] = '\r';
-		}
-	    }
-	}
-	/* Truncate to buffer size */
-	if ((ind < (size-1)) && buf) {
-	    buf[ind++] = ch;
-	}
+        if (ch == '\r') {
+            readTimeout(&ch, timeout);
+            if (ch == '\n') {
+                if (buf) {
+                    buf[ind] = 0;
+                }
+                return ind;
+            }
+            if (buf) {
+                if (ind < (size-2)) {
+                    buf[ind++] = '\r';
+                    buf[ind++] = ch;
+                } else if (ind < (size - 1)) {
+                    buf[ind++] = '\r';
+                }
+            }
+        }
+        /* Truncate to buffer size */
+        if ((ind < (size-1)) && buf) {
+            buf[ind++] = ch;
+        }
     }
 
     if (buf) {
-	buf[ind] = 0;
+        buf[ind] = 0;
     }
     return 0;
 }
@@ -1225,15 +1225,15 @@ int WiFly::gets(char *buf, int size, uint16_t timeout)
 boolean WiFly::startCommand()
 {
     if (!inCommandMode) {
-	if (!enterCommandMode()) {
-	    return false;
-	}
-	/* If we're already in command mode, then we don't exit it in finishCommand().
-	 * This is an optimisation to avoid switching in and out of command mode 
-	 * when using several commands to implement another command.
-	 */
+        if (!enterCommandMode()) {
+            return false;
+        }
     } else {
-	DPRINT(F("Already in command mode\n\r"));
+        /* If we're already in command mode, then we don't exit it in finishCommand().
+         * This is an optimisation to avoid switching in and out of command mode 
+         * when using several commands to implement another command.
+         */
+        DPRINT(F("Already in command mode\n\r"));
     }
     exitCommand++;
     return true;
@@ -1243,7 +1243,7 @@ boolean WiFly::startCommand()
 boolean WiFly::finishCommand()
 {
     if (--exitCommand == 0) {
-	return exitCommandMode();
+        return exitCommandMode();
     }
     return true;
 }
@@ -1252,16 +1252,16 @@ boolean WiFly::finishCommand()
 char *WiFly::getopt(int opt, char *buf, int size)
 {
     if (startCommand()) {
-	send_P(requests[opt].req);
+        send_P(requests[opt].req);
 
-	if (match_P(requests[opt].resp, 500)) {
-	    gets(buf, size);
-	    getPrompt();
-	    finishCommand();
-	    return buf;
-	}
+        if (match_P(requests[opt].resp, 500)) {
+            gets(buf, size);
+            getPrompt();
+            finishCommand();
+            return buf;
+        }
 
-	finishCommand();
+        finishCommand();
     }
     return (char *)"<error>";
 }
@@ -1274,8 +1274,8 @@ uint16_t WiFly::getConnection()
     int len;
 
     if (!startCommand()) {
-	debug.println(F("getCon: failed to start"));
-	return 0;
+        debug.println(F("getCon: failed to start"));
+        return 0;
     }
     //dbgBegin(256);
 
@@ -1285,16 +1285,16 @@ uint16_t WiFly::getConnection()
     len = gets(buf, sizeof(buf));
 
     if (checkPrompt(buf)) {
-	/* Got prompt first */
-	len = gets(buf, sizeof(buf));
+        /* Got prompt first */
+        len = gets(buf, sizeof(buf));
     } else {
-	getPrompt();
+        getPrompt();
     }
 
     if (len <= 4) {
-	res = (uint16_t)atoh(buf);
+        res = (uint16_t)atoh(buf);
     } else {
-	res = (uint16_t)atoh(&buf[len-4]);
+        res = (uint16_t)atoh(&buf[len-4]);
     }
 
     status.tcp = (res >> WIFLY_STATUS_TCP_OFFSET) & WIFLY_STATUS_TCP_MASK;
@@ -1307,11 +1307,11 @@ uint16_t WiFly::getConnection()
     finishCommand();
 
     if (status.tcp == WIFLY_TCP_CONNECTED) {
-	connected = true;
-	if (debugOn) debug.println(F("getCon: TCP connected"));
+        connected = true;
+        if (debugOn) debug.println(F("getCon: TCP connected"));
     } else {
-	connected = false;
-	if (debugOn) debug.println(F("getCon: TCP disconnected"));
+        connected = false;
+        if (debugOn) debug.println(F("getCon: TCP disconnected"));
     }
 
     return res;
@@ -1322,10 +1322,10 @@ char *WiFly::getIP(char *buf, int size)
 {
     char *chp = buf;
     if (getopt(WIFLY_GET_IP, buf, size)) {
-	/* Trim off port */
-	while (*chp && *chp != ':') {
-	    chp++;
-	}
+        /* Trim off port */
+        while (*chp && *chp != ':') {
+            chp++;
+        }
     }
     *chp = '\0';
 
@@ -1339,14 +1339,14 @@ uint16_t WiFly::getPort()
     uint8_t ind;
 
     if (getopt(WIFLY_GET_IP, buf, sizeof(buf))) {
-	/* Trim off IP */
-	for (ind=0;  buf[ind]; ind++) {
-	    if (buf[ind] == ':') {
-		ind++;
-		break;
-	    }
-	}
-	return (uint16_t)atou(&buf[ind]);
+        /* Trim off IP */
+        for (ind=0;  buf[ind]; ind++) {
+            if (buf[ind] == ':') {
+            ind++;
+            break;
+            }
+        }
+        return (uint16_t)atou(&buf[ind]);
     }
     return 0;
 }
@@ -1356,10 +1356,10 @@ char *WiFly::getHostIP(char *buf, int size)
 {
     char *chp = buf;
     if (getopt(WIFLY_GET_HOST, buf, size)) {
-	/* Trim off port */
-	while (*chp && *chp != ':') {
-	    chp++;
-	}
+        /* Trim off port */
+        while (*chp && *chp != ':') {
+            chp++;
+        }
     }
     *chp = '\0';
 
@@ -1373,14 +1373,14 @@ uint16_t WiFly::getHostPort()
     uint8_t ind;
 
     if (getopt(WIFLY_GET_HOST, buf, sizeof(buf))) {
-	/* Trim off IP */
-	for (ind=0;  buf[ind]; ind++) {
-	    if (buf[ind] == ':') {
-		ind++;
-		break;
-	    }
-	}
-	return (uint16_t)atou(&buf[ind]);
+        /* Trim off IP */
+        for (ind=0;  buf[ind]; ind++) {
+            if (buf[ind] == ':') {
+                ind++;
+                break;
+            }
+        }
+        return (uint16_t)atou(&buf[ind]);
     }
     return 0;
 }
@@ -1425,13 +1425,13 @@ uint32_t WiFly::getopt(int opt, uint8_t base)
     char buf[11];
 
     if (!getopt(opt, buf, sizeof(buf))) {
-	return 0;
+        return 0;
     }
 
     if (base == DEC) {
-	return atou(buf);
+        return atou(buf);
     } else {
-	return atoh(buf);
+        return atoh(buf);
     }
 }
 
@@ -1501,21 +1501,21 @@ uint32_t WiFly::getRTC()
 bool WiFly::getHostByName(const char *hostname, char *buf, int size)
 {
     if (startCommand()) {
-	send_P(PSTR("lookup "));
-	send(hostname);
-	send("\r");
+    send_P(PSTR("lookup "));
+    send(hostname);
+    send("\r");
 
-	if (match(hostname, 5000)) {
-	    char ch;
-	    readTimeout(&ch);	// discard '='
-	    gets(buf, size);
-	    getPrompt();
-	    finishCommand();
-	    return true;
-	}
+    if (match(hostname, 5000)) {
+        char ch;
+        readTimeout(&ch);    // discard '='
+        gets(buf, size);
+        getPrompt();
+        finishCommand();
+        return true;
+    }
 
-	getPrompt();
-	finishCommand();
+    getPrompt();
+    finishCommand();
     }
 
     /* lookup failed */
@@ -1543,21 +1543,21 @@ int8_t WiFly::getDHCPMode()
     int8_t mode;
 
     if (!getopt(WIFLY_GET_DHCP, buf, sizeof(buf))) {
-	return -1;
+        return -1;
     }
 
     if (strncmp_P(buf, PSTR("OFF"), 3) == 0) {
-	mode = 0;
+        mode = 0;
     } else if (strncmp_P(buf, PSTR("ON"), 2) == 0) {
-	mode = 1;
+        mode = 1;
     } else if (strncmp_P(buf, PSTR("AUTOIP"), 6) == 0) {
-	mode = 2;
+        mode = 2;
     } else if (strncmp_P(buf, PSTR("CACHE"), 5) == 0) {
-	mode = 3;
+        mode = 3;
     } else if (strncmp_P(buf, PSTR("SERVER"), 6) == 0) {
-	mode = 4;
+        mode = 4;
     } else {
-	mode = -1;	// unknown
+        mode = -1;    // unknown
     }
     
     return mode;
@@ -1567,13 +1567,13 @@ const static struct {
     uint8_t protocol;
     char name[6];
 } protmap[] __attribute__((__progmem__)) = {
-    { WIFLY_PROTOCOL_UDP,	 "UDP," },
-    { WIFLY_PROTOCOL_TCP, 	 "TCP," },
-    { WIFLY_PROTOCOL_SECURE, 	 "SECUR" },
+    { WIFLY_PROTOCOL_UDP,     "UDP," },
+    { WIFLY_PROTOCOL_TCP,      "TCP," },
+    { WIFLY_PROTOCOL_SECURE,      "SECUR" },
     { WIFLY_PROTOCOL_TCP_CLIENT, "TCP_C" },
-    { WIFLY_PROTOCOL_HTTP, 	 "HTTP," },
-    { WIFLY_PROTOCOL_RAW, 	 "RAW," },
-    { WIFLY_PROTOCOL_SMTP, 	 "SMTP," }
+    { WIFLY_PROTOCOL_HTTP,      "HTTP," },
+    { WIFLY_PROTOCOL_RAW,      "RAW," },
+    { WIFLY_PROTOCOL_SMTP,      "SMTP," }
 };
 
 uint8_t WiFly::getProtocol()
@@ -1582,13 +1582,13 @@ uint8_t WiFly::getProtocol()
     int8_t prot=0;
 
     if (!getopt(WIFLY_GET_PROTOCOL, buf, sizeof(buf))) {
-	return -1;
+        return -1;
     }
 
     for (uint8_t ind=0; ind < (sizeof(protmap)/sizeof(protmap[0])); ind++) {
-	  if (strstr_P(buf, protmap[ind].name) != NULL) {
-	      prot |= pgm_read_byte(&protmap[ind].protocol);
-	  }
+        if (strstr_P(buf, protmap[ind].name) != NULL) {
+            prot |= pgm_read_byte(&protmap[ind].protocol);
+        }
     }
 
     return prot;
@@ -1624,8 +1624,8 @@ const prog_char res_ERR[] PROGMEM = "ERR: ";
 boolean WiFly::getres(char *buf, int size)
 {
     const prog_char *setResult[] = {
-	PSTR("ERR: "),
-	PSTR("AOK\r\n")
+        PSTR("ERR: "),
+        PSTR("AOK\r\n")
     };
     int8_t res;
 
@@ -1634,15 +1634,15 @@ boolean WiFly::getres(char *buf, int size)
     res = multiMatch_P(setResult, 2);
 
     if (res == 1) {
-	return true;
+        return true;
     } else if (res == 0) {
-	gets(buf, size);
-	debug.print(F("ERR: "));
-	debug.println(buf);
+        gets(buf, size);
+        debug.print(F("ERR: "));
+        debug.println(buf);
     } else {
-	/* timeout */
-	DPRINTLN(F("timeout"));
-	strncpy_P(buf, PSTR("<timeout>"), size);
+        /* timeout */
+        DPRINTLN(F("timeout"));
+        strncpy_P(buf, PSTR("<timeout>"), size);
     }
     return false;
 }
@@ -1678,40 +1678,40 @@ boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashString
     boolean res;
 
     if (!startCommand()) {
-	return false;
+        return false;
     }
 
     send_P(cmd);
     if (buf_P != NULL) {
-	send(' ');
-	if (spacesub) {
-	    const prog_char *str = (const prog_char *)buf_P;
-	    char ch;
-	    while ((ch = pgm_read_byte(str++)) != 0) {
-		if (ch == ' ') {
-		    write(replaceChar);
-		} else {
-		    write(ch);
-		}
-	    }
-	} else {
-	    send_P((const prog_char *)buf_P);
-	}
+        send(' ');
+        if (spacesub) {
+            const prog_char *str = (const prog_char *)buf_P;
+            char ch;
+            while ((ch = pgm_read_byte(str++)) != 0) {
+                if (ch == ' ') {
+                    write(replaceChar);
+                } else {
+                    write(ch);
+                }
+            }
+        } else {
+            send_P((const prog_char *)buf_P);
+        }
     } else if (buf != NULL) {
-	send(' ');
-	if (spacesub) {
-	    const char *str = buf;
-	    char ch;
-	    /* spaces must be replaced */
-	    while ((ch = *str++) != 0) {
-		if (ch == ' ') {
-		    write(replaceChar);
-		} else {
-		    write(ch);
-		}
-	    }
-	} else {
-	    send(buf);
+        send(' ');
+        if (spacesub) {
+            const char *str = buf;
+            char ch;
+            /* spaces must be replaced */
+            while ((ch = *str++) != 0) {
+                if (ch == ' ') {
+                    write(replaceChar);
+                } else {
+                    write(ch);
+                }
+            }
+        } else {
+            send(buf);
         }
     }
     send('\r');
@@ -1729,12 +1729,12 @@ boolean WiFly::save()
     bool res = false;
 
     if (!startCommand()) {
-	return false;
+        return false;
     }
     send_P(PSTR("save\r"));
     if (match_P(PSTR("Storing"))) {
-	getPrompt();
-	res = true;
+        getPrompt();
+        res = true;
     }
 
     finishCommand();
@@ -1747,12 +1747,12 @@ boolean WiFly::save()
 boolean WiFly::reboot()
 {
     if (!startCommand()) {
-	return false;
+        return false;
     }
     send_P(PSTR("reboot\r"));
     if (!match_P(PSTR("*Reboot*"))) {
-	finishCommand();
-	return false;
+        finishCommand();
+        return false;
     }
 
     delay(5000);
@@ -1769,12 +1769,12 @@ boolean WiFly::factoryRestore()
     bool res = false;
 
     if (!startCommand()) {
-	return false;
+        return false;
     }
     send_P(PSTR("factory RESTORE\r"));
     if (match_P(PSTR("Set Factory Defaults"))) {
-	getPrompt();
-	res = true;
+        getPrompt();
+        res = true;
     }
 
     finishCommand();
@@ -1846,8 +1846,8 @@ boolean WiFly::setHost(const char *buf, uint16_t port)
     bool res;
 
     if (!startCommand()) {
-	debug.println(F("SetHost: failed to start command"));
-	return false;
+        debug.println(F("SetHost: failed to start command"));
+        return false;
     }
 
     res = setHostIP(buf);
@@ -1883,7 +1883,7 @@ boolean WiFly::setDHCP(const uint8_t mode)
     char buf[2];
 
     if (mode > 9) {
-	return false;
+        return false;
     }
 
     buf[0] = '0' + mode;
@@ -2003,8 +2003,8 @@ boolean WiFly::setFlushChar(const char flushChar)
 boolean WiFly::setFlushSize(uint16_t size)
 {
     if (size > 1460) {
-	/* Maximum size */
-	size = 1460;
+        /* Maximum size */
+        size = 1460;
     }
 
     return setopt(PSTR("set comm size"), size);
@@ -2080,7 +2080,7 @@ boolean WiFly::setSSID(const char *buf)
 boolean WiFly::setChannel(uint8_t channel)
 {
     if (channel > 13) {
-	channel = 13;
+        channel = 13;
     }
     return setopt(PSTR("set wlan chan"), channel);
 }
@@ -2091,13 +2091,13 @@ boolean WiFly::setKey(const char *buf)
     boolean res;
 
     if ((buf[1] == 'x') || (buf[1] == 'X')) {
-	/* Skip over the 0x leader */
-	buf += 2;
+        /* Skip over the 0x leader */
+        buf += 2;
     }
 
     res = setopt(PSTR("set wlan key"), buf);
 
-    hide();	/* hide the key */
+    hide();    /* hide the key */
     return res;
 }
 
@@ -2114,7 +2114,7 @@ boolean WiFly::setPassphrase(const char *buf)
     boolean res;
     res = setopt(PSTR("set wlan phrase"), buf, NULL, true);
 
-    hide();	/* hide the key */
+    hide();    /* hide the key */
     return res;
 }
 
@@ -2168,10 +2168,10 @@ boolean WiFly::setRate(uint32_t rate)
     uint8_t setting = WIFLY_RATE_54MBPS;
 
     for (uint8_t ind=0; ind < (sizeof(rateMap)/sizeof(rateMap[0])); ind++) {
-	if (rate <= pgm_read_dword(&rateMap[ind].rate)) {
-	    setting = pgm_read_byte(&rateMap[ind].setting);
-	    break;
-	}
+        if (rate <= pgm_read_dword(&rateMap[ind].rate)) {
+            setting = pgm_read_byte(&rateMap[ind].setting);
+            break;
+        }
     }
     return setopt(PSTR("set wlan rate"), setting);
 }
@@ -2187,12 +2187,12 @@ uint32_t WiFly::getRate()
     debug.print("rate: "); debug.println(rate);
 
     for (uint8_t ind=0; ind < (sizeof(rateMap)/sizeof(rateMap[0])); ind++) {
-	if (rate == pgm_read_byte(&rateMap[ind].setting)) {
-	    return pgm_read_dword(&rateMap[ind].rate);
-	}
+        if (rate == pgm_read_byte(&rateMap[ind].setting)) {
+            return pgm_read_dword(&rateMap[ind].rate);
+        }
     }
 
-    return 0;	/* Unknown */
+    return 0;    /* Unknown */
 }
 
 /**
@@ -2204,7 +2204,7 @@ uint32_t WiFly::getRate()
 boolean WiFly::setTxPower(uint8_t dBm)
 {
     if (dBm > 12) {
-	dBm = 12;
+        dBm = 12;
     }
     return setopt(PSTR("set wlan tx"), dBm);
 }
@@ -2217,8 +2217,8 @@ uint8_t WiFly::getTxPower()
 {
     uint8_t power = getopt(WIFLY_GET_POWER);
     if (power == 0) {
-	/* 0 means max power, or 12 dBm */
-	power = 12;
+        /* 0 means max power, or 12 dBm */
+        power = 12;
     }
     return power;
 }
@@ -2268,17 +2268,17 @@ boolean WiFly::join(const char *ssid, uint16_t timeout)
 {
     int8_t res;
     const prog_char *joinResult[] = {
-	PSTR("FAILED"),
-	PSTR("Associated!")
+        PSTR("FAILED"),
+        PSTR("Associated!")
     };
 
     if (!startCommand()) {
-	return false;
+        return false;
     }
 
     send_P(PSTR("join "));
     if (ssid != NULL) {
-	send(ssid);
+        send(ssid);
     }
     send_P(PSTR("\r"));
 
@@ -2286,14 +2286,14 @@ boolean WiFly::join(const char *ssid, uint16_t timeout)
     flushRx(100);
     if (res == 1) {
         status.assoc = 1;
-	if (dhcp) {
-	    // need some time to complete DHCP request
-	    match_P(PSTR("GW="), 15000);
-	    flushRx(100);
-	}
-	gets(NULL,0);
-	finishCommand();
-	return true;
+        if (dhcp) {
+            // need some time to complete DHCP request
+            match_P(PSTR("GW="), 15000);
+            flushRx(100);
+        }
+        gets(NULL,0);
+        finishCommand();
+        return true;
     }
 
     finishCommand();
@@ -2322,13 +2322,13 @@ boolean WiFly::join(const char *ssid, const char *password, bool dhcp, uint8_t m
 {
     setSSID(ssid);
     if (mode == WIFLY_MODE_WPA) {
-	setPassphrase(password);
+        setPassphrase(password);
     } else {
-	setKey(password);
+        setKey(password);
     }
 
     if (dhcp) {
-	enableDHCP();
+        enableDHCP();
     }
 
     return join(ssid, timeout);
@@ -2366,8 +2366,8 @@ boolean WiFly::setBaud(uint32_t baud)
     /* Go into command mode, since "set uart instant" will exit command mode */
     startCommand();
     if (setopt(PSTR("set u i"), buf)) {
-	//serial->begin(baud);		// Sketch will need to do this
-	return true;
+        //serial->begin(baud);        // Sketch will need to do this
+        return true;
     }
     return false;
 }
@@ -2378,20 +2378,20 @@ boolean WiFly::isDotQuad(const char *addr)
     uint32_t value;
 
     for (uint8_t ind=0; ind<3; ind++) {
-	value  = atou(addr);
-	if (value > 255) {
-	    return false;
-	}
-	while (*addr >= '0'  && *addr <= '9') {
-	    addr++;
-	}
-	if (ind == 3) {
-	    /* Got a match if this is the end of the string */
-	    return *addr == '\0';
-	}
-	if (*addr != '.') {
-	    return false;
-	}
+        value  = atou(addr);
+        if (value > 255) {
+            return false;
+        }
+        while (*addr >= '0'  && *addr <= '9') {
+            addr++;
+        }
+        if (ind == 3) {
+            /* Got a match if this is the end of the string */
+            return *addr == '\0';
+        }
+        if (*addr != '.') {
+            return false;
+        }
     }
 
     return false;
@@ -2468,11 +2468,11 @@ boolean WiFly::ping(const char *host)
     const char *addr = host;
 
     if (!isDotQuad(host)) {
-	/* do a DNS lookup to get the IP address */
-	if (!getHostByName(host, ip, sizeof(ip))) {
-	    return false;
-	}
-	addr = ip;
+        /* do a DNS lookup to get the IP address */
+        if (!getHostByName(host, ip, sizeof(ip))) {
+            return false;
+        }
+        addr = ip;
     }
 
     startCommand();
@@ -2483,15 +2483,15 @@ boolean WiFly::ping(const char *host)
     match_P(PSTR("Ping try"));
     gets(NULL,0);
     if (!getPrompt()) {
-	finishCommand();
-	return false;
+        finishCommand();
+        return false;
     }
 
     if (match_P(PSTR("64 bytes"), 5000)) {
-	gets(NULL,0);
-	gets(NULL,0, 5000);
-	finishCommand();
-	return true;
+        gets(NULL,0);
+        gets(NULL,0, 5000);
+        finishCommand();
+        return true;
     }
 
     finishCommand();
@@ -2541,15 +2541,15 @@ boolean WiFly::open(const char *addr, uint16_t port, boolean block)
     char ch;
 
     if (connecting) {
-	/* an open is already in progress */
-	return false;
+        /* an open is already in progress */
+        return false;
     }
 
     startCommand();
 
     /* Already connected? Close the connection first */
     if (connected) {
-	close();
+        close();
     }
 
     simple_utoa(port, 10, buf, sizeof(buf));
@@ -2561,54 +2561,53 @@ boolean WiFly::open(const char *addr, uint16_t port, boolean block)
     send_P(PSTR("\r"));
 
     if (!getPrompt()) {
-	debug.println(F("Failed to get prompt"));
-	debug.println(F("WiFly has crashed and will reboot..."));
-	while (1); /* wait for the reboot */
-	return false;
+        debug.println(F("Failed to get prompt"));
+        debug.println(F("WiFly has crashed and will reboot..."));
+        while (1); /* wait for the reboot */
+        return false;
     }
 
     if (!block) {
-	/* Non-blocking connect, user will poll for result */
-	connecting = true;
-	return true;
+        /* Non-blocking connect, user will poll for result */
+        connecting = true;
+        return true;
     }
 
     /* Expect "*OPEN*" or "Connect FAILED" */
 
     while (readTimeout(&ch,10000)) {
-	switch (ch) {
-	case '*':
-	    if (match_P(PSTR("OPEN*"))) {
-		DPRINT(F("Connected\n\r"));
-		connected = true;
-		/* successful connection exits command mode */
-		inCommandMode = false;
-		return true;
-	    } else {
-		finishCommand();
-		return false;
-	    }
-	    break;
-	case 'C': {
-		buf[0] = ch;
-		gets(&buf[1], sizeof(buf)-1);
-		debug.print(F("Failed to connect: ")); debug.println(buf);
-		finishCommand();
-		return false;
-	    }
-
-	default:
-	    if (debugOn) {
-		debug.print(F("Unexpected char: "));
-		debug.print(ch,HEX);
-		if (isprint(ch)) {
-		    debug.print(' ');
-		    debug.print(ch);
-		}
-		debug.println();
-	    }
-	    break;
-	}
+        switch (ch) {
+        case '*':
+            if (match_P(PSTR("OPEN*"))) {
+                DPRINT(F("Connected\n\r"));
+                connected = true;
+                /* successful connection exits command mode */
+                inCommandMode = false;
+                return true;
+            } else {
+                finishCommand();
+                return false;
+            }
+            break;
+        case 'C': 
+            buf[0] = ch;
+            gets(&buf[1], sizeof(buf)-1);
+            debug.print(F("Failed to connect: ")); debug.println(buf);
+            finishCommand();
+            return false;
+            break;
+        default:
+            if (debugOn) {
+                debug.print(F("Unexpected char: "));
+                debug.print(ch,HEX);
+                if (isprint(ch)) {
+                    debug.print(' ');
+                    debug.print(ch);
+                }
+                debug.println();
+            }
+            break;
+        }
     }
 
     debug.println(F("<timeout>"));
@@ -2662,45 +2661,45 @@ boolean WiFly::sendto(
     bool restore = true;
 
     if (!startCommand()) {
-	debug.println(F("sendto: failed to start command"));
-	return false;
+        debug.println(F("sendto: failed to start command"));
+        return false;
     }
 
     if (udpAutoPair || (port != lastPort) || (strcmp(host, lastHost) != 0)) {
-	setHost(host,port);
-	if (!restoreHost) {
-	    /* Keep a copy of this for reference for the next call */
-	    lastPort = port;
-	    strncpy(lastHost, host, sizeof(lastHost));
-	    restore = false;
-	}
+        setHost(host,port);
+        if (!restoreHost) {
+            /* Keep a copy of this for reference for the next call */
+            lastPort = port;
+            strncpy(lastHost, host, sizeof(lastHost));
+            restore = false;
+        }
 #ifdef DEBUG
-	debug.print(F("sendto: set host and port "));
-	debug.print(host); debug.print(':'); debug.println(port);
+        debug.print(F("sendto: set host and port "));
+        debug.print(host); debug.print(':'); debug.println(port);
 #endif
     } else {
-	/* same host and port, no need to restore */
-	restore = false;
+        /* same host and port, no need to restore */
+        restore = false;
 #ifdef DEBUG
-	debug.print(F("sendto: same host and port "));
-	debug.print(host); debug.print(':'); debug.println(port);
+        debug.print(F("sendto: same host and port "));
+        debug.print(host); debug.print(':'); debug.println(port);
 #endif
     }
 
     finishCommand();
 
     if (data) {
-	write(data, size);
+        write(data, size);
     } else if (flashData) {
-	print(flashData);
+        print(flashData);
     }
 
     /* Restore original host and port */
     if (restore) {
-	setHost(lastHost,lastPort);
+        setHost(lastHost,lastPort);
 #ifdef DEBUG
-	debug.print(F("sendto: restored "));
-	debug.print(lastHost); debug.print(':'); debug.println(lastPort);
+        debug.print(F("sendto: restored "));
+        debug.print(lastHost); debug.print(':'); debug.println(lastPort);
 #endif
     } else if (udpAutoPair) {
        setHostIP(F("0.0.0.0"));
@@ -2709,9 +2708,9 @@ boolean WiFly::sendto(
 #ifdef DEBUG
     debug.print(F("sendto: send "));
     if (data) {
-	debug.println((char *)data);
+        debug.println((char *)data);
     } else if (flashData) {
-	debug.println(flashData);
+        debug.println(flashData);
     }
 #endif
 
@@ -2840,49 +2839,48 @@ boolean WiFly::openComplete()
     char buf[20];
 
     if (!connecting) {
-	return true;
+        return true;
     }
 
     if (serial->available()) {
-	char ch = serial->read();
-	switch (ch) {
-	case '*':
-	    if (match_P(PSTR("OPEN*"))) {
-		DPRINT(F("Connected\n\r"));
-		connected = true;
-		connecting = false;
-		/* successful connection exits command mode */
-		inCommandMode = false;
-		DPRINT(F("openComplete: true\n\r"));
-		return true;
-	    } else {
-		/* Failed to connected */
-		connecting = false;
-		finishCommand();
-		DPRINT(F("openComplete: true\n\r"));
-		return true;
-	    }
-	    break;
-	case 'C': {
-		buf[0] = ch;
-		gets(&buf[1], sizeof(buf)-1);
-		debug.print(F("Failed to connect: ")); debug.println(buf);
-		connecting = false;
-		finishCommand();
-		DPRINT(F("openComplete: true\n\r"));
-		return true;
-	    }
-
-	default:
-	    buf[0] = ch;
-	    gets(&buf[1], sizeof(buf)-1);
-	    debug.print(F("Unexpected resp: "));
-	    debug.println(buf);
-	    connecting = false;
-	    finishCommand();
-	    DPRINT(F("openComplete: true\n\r"));
-	    return true;
-	}
+        char ch = serial->read();
+        switch (ch) {
+        case '*':
+            if (match_P(PSTR("OPEN*"))) {
+                DPRINT(F("Connected\n\r"));
+                connected = true;
+                connecting = false;
+                /* successful connection exits command mode */
+                inCommandMode = false;
+                DPRINT(F("openComplete: true\n\r"));
+                return true;
+            } else {
+                /* Failed to connected */
+                connecting = false;
+                finishCommand();
+                DPRINT(F("openComplete: true\n\r"));
+                return true;
+            }
+            break;
+        case 'C': 
+            buf[0] = ch;
+            gets(&buf[1], sizeof(buf)-1);
+            debug.print(F("Failed to connect: ")); debug.println(buf);
+            connecting = false;
+            finishCommand();
+            DPRINT(F("openComplete: true\n\r"));
+            return true;
+            break;
+        default:
+            buf[0] = ch;
+            gets(&buf[1], sizeof(buf)-1);
+            debug.print(F("Unexpected resp: "));
+            debug.println(buf);
+            connecting = false;
+            finishCommand();
+            DPRINT(F("openComplete: true\n\r"));
+            return true;
+        }
     }
 
     DPRINT(F("openComplete: false\n\r"));
@@ -2899,13 +2897,13 @@ void WiFly::terminal()
 {
     debug.println(F("Terminal ready"));
     while (1) {
-	if (serial->available() > 0) {
-	    debug.write(serial->read());
-	}
+        if (serial->available() > 0) {
+            debug.write(serial->read());
+        }
 
-	if (debug.available()) { // Outgoing data
-	    serial->write(debug.read());
-	}
+        if (debug.available()) { // Outgoing data
+            serial->write(debug.read());
+        }
     }
 }
 
@@ -2917,7 +2915,7 @@ void WiFly::terminal()
 boolean WiFly::close()
 {
     if (!connected) {
-	return true;
+        return true;
     }
 
     flushRx();
@@ -2926,12 +2924,12 @@ boolean WiFly::close()
     send_P(PSTR("close\r"));
 
     if (match_P(PSTR("*CLOS*"))) {
-	finishCommand();
-	debug.println(F("close: got *CLOS*"));
-	connected = false;
-	return true;
+        finishCommand();
+        debug.println(F("close: got *CLOS*"));
+        connected = false;
+        return true;
     } else {
-	debug.println(F("close: failed, no *CLOS*"));
+        debug.println(F("close: failed, no *CLOS*"));
     }
 
     /* Check connection state */
@@ -2956,7 +2954,7 @@ void WFDebug::begin(Stream *debugPrint)
 size_t WFDebug::write(uint8_t data)
 {
     if (debug != NULL) {
-	return debug->write(data);
+        return debug->write(data);
     }
 
     return 0;

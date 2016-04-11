@@ -39,14 +39,14 @@
  *                       - made the match() function public, handy for matching text in a stream.
  *                       - Added a getProtocol() function to get current set of protocols.
  * 0.3      21-Apr-2012  Added createAdhocNetwork() to create an Ad Hoc WiFi network.
- * 			 Optimised the setopt() and getopt() function so they handle
- * 			 integer conversions and refactored all of the set and get functions.
- * 			 Added a multMatch_P() function to match serial data against multiple
- * 			 progmem strings.
- * 			 Added failure detection to the join() function to quickly detect
- * 			 a failure rather than relying on a timeout.
- * 			 Added setJoin() and getJoin() function for access to the wlan join parameter.
- * 			 Refactored getres() to use the new multiMatch_P() function.
+ *              Optimised the setopt() and getopt() function so they handle
+ *              integer conversions and refactored all of the set and get functions.
+ *              Added a multMatch_P() function to match serial data against multiple
+ *              progmem strings.
+ *              Added failure detection to the join() function to quickly detect
+ *              a failure rather than relying on a timeout.
+ *              Added setJoin() and getJoin() function for access to the wlan join parameter.
+ *              Refactored getres() to use the new multiMatch_P() function.
  *
  */
 
@@ -79,47 +79,47 @@ typedef const char PROGMEM prog_char;
 #endif
 
 /* IP Protocol bits */
-#define WIFLY_PROTOCOL_UDP		0x01
-#define WIFLY_PROTOCOL_TCP		0x02
-#define WIFLY_PROTOCOL_SECURE		0x04
-#define WIFLY_PROTOCOL_TCP_CLIENT	0x08
-#define WIFLY_PROTOCOL_HTTP		0x10	/* HTTP Client mode */
-#define WIFLY_PROTOCOL_RAW		0x20
-#define WIFLY_PROTOCOL_SMTP		0x40
+#define WIFLY_PROTOCOL_UDP        0x01
+#define WIFLY_PROTOCOL_TCP        0x02
+#define WIFLY_PROTOCOL_SECURE     0x04
+#define WIFLY_PROTOCOL_TCP_CLIENT 0x08
+#define WIFLY_PROTOCOL_HTTP       0x10    /* HTTP Client mode */
+#define WIFLY_PROTOCOL_RAW        0x20
+#define WIFLY_PROTOCOL_SMTP       0x40
 
 /* IP Flag bits */
-#define WIFLY_FLAG_TCP_KEEP		0x01	/* Keep TCP connection alive when wifi lost */
-#define WIFLY_FLAG_TCP_NODELAY		0x02
-#define WIFLY_FLAG_TCP_RETRY		0x04
-#define WIFLY_FLAG_UDP_RETRY		0x08
-#define WIFLY_FLAG_DNS_CACHING		0x10
-#define WIFLY_FLAG_ARP_CACHING		0x20
-#define WIFLY_FLAG_UDP_AUTO_PAIR	0x40
-#define WIFLY_FLAG_ADD_TIMESTAMP	0x80
+#define WIFLY_FLAG_TCP_KEEP       0x01    /* Keep TCP connection alive when wifi lost */
+#define WIFLY_FLAG_TCP_NODELAY    0x02
+#define WIFLY_FLAG_TCP_RETRY      0x04
+#define WIFLY_FLAG_UDP_RETRY      0x08
+#define WIFLY_FLAG_DNS_CACHING    0x10
+#define WIFLY_FLAG_ARP_CACHING    0x20
+#define WIFLY_FLAG_UDP_AUTO_PAIR  0x40
+#define WIFLY_FLAG_ADD_TIMESTAMP  0x80
 
 /* UART mode bits */
-#define WIFLY_UART_MODE_NOECHO		0x01
-#define WIFLY_UART_MODE_DATA_TRIGGER	0x02
-#define WIFLY_UART_MODE_SLEEP_RX_BREAK	0x08
-#define WIFLY_UART_MODE_RX_BUFFER	0x10
+#define WIFLY_UART_MODE_NOECHO         0x01
+#define WIFLY_UART_MODE_DATA_TRIGGER   0x02
+#define WIFLY_UART_MODE_SLEEP_RX_BREAK 0x08
+#define WIFLY_UART_MODE_RX_BUFFER      0x10
 
 /* DHCP modes */
-#define WIFLY_DHCP_MODE_OFF		0x00	/* No DHCP, static IP mode */
-#define WIFLY_DHCP_MODE_ON		0x01	/* get IP, Gateway, and DNS from AP */
-#define WIFLY_DHCP_MODE_AUTOIP		0x02	/* Used with Adhoc networks */
-#define WIFLY_DHCP_MODE_CACHE		0x03	/* Use previous DHCP address based on lease */
-#define WIFLY_DHCP_MODE_SERVER		0x04	/* Server DHCP IP addresses? */
+#define WIFLY_DHCP_MODE_OFF      0x00    /* No DHCP, static IP mode */
+#define WIFLY_DHCP_MODE_ON       0x01    /* get IP, Gateway, and DNS from AP */
+#define WIFLY_DHCP_MODE_AUTOIP   0x02    /* Used with Adhoc networks */
+#define WIFLY_DHCP_MODE_CACHE    0x03    /* Use previous DHCP address based on lease */
+#define WIFLY_DHCP_MODE_SERVER   0x04    /* Server DHCP IP addresses? */
 
 /* WLAN Join modes */
-#define WIFLY_WLAN_JOIN_MANUAL		0x00	/* Don't auto-join a network */
-#define WIFLY_WLAN_JOIN_AUTO		0x01	/* Auto-join network set in SSID, passkey, and channel. */
-#define WIFLY_WLAN_JOIN_ANY		0x02	/* Ignore SSID and join strongest network using passkey. */
-#define WIFLY_WLAN_JOIN_ADHOC		0x04	/* Create an Adhoc network using SSID, Channel, IP and NetMask */
+#define WIFLY_WLAN_JOIN_MANUAL   0x00    /* Don't auto-join a network */
+#define WIFLY_WLAN_JOIN_AUTO     0x01    /* Auto-join network set in SSID, passkey, and channel. */
+#define WIFLY_WLAN_JOIN_ANY      0x02    /* Ignore SSID and join strongest network using passkey. */
+#define WIFLY_WLAN_JOIN_ADHOC    0x04    /* Create an Adhoc network using SSID, Channel, IP and NetMask */
 
-#define WIFLY_DEFAULT_TIMEOUT		500	/* 500 milliseconds */
+#define WIFLY_DEFAULT_TIMEOUT    500    /* 500 milliseconds */
 
-#define WIFLY_MODE_WPA			0	
-#define WIFLY_MODE_WEP			1
+#define WIFLY_MODE_WPA           0    
+#define WIFLY_MODE_WEP           1
 
 class WFDebug : public Stream {
 public:
@@ -199,7 +199,7 @@ public:
     boolean setHost(const char *buf, uint16_t port);
 
     boolean setProtocol(const uint8_t protocol);
-    boolean setIpProtocol(const uint8_t protocol);	/* obsolete */
+    boolean setIpProtocol(const uint8_t protocol);    /* obsolete */
     boolean setIpFlags(const uint8_t flags);
     boolean setUartMode(const uint8_t mode);
 
@@ -312,11 +312,11 @@ public:
     boolean setFtpMode(uint8_t mode);
 
     boolean ftpGet(
-	const char *addr,
-	const char *dir,
-	const char *user,
-	const char *password,
-	const char *filename);
+    const char *addr,
+    const char *dir,
+    const char *user,
+    const char *password,
+    const char *filename);
 
   private:
     void init(void);
@@ -324,11 +324,11 @@ public:
     void dump(const char *str);
 
     boolean sendto(
-	const uint8_t *data,
-	uint16_t size,
-	const __FlashStringHelper *flashData,
-	const char *host,
-	uint16_t port);
+    const uint8_t *data,
+    uint16_t size,
+    const __FlashStringHelper *flashData,
+    const char *host,
+    uint16_t port);
 
     boolean match_P(const prog_char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     int8_t multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
@@ -371,19 +371,19 @@ public:
     boolean connected;
     boolean connecting;
     struct {
-	uint8_t tcp;
-	uint8_t assoc;
-	uint8_t authen;
-	uint8_t dnsServer;
-	uint8_t dnsFound;
-	uint8_t channel;
+    uint8_t tcp;
+    uint8_t assoc;
+    uint8_t authen;
+    uint8_t dnsServer;
+    uint8_t dnsFound;
+    uint8_t channel;
     } status;
 
-    Stream *serial;	/* Serial interface to WiFly */
+    Stream *serial;    /* Serial interface to WiFly */
     
-    WFDebug debug;	/* Internal debug channel. */
+    WFDebug debug;    /* Internal debug channel. */
 
-    char replaceChar;	/* The space replacement character */
+    char replaceChar;    /* The space replacement character */
 
     /*  for dbgDump() */
     char *dbgBuf;
