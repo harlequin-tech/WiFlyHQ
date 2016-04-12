@@ -2487,9 +2487,8 @@ boolean WiFly::ping(const char *host)
         return false;
     }
 
-    if (match_P(PSTR("64 bytes"), 5000)) {
-        gets(NULL,0);
-        gets(NULL,0, 5000);
+    if (match_P(PSTR("reply from"), 5000)) {
+        flushRx(); //as long as we get a "reply from" it's good.
         finishCommand();
         return true;
     }
