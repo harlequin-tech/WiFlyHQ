@@ -2918,6 +2918,14 @@ boolean WiFly::close()
         return true;
     }
 
+    //first check to see if server closed the connection
+    if (match_P(PSTR("*CLOS*"))) {
+        finishCommand();
+        debug.println(F("close: got *CLOS*"));
+        connected = false;
+        return true;
+    }
+
     flushRx();
 
     startCommand();
