@@ -261,8 +261,8 @@ public:
     void enableHostRestore();
     void disableHostRestore();
 
-    boolean open(const char *addr, uint16_t port=80, boolean block=true);
-    boolean open(IPAddress addr, uint16_t port=80, boolean block=true);
+    boolean open(const char *addr, uint16_t port=80, boolean block=true, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    boolean open(IPAddress addr, uint16_t port=80, boolean block=true, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     boolean close();
     boolean openComplete();
     boolean isConnected();
