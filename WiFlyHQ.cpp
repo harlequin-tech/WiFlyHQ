@@ -2085,6 +2085,12 @@ boolean WiFly::setChannel(uint8_t channel)
     return setopt(PSTR("set wlan chan"), channel);
 }
 
+/** Set auth mode, normally leave as 0, but wep64 requires 8 */
+boolean WiFly::setAuth(uint8_t mode)
+{
+    return setopt(PSTR("set wlan auth"), mode);
+}
+
 /** Set WEP key */
 boolean WiFly::setKey(const char *buf)
 {
@@ -2323,7 +2329,11 @@ boolean WiFly::join(const char *ssid, const char *password, bool dhcp, uint8_t m
     setSSID(ssid);
     if (mode == WIFLY_MODE_WPA) {
         setPassphrase(password);
-    } else {
+    } else if(mode == WIFLY_MODE_WEP_64) {
+        setAuth(8);
+        setKey(password);
+    } else { //wep 128 or unknown
+        setAuth(0);
         setKey(password);
     }
 
