@@ -31,8 +31,17 @@
 *
 */
 
+#include "Arduino.h"
 #include <SoftwareSerial.h>
 #include "WiFlyHQ.h"
+
+bool getBandwidth(uint32_t *rxRate, uint32_t *txRate, char *date, int dateSize);
+bool sendSoapReq(
+    const char *host, 
+    uint16_t port, 
+    const __FlashStringHelper *path, 
+    const __FlashStringHelper *action, 
+    const __FlashStringHelper *xmlreq);
 
 SoftwareSerial wiflySerial(8,9);
 WiFly wifly;
@@ -100,21 +109,23 @@ void loop()
 // Get the current tx and rx bandwidth from the fritzbox router
 bool getBandwidth(uint32_t *rxRate, uint32_t *txRate, char *date, int dateSize)
 {
-    if (!sendSoapReq("192.168.1.1", 49000, F("/upnp/control/WANIPConn1"), 
-	F("urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1#GetAddonInfos"),
-	F("<?xml version=\"1.0\" encodin=\"utf-8\"?>\n"
-	  "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" "
-	  "xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"
-	  "<s:Body>\n"
-	  "<u:GetAddonInfos xmlns:u=\"urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1\" />\n"
-	  "</s:Body>\n</s:Envelope>"))) {
+    const __FlashStringHelper *path =  F("/upnp/control/WANIPConn1");
+    const __FlashStringHelper *action =  F("urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1#GetAddonInfos");
+    const __FlashStringHelper *xmlreq =  F("<?xml version=\"1.0\" encodin=\"utf-8\"?>\n"\
+	  "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" "\
+	  "xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\">\n"\
+	  "<s:Body>\n"\
+	  "<u:GetAddonInfos xmlns:u=\"urn:schemas-upnp-org:service:WANCommonInterfaceConfig:1\" />\n"\
+	  "</s:Body>\n</s:Envelope>");
+
+    if (!sendSoapReq("192.168.1.1", 49000, path, action, xmlreq)) {
 	return false;
     }
 
     uint32_t now=millis();
 
     if (date != NULL) {
-	if (!wifly.match(F("DATE: "),5000)) {
+	if (!wifly.match_P(F("DATE: "),5000)) {
 	    Serial.println(F("failed to find DATE:"));
 	    return false;
 	}
@@ -125,14 +136,14 @@ bool getBandwidth(uint32_t *rxRate, uint32_t *txRate, char *date, int dateSize)
 	wifly.gets(date, dateSize);
     }
 
-    if (!wifly.match(F("<NewByteSendRate>"))) {
+    if (!wifly.match_P(F("<NewByteSendRate>"))) {
         Serial.println(F("failed to find NewByteSendRate"));
 	return false;
     }
 
     *txRate = wifly.parseInt();
 
-    if (!wifly.match(F("<NewByteReceiveRate>"))) {
+    if (!wifly.match_P(F("<NewByteReceiveRate>"))) {
         Serial.println(F("failed to find NewByteReceiveRate"));
 	return false;
     }
@@ -146,7 +157,7 @@ bool getBandwidth(uint32_t *rxRate, uint32_t *txRate, char *date, int dateSize)
 
 // Send a SOAP request
 bool sendSoapReq(
-    char *host, 
+    const char *host, 
     uint16_t port, 
     const __FlashStringHelper *path, 
     const __FlashStringHelper *action, 
@@ -170,11 +181,13 @@ bool sendSoapReq(
 	wifly.println('"');
 	wifly.println(F("Content-Type: text/xml; charset=\"utf-8\""));
 	wifly.print(F("Content-Length: "));
-	wifly.println(strlen_P((const prog_char *)xmlreq));
+	wifly.println(strlen_P((const char *)xmlreq));
 	wifly.println();
 	wifly.println(xmlreq);
 	wifly.println();
     } else {
         Serial.println(F("Failed to connect"));
+        return false;
     }
+    return true;
 }
