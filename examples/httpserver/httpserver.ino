@@ -121,7 +121,7 @@ void loop()
 	        Serial.println(F("Got POST"));
 
 		/* Get posted field value */
-		if (wifly.match(F("user="))) {
+		if (wifly.match_P(F("user="))) {
 		    wifly.gets(username, sizeof(username));
 		    wifly.flushRx();		// discard rest of input
 		    sendGreeting(username);
