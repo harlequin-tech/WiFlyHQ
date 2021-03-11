@@ -32,73 +32,71 @@ const char myPassword[] = "my-wpa-password";
 const char site[] = "hunt.net.nz";
 
 void terminal();
-void print_P(const prog_char *str);
-void println_P(const prog_char *str);
 
 void setup()
 {
     char buf[32];
 
     Serial.begin(115200);
-    println_P(PSTR("Starting"));
-    print_P(PSTR("Free memory: "));
+    Serial.println(F("Starting"));
+    Serial.print(F("Free memory: "));
     Serial.println(wifly.getFreeMemory(),DEC);
 
     wifiSerial.begin(9600);
     if (!wifly.begin(&wifiSerial, &Serial)) {
-        println_P(PSTR("Failed to start wifly"));
+        Serial.println(F("Failed to start wifly"));
 	terminal();
     }
 
     /* Join wifi network if not already associated */
     if (!wifly.isAssociated()) {
 	/* Setup the WiFly to connect to a wifi network */
-	println_P(PSTR("Joining network"));
+	Serial.println(F("Joining network"));
 	wifly.setSSID(mySSID);
 	wifly.setPassphrase(myPassword);
 	wifly.enableDHCP();
 
 	if (wifly.join()) {
-	    println_P(PSTR("Joined wifi network"));
+	    Serial.println(F("Joined wifi network"));
 	} else {
-	    println_P(PSTR("Failed to join wifi network"));
+	    Serial.println(F("Failed to join wifi network"));
 	    terminal();
 	}
     } else {
-        println_P(PSTR("Already joined network"));
+        Serial.println(F("Already joined network"));
     }
 
     //terminal();
 
-    print_P(PSTR("MAC: "));
+    Serial.print(F("MAC: "));
     Serial.println(wifly.getMAC(buf, sizeof(buf)));
-    print_P(PSTR("IP: "));
+    Serial.print(F("IP: "));
     Serial.println(wifly.getIP(buf, sizeof(buf)));
-    print_P(PSTR("Netmask: "));
+    Serial.print(F("Netmask: "));
     Serial.println(wifly.getNetmask(buf, sizeof(buf)));
-    print_P(PSTR("Gateway: "));
+    Serial.print(F("Gateway: "));
     Serial.println(wifly.getGateway(buf, sizeof(buf)));
-    print_P(PSTR("SSID: "));
+    Serial.print(F("SSID: "));
     Serial.println(wifly.getSSID(buf, sizeof(buf)));
 
     wifly.setDeviceID("Wifly-WebClient");
-    print_P(PSTR("DeviceID: "));
+    Serial.print(F("DeviceID: "));
     Serial.println(wifly.getDeviceID(buf, sizeof(buf)));
 
     if (wifly.isConnected()) {
-        println_P(PSTR("Old connection active. Closing"));
+        Serial.println(F("Old connection active. Closing"));
 	wifly.close();
     }
 
     if (wifly.open(site, 80)) {
-        print_P(PSTR("Connected to "));
+        Serial.print(F("Connected to "));
 	Serial.println(site);
 
 	/* Send the request */
 	wifly.println("GET / HTTP/1.0");
 	wifly.println();
     } else {
-        println_P(PSTR("Failed to connect"));
+        Serial.println(F("Failed to connect"));
     }
 }
 
@@ -131,19 +129,4 @@ void terminal()
 	    wifly.write(Serial.read());
 	}
     }
-}
-
-/* Print a string from program memory */
-void print_P(const prog_char *str)
-{
-    char ch;
-    while ((ch=pgm_read_byte(str++)) != 0) {
-	Serial.write(ch);
-    }
-}
-
-void println_P(const prog_char *str)
-{
-    print_P(str);
-    Serial.println();
 }
