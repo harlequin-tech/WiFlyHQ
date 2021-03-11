@@ -15,14 +15,6 @@
 #include <WiFlyHQ.h>
 #include <SoftwareSerial.h>
 
-/* Work around a bug with PROGMEM and PSTR where the compiler always
- * generates warnings.
- */
-#undef PROGMEM 
-#define PROGMEM __attribute__(( section(".progmem.data") )) 
-#undef PSTR 
-#define PSTR(s) (__extension__({static prog_char __c[] PROGMEM = (s); &__c[0];})) 
-
 int getMessage(char *buf, int size);
 void send(const char *data);
 bool connect(const char *hostname, const char *path="/", uint16_t port=80);
@@ -144,7 +136,7 @@ bool connect(const char *hostname, const char *path, uint16_t port)
     wifly.println();
 
     /* Wait for the handshake response */
-    if (wifly.match(F("HTTP/1.1 101"), 2000)) {
+    if (wifly.match_P(F("HTTP/1.1 101"), 2000)) {
 	wifly.flushRx(200);
 	return true;
     }
