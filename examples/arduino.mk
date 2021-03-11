@@ -49,10 +49,12 @@
 # your ~/.profile by adding something like this:
 #
 #   export ARDUINODIR=~/somewhere/arduino-1.0
-ARDUINODIR=/Applications/Arduino.app/Contents/Resources/Java
-SKETCHES=$(HOME)/Documents/Arduino
-BOARD=uno
-BAUD=115200
+#ARDUINODIR=/Applications/Arduino.app/Contents/Resources/Java
+ARDUINODIR:=/usr/share/arduino
+SKETCHES:=$(HOME)/sketchbook
+BOARD:=uno
+BAUD:=115200
+
 #SERIALDEV=/dev/tty.usbmodem621
 #
 # You will also need to set BOARD to the type of arduino you're using.  This
@@ -169,10 +171,10 @@ SOURCES := $(INOFILE) \
 
 # automatically determine included libraries
 ARDUINOLIBSAVAIL := $(notdir $(wildcard $(ARDUINODIR)/libraries/*))
-LIBRARIES := $(filter $(ARDUINOLIBSAVAIL), \
+LIBRARIES += $(filter $(ARDUINOLIBSAVAIL), \
 	$(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(SOURCES)))
 
-LOCAL_LIBS := $(filter $(notdir $(wildcard $(SKETCHES)/libraries/*)), \
+LOCAL_LIBS += $(filter $(notdir $(wildcard $(SKETCHES)/libraries/*)), \
 	$(shell sed -ne "s/^ *\# *include *[<\"]\(.*\)\.h[>\"]/\1/p" $(SOURCES)))
 
 endif
@@ -277,7 +279,7 @@ STTYFARG := $(shell stty --help > /dev/null 2>&1 && echo -F || echo -f)
 
 .PHONY:	all target upload clean boards monitor
 
-all: target upload
+all: target
 
 target: $(TARGET).hex
 
@@ -312,7 +314,8 @@ monitor:
 	@test 0 -eq $(SERIALDEVGUESS) || { \
 		echo "*GUESSING* at serial device:" $(SERIALDEV); \
 		echo; }
-	screen $(SERIALDEV) $(BAUD)
+	#screen $(SERIALDEV) $(BAUD)
+	minicom -D $(SERIALDEV) -b $(BAUD) -o
 
 # building the target
 
