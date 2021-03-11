@@ -79,59 +79,59 @@ extern void *__brkval;
 /* Work around a bug with PROGMEM and PSTR where the compiler always
  * generates warnings.
  */
-#undef PROGMEM 
-#define PROGMEM __attribute__(( section(".progmem.data") )) 
-#undef PSTR 
-#define PSTR(s) (__extension__({static prog_char __c[] PROGMEM = (s); &__c[0];})) 
+//#undef PROGMEM 
+//#define PROGMEM __attribute__(( section(".progmem.data") )) 
+//#undef PSTR 
+//#define PSTR(s) (__extension__({static __FlashStringHelper __c[] PROGMEM = (s); &__c[0];})) 
 
 /* Request and response strings in PROGMEM */
-const prog_char req_GetIP[] PROGMEM = "get ip\r";
-const prog_char resp_IP[] PROGMEM = "IP=";
-const prog_char resp_NM[] PROGMEM = "NM=";
-const prog_char resp_GW[] PROGMEM = "GW=";
-const prog_char resp_Host[] PROGMEM = "HOST=";
-const prog_char resp_DHCP[] PROGMEM = "DHCP=";
-const prog_char req_GetMAC[] PROGMEM = "get mac\r";
-const prog_char resp_MAC[] PROGMEM = "Mac Addr=";
-const prog_char req_GetWLAN[] PROGMEM = "get wlan\r";
-const prog_char resp_SSID[] PROGMEM = "SSID=";
-const prog_char resp_Chan[] PROGMEM = "Chan=";
-const prog_char req_GetOpt[] PROGMEM = "get opt\r";
-const prog_char resp_DeviceID[] PROGMEM = "DeviceId=";
-const prog_char req_GetUart[] PROGMEM = "get u\r";
-const prog_char resp_Baud[] PROGMEM = "Baudrate=";
-const prog_char req_GetTime[] PROGMEM = "get time\r";
-const prog_char resp_Zone[] PROGMEM = "Zone=";
-const prog_char req_ShowTime[] PROGMEM = "show time\r";
-const prog_char resp_Uptime[] PROGMEM = "UpTime=";
-const prog_char resp_Time[] PROGMEM = "Time=";
-const prog_char req_GetDNS[] PROGMEM = "get dns\r";
-const prog_char resp_DNSAddr[] PROGMEM = "Address=";
-const prog_char req_ShowTimeT[] PROGMEM = "show t t\r";
-const prog_char resp_RTC[] PROGMEM = "RTC=";
-const prog_char resp_Mode[] PROGMEM = "Mode=";
-const prog_char req_GetComm[] PROGMEM = "get comm\r";
-const prog_char resp_FlushTimeout[] PROGMEM = "FlushTimer=";
-const prog_char resp_FlushChar[] PROGMEM = "MatchChar=";
-const prog_char resp_FlushSize[] PROGMEM = "FlushSize=";
-const prog_char req_GetRSSI[] PROGMEM = "show rssi\r";
-const prog_char resp_RSSI[] PROGMEM = "RSSI=(-";
-const prog_char resp_Flags[] PROGMEM = "FLAGS=0x";
-const prog_char resp_Protocol[] PROGMEM = "PROTO=";
-const prog_char req_GetAdhoc[] PROGMEM = "get adhoc\r";
-const prog_char resp_Beacon[] PROGMEM = "Beacon=";
-const prog_char resp_Probe[] PROGMEM = "Probe=";
-const prog_char resp_Reboot[] PROGMEM = "Reboot=";
-const prog_char resp_Join[] PROGMEM = "Join=";
-const prog_char resp_Rate[] PROGMEM = "Rate=";
-const prog_char resp_Power[] PROGMEM = "TxPower=";
-const prog_char resp_Replace[] PROGMEM = "Replace=";
+const char req_GetIP[] PROGMEM = "get ip\r";
+const char resp_IP[] PROGMEM = "IP=";
+const char resp_NM[] PROGMEM = "NM=";
+const char resp_GW[] PROGMEM = "GW=";
+const char resp_Host[] PROGMEM = "HOST=";
+const char resp_DHCP[] PROGMEM = "DHCP=";
+const char req_GetMAC[] PROGMEM = "get mac\r";
+const char resp_MAC[] PROGMEM = "Mac Addr=";
+const char req_GetWLAN[] PROGMEM = "get wlan\r";
+const char resp_SSID[] PROGMEM = "SSID=";
+const char resp_Chan[] PROGMEM = "Chan=";
+const char req_GetOpt[] PROGMEM = "get opt\r";
+const char resp_DeviceID[] PROGMEM = "DeviceId=";
+const char req_GetUart[] PROGMEM = "get u\r";
+const char resp_Baud[] PROGMEM = "Baudrate=";
+const char req_GetTime[] PROGMEM = "get time\r";
+const char resp_Zone[] PROGMEM = "Zone=";
+const char req_ShowTime[] PROGMEM = "show time\r";
+const char resp_Uptime[] PROGMEM = "UpTime=";
+const char resp_Time[] PROGMEM = "Time=";
+const char req_GetDNS[] PROGMEM = "get dns\r";
+const char resp_DNSAddr[] PROGMEM = "Address=";
+const char req_ShowTimeT[] PROGMEM = "show t t\r";
+const char resp_RTC[] PROGMEM = "RTC=";
+const char resp_Mode[] PROGMEM = "Mode=";
+const char req_GetComm[] PROGMEM = "get comm\r";
+const char resp_FlushTimeout[] PROGMEM = "FlushTimer=";
+const char resp_FlushChar[] PROGMEM = "MatchChar=";
+const char resp_FlushSize[] PROGMEM = "FlushSize=";
+const char req_GetRSSI[] PROGMEM = "show rssi\r";
+const char resp_RSSI[] PROGMEM = "RSSI=(-";
+const char resp_Flags[] PROGMEM = "FLAGS=0x";
+const char resp_Protocol[] PROGMEM = "PROTO=";
+const char req_GetAdhoc[] PROGMEM = "get adhoc\r";
+const char resp_Beacon[] PROGMEM = "Beacon=";
+const char resp_Probe[] PROGMEM = "Probe=";
+const char resp_Reboot[] PROGMEM = "Reboot=";
+const char resp_Join[] PROGMEM = "Join=";
+const char resp_Rate[] PROGMEM = "Rate=";
+const char resp_Power[] PROGMEM = "TxPower=";
+const char resp_Replace[] PROGMEM = "Replace=";
 
 /* Request and response for specific info */
-static struct {
-    const prog_char *req;
-    const prog_char *resp;
-} requests[] = {
+static const struct {
+    const char *req;
+    const char *resp;
+} requests[] PROGMEM = {
     { req_GetIP,     resp_IP },           /* 0 */
     { req_GetIP,     resp_NM },           /* 1 */
     { req_GetIP,     resp_GW },           /* 2 */
@@ -352,13 +352,13 @@ void WiFly::init()
     lastPort = 0;
     lastHost[0] = 0;
 
-    if (!setopt(PSTR("set u m 1"), (char *)NULL)) {
+    if (!setopt(F("set u m 1"), (char *)NULL)) {
         debug.println(F("Failed to turn off echo"));
     }
-    if (!setopt(PSTR("set sys printlvl 0"), (char *)NULL)) {
+    if (!setopt(F("set sys printlvl 0"), (char *)NULL)) {
         debug.println(F("Failed to turn off sys print"));
     }
-    if (!setopt(PSTR("set comm remote 0"), (char *)NULL)) {
+    if (!setopt(F("set comm remote 0"), (char *)NULL)) {
         debug.println(F("Failed to set comm remote"));
     }
 
@@ -483,13 +483,14 @@ int WiFly::peek()
  *       the match.  The peek buffer is used to feed those characters
  *       to the user ahead of reading any more characters from the WiFly.
  */
-boolean WiFly::checkStream(const prog_char *str, boolean peeked)
+boolean WiFly::checkStream(const __FlashStringHelper *fstr, boolean peeked)
 {
     char next;
+    const char *str = (const char *)fstr;
 
 #ifdef DEBUG
     debug.print(F("checkStream: "));
-    debug.println((const __FlashStringHelper *)str);
+    debug.println((const __FlashStringHelper *)fstr);
 #endif
 
     if (peekCount > 0) {
@@ -566,7 +567,7 @@ boolean WiFly::checkStream(const prog_char *str, boolean peeked)
  */
 boolean WiFly::checkClose(boolean peeked)
 {
-    if (checkStream(PSTR("*CLOS*"), peeked)) {
+    if (checkStream(F("*CLOS*"), peeked)) {
         connected = false;
         DPRINTLN(F("Stream closed"));
         return true;
@@ -581,7 +582,7 @@ boolean WiFly::checkClose(boolean peeked)
  */
 boolean WiFly::checkOpen(boolean peeked)
 {
-    if (checkStream(PSTR("*OPEN*"), peeked)) {
+    if (checkStream(F("*OPEN*"), peeked)) {
         connected = true;
         DPRINTLN(F("Stream opened"));
         return true;
@@ -690,12 +691,21 @@ void WiFly::send(const char ch)
 }
 
 /** Send a string from PROGMEM to the WiFly */
-void WiFly::send_P(const prog_char *str)
+//void WiFly::send_P(const __FlashStringHelper *str)
+void WiFly::send_P(const char *str)
 {
     DPRINT(F("send_P: "));
     DPRINTLN((const __FlashStringHelper *)str);
 
     print((const __FlashStringHelper *)str);
+}
+
+void WiFly::send_P(const __FlashStringHelper *str)
+{
+    DPRINT(F("send_P: "));
+    DPRINTLN(str);
+
+    print(str);
 }
 
 /**
@@ -908,9 +918,14 @@ boolean WiFly::match(const char *str, uint16_t timeout)
  * @retval true - a match was found
  * @retval false - no match found, timeout reached
  */
-boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
+boolean WiFly::match_P(const __FlashStringHelper  *str, uint16_t timeout)
 {
-    const prog_char *match = str;
+    return match_P((const char *)str, timeout);
+}
+
+boolean WiFly::match_P(const char  *str, uint16_t timeout)
+{
+    const char *match = (const char *)str;
     char ch, ch_P;
 
     if (debugOn) {
@@ -918,7 +933,7 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
         debug.println((const __FlashStringHelper *)str);
     }
 
-    ch_P = pgm_read_byte(match);
+    ch_P = pgm_read_byte(str);
     if (ch_P == '\0') {
         /* Null string always matches */
         return true;
@@ -929,7 +944,7 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
             match++;
         } else {
             /* Restart match */
-            match = str;
+            match = (const char *)str;
             if (ch == pgm_read_byte(match)) {
                 match++;
             }
@@ -962,7 +977,7 @@ boolean WiFly::match_P(const prog_char *str, uint16_t timeout)
  */
 int WiFly::multiMatch_P(uint16_t timeout, uint8_t count, ...)
 {
-    const prog_char *str[20];
+    const char *str[20];
     int ind;
     va_list ap;
     va_start(ap, count);
@@ -972,7 +987,7 @@ int WiFly::multiMatch_P(uint16_t timeout, uint8_t count, ...)
     }
 
     for (ind=0; ind<count; ind++) {
-        str[ind] = va_arg(ap, const prog_char *);
+        str[ind] = va_arg(ap, const char *);
     }
     va_end(ap);
 
@@ -990,11 +1005,11 @@ int WiFly::multiMatch_P(uint16_t timeout, uint8_t count, ...)
  * @returns the index of the matching string
  * @retval -1 - no match found, timeout reached
  */
-int8_t WiFly::multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeout)
+int8_t WiFly::multiMatch_P(const char *str[], uint8_t count, uint16_t timeout)
 {
     struct {
         bool active;
-        const prog_char *str;
+        const char *str;
     } match[count];
     char ch, ch_P;
     uint8_t ind;
@@ -1046,10 +1061,12 @@ int8_t WiFly::multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeo
  * @retval true - a match was found
  * @retval false - no match found, timeout reached
  */
-boolean WiFly::match(const __FlashStringHelper *str, uint16_t timeout)
+#if 0
+boolean WiFly::match(const __FlashStringHelper  *str, uint16_t timeout)
 {
-    return match_P((const prog_char *)str, timeout);
+    return match_P((const char *)str, timeout);
 }
+#endif
 
 /**
  * Read characters from the WiFly until the prompt string is seen.
@@ -1088,9 +1105,9 @@ boolean WiFly::enterCommandMode()
     }
 
     delay(250);
-    send_P(PSTR("$$$"));
+    send_P(F("$$$"));
     delay(250);
-    if (match_P(PSTR("CMD\r\n"), 500)) {
+    if (match_P(F("CMD\r\n"), 500)) {
         /* Get the prompt */
         if (gotPrompt) {
             inCommandMode = true;
@@ -1118,9 +1135,9 @@ boolean WiFly::enterCommandMode()
     for (retry=0; retry<5; retry++) {
         DPRINT(F("send $$$ ")); DPRINT(retry); DPRINT("\r\n");
         delay(250);
-        send_P(PSTR("$$$"));
+        send_P(F("$$$"));
         delay(250);
-        if (match_P(PSTR("CMD\r\n"), 500)) {
+        if (match_P(F("CMD\r\n"), 500)) {
             inCommandMode = true;
             return true;
         }
@@ -1136,9 +1153,9 @@ boolean WiFly::exitCommandMode()
         return true;
     }
 
-    send_P(PSTR("exit\r"));
+    send_P(F("exit\r"));
 
-    if (match_P(PSTR("EXIT\r\n"), 500)) {
+    if (match_P(F("EXIT\r\n"), 500)) {
         inCommandMode = false;
         return true;
     } else {
@@ -1281,7 +1298,7 @@ uint16_t WiFly::getConnection()
 
     DPRINT(F("getCon\r\n"));
     DPRINT(F("show c\r\n"));
-    send_P(PSTR("show c\r"));
+    send_P(F("show c\r"));
     len = gets(buf, sizeof(buf));
 
     if (checkPrompt(buf)) {
@@ -1452,15 +1469,15 @@ uint32_t WiFly::getBaud()
  */
 boolean WiFly::sleep(uint16_t seconds)
 {
-    if (seconds != NULL) {
-        if(!setopt(PSTR("set sys wake"), seconds)) {
+    if (seconds != 0) {
+        if(!setopt(F("set sys wake"), seconds)) {
             return false;
         }
     }
     if (!startCommand()) {
         return false;
     }
-    send_P(PSTR("sleep\r"));
+    send_P(F("sleep\r"));
     inCommandMode = false;
     return true;
 }
@@ -1476,7 +1493,7 @@ boolean WiFly::time()
     if (!startCommand()) {
         return false;
     }
-    send_P(PSTR("time\r"));
+    send_P(F("time\r"));
     finishCommand();
     return true;
 }
@@ -1501,7 +1518,7 @@ uint32_t WiFly::getRTC()
 bool WiFly::getHostByName(const char *hostname, char *buf, int size)
 {
     if (startCommand()) {
-    send_P(PSTR("lookup "));
+    send_P(F("lookup "));
     send(hostname);
     send("\r");
 
@@ -1546,15 +1563,15 @@ int8_t WiFly::getDHCPMode()
         return -1;
     }
 
-    if (strncmp_P(buf, PSTR("OFF"), 3) == 0) {
+    if (strncmp(buf, "OFF", 3) == 0) {
         mode = 0;
-    } else if (strncmp_P(buf, PSTR("ON"), 2) == 0) {
+    } else if (strncmp(buf, "ON", 2) == 0) {
         mode = 1;
-    } else if (strncmp_P(buf, PSTR("AUTOIP"), 6) == 0) {
+    } else if (strncmp(buf, "AUTOIP", 6) == 0) {
         mode = 2;
-    } else if (strncmp_P(buf, PSTR("CACHE"), 5) == 0) {
+    } else if (strncmp(buf, "CACHE", 5) == 0) {
         mode = 3;
-    } else if (strncmp_P(buf, PSTR("SERVER"), 6) == 0) {
+    } else if (strncmp(buf, "SERVER", 6) == 0) {
         mode = 4;
     } else {
         mode = -1;    // unknown
@@ -1615,17 +1632,17 @@ int8_t WiFly::getRSSI()
 }
 
 
-const prog_char res_AOK[] PROGMEM = "AOK\r\n";
-const prog_char res_ERR[] PROGMEM = "ERR: ";
+const char res_AOK[] PROGMEM = "AOK\r\n";
+const char res_ERR[] PROGMEM = "ERR: ";
 
 /* Get the result from a set operation
  * Should be AOK or ERR
  */
 boolean WiFly::getres(char *buf, int size)
 {
-    const prog_char *setResult[] = {
-        PSTR("ERR: "),
-        PSTR("AOK\r\n")
+    const char *setResult[] PROGMEM = {
+        "ERR: ",
+        "AOK\r\n"
     };
     int8_t res;
 
@@ -1642,7 +1659,7 @@ boolean WiFly::getres(char *buf, int size)
     } else {
         /* timeout */
         DPRINTLN(F("timeout"));
-        strncpy_P(buf, PSTR("<timeout>"), size);
+        strncpy(buf, "<timeout>", size);
     }
     return false;
 }
@@ -1654,11 +1671,18 @@ boolean WiFly::getres(char *buf, int size)
  * @param base the number format; DEC or HEX
  * @returns true on success, false on failure
  */
-boolean WiFly::setopt(const prog_char *opt, const uint32_t value, uint8_t base)
+boolean WiFly::setopt(const char *opt, const uint32_t value, uint8_t base)
 {
     char buf[11];
     simple_utoa(value, base, buf, sizeof(buf));
     return setopt(opt, buf);
+}
+
+boolean WiFly::setopt(const __FlashStringHelper *opt, const uint32_t value, uint8_t base)
+{
+    char buf[11];
+    simple_utoa(value, base, buf, sizeof(buf));
+    return setopt((const char *)opt, buf);
 }
 
 
@@ -1672,7 +1696,12 @@ boolean WiFly::setopt(const prog_char *opt, const uint32_t value, uint8_t base)
  *        current replacement character
  * @returns true on success, false on failure
  */
-boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashStringHelper *buf_P, bool spacesub)
+boolean WiFly::setopt(const __FlashStringHelper *cmd, const char *buf, const __FlashStringHelper *buf_P, bool spacesub)
+{
+    return setopt((const char *)cmd, buf, (const char *)buf_P, spacesub);
+}
+
+boolean WiFly::setopt(const char *cmd, const char *buf, const char *buf_P, bool spacesub)
 {
     char rbuf[16];
     boolean res;
@@ -1685,7 +1714,7 @@ boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashString
     if (buf_P != NULL) {
         send(' ');
         if (spacesub) {
-            const prog_char *str = (const prog_char *)buf_P;
+            const char *str = (const char *)buf_P;
             char ch;
             while ((ch = pgm_read_byte(str++)) != 0) {
                 if (ch == ' ') {
@@ -1695,7 +1724,7 @@ boolean WiFly::setopt(const prog_char *cmd, const char *buf, const __FlashString
                 }
             }
         } else {
-            send_P((const prog_char *)buf_P);
+            send_P((const char *)buf_P);
         }
     } else if (buf != NULL) {
         send(' ');
@@ -1731,8 +1760,8 @@ boolean WiFly::save()
     if (!startCommand()) {
         return false;
     }
-    send_P(PSTR("save\r"));
-    if (match_P(PSTR("Storing"))) {
+    send_P(F("save\r"));
+    if (match_P(F("Storing"))) {
         getPrompt();
         res = true;
     }
@@ -1749,8 +1778,8 @@ boolean WiFly::reboot()
     if (!startCommand()) {
         return false;
     }
-    send_P(PSTR("reboot\r"));
-    if (!match_P(PSTR("*Reboot*"))) {
+    send_P(F("reboot\r"));
+    if (!match_P(F("*Reboot*"))) {
         finishCommand();
         return false;
     }
@@ -1771,8 +1800,8 @@ boolean WiFly::factoryRestore()
     if (!startCommand()) {
         return false;
     }
-    send_P(PSTR("factory RESTORE\r"));
-    if (match_P(PSTR("Set Factory Defaults"))) {
+    send_P(F("factory RESTORE\r"));
+    if (match_P(F("Set Factory Defaults"))) {
         getPrompt();
         res = true;
     }
@@ -1783,17 +1812,17 @@ boolean WiFly::factoryRestore()
 
 boolean WiFly::setDeviceID(const __FlashStringHelper *buf)
 {
-    return setopt(PSTR("set o d"), NULL, buf);
+    return setopt(F("set o d"), NULL, buf);
 }
 
 boolean WiFly::setDeviceID(const char *buf)
 {
-    return setopt(PSTR("set o d"), buf);
+    return setopt(F("set o d"), buf);
 }
 
 bool WiFly::setJoin(uint8_t join)
 {
-    return setopt(PSTR("set wlan join"), join);
+    return setopt(F("set wlan join"), join);
 }
 
 /** 
@@ -1805,7 +1834,7 @@ bool WiFly::setJoin(uint8_t join)
  */
 boolean WiFly::setIP(const char *buf)
 {
-    return setopt(PSTR("set ip address"), buf);
+    return setopt(F("set ip address"), buf);
 }
 
 /** 
@@ -1817,28 +1846,28 @@ boolean WiFly::setIP(const char *buf)
  */
 boolean WiFly::setIP(const __FlashStringHelper *buf)
 {
-    return setopt(PSTR("set ip address"), NULL, buf);
+    return setopt(F("set ip address"), NULL, buf);
 }
 
 /** Set local port */
 boolean WiFly::setPort(const uint16_t port)
 {
-    return setopt(PSTR("set ip localport"), port);
+    return setopt(F("set ip localport"), port);
 }
 
 boolean WiFly::setHostIP(const __FlashStringHelper *buf)
 {
-    return setopt(PSTR("set ip host"), NULL, buf);
+    return setopt(F("set ip host"), NULL, buf);
 }
 
 boolean WiFly::setHostIP(const char *buf)
 {
-    return setopt(PSTR("set ip host"), buf);
+    return setopt(F("set ip host"), buf);
 }
 
 boolean WiFly::setHostPort(const uint16_t port)
 {
-    return setopt(PSTR("set ip remote"), port);
+    return setopt(F("set ip remote"), port);
 }
 
 boolean WiFly::setHost(const char *buf, uint16_t port)
@@ -1860,22 +1889,22 @@ boolean WiFly::setHost(const char *buf, uint16_t port)
 
 boolean WiFly::setNetmask(const char *buf)
 {
-    return setopt(PSTR("set ip netmask"), buf);
+    return setopt(F("set ip netmask"), buf);
 }
 
 boolean WiFly::setNetmask(const __FlashStringHelper *buf)
 {
-    return setopt(PSTR("set ip netmask"), NULL, buf);
+    return setopt(F("set ip netmask"), NULL, buf);
 }
 
 boolean WiFly::setGateway(const char *buf)
 {
-    return setopt(PSTR("set ip gateway"), buf);
+    return setopt(F("set ip gateway"), buf);
 }
 
 boolean WiFly::setDNS(const char *buf)
 {
-    return setopt(PSTR("set dns address"), buf);
+    return setopt(F("set dns address"), buf);
 }
 
 boolean WiFly::setDHCP(const uint8_t mode)
@@ -1889,12 +1918,12 @@ boolean WiFly::setDHCP(const uint8_t mode)
     buf[0] = '0' + mode;
     buf[1] = 0;
 
-    return setopt(PSTR("set ip dhcp"), buf);
+    return setopt(F("set ip dhcp"), buf);
 }
 
 boolean WiFly::setProtocol(const uint8_t protocol)
 {
-    return setopt(PSTR("set ip protocol"), protocol, HEX);
+    return setopt(F("set ip protocol"), protocol, HEX);
 }
 
 boolean WiFly::setIpProtocol(const uint8_t protocol)
@@ -1904,37 +1933,37 @@ boolean WiFly::setIpProtocol(const uint8_t protocol)
 
 boolean WiFly::setIpFlags(const uint8_t flags)
 {
-    return setopt(PSTR("set ip flags"), flags, HEX);
+    return setopt(F("set ip flags"), flags, HEX);
 }
 
 /** Set NTP server IP address */
 boolean WiFly::setTimeAddress(const char *buf)
 {
-    return setopt(PSTR("set time address"), buf);
+    return setopt(F("set time address"), buf);
 }
 
 /** Set NTP server port */
 boolean WiFly::setTimePort(const uint16_t port)
 {
-    return setopt(PSTR("set time port"), port);
+    return setopt(F("set time port"), port);
 }
 
 /** Set timezone for calculating local time based on NTP time. */
 boolean WiFly::setTimezone(const uint8_t zone)
 {
-    return setopt(PSTR("set time zone"), zone);
+    return setopt(F("set time zone"), zone);
 }
 
 /** Set the NTP update period */
 boolean WiFly::setTimeEnable(const uint16_t period)
 {
-    return setopt(PSTR("set time enable"), period);
+    return setopt(F("set time enable"), period);
 }
 
 boolean WiFly::setUartMode(const uint8_t mode)
 {
     /* Always set NOECHO, need to keep echo off for library to function correctly */
-    return setopt(PSTR("set uart mode"), mode | WIFLY_UART_MODE_NOECHO, HEX);
+    return setopt(F("set uart mode"), mode | WIFLY_UART_MODE_NOECHO, HEX);
 }
 
 /** Set the UDP broadcast time interval.
@@ -1944,7 +1973,7 @@ boolean WiFly::setUartMode(const uint8_t mode)
  */
 boolean WiFly::setBroadcastInterval(const uint8_t seconds)
 {
-    return setopt(PSTR("set broadcast interval"), seconds, HEX);
+    return setopt(F("set broadcast interval"), seconds, HEX);
 }
 
 /**
@@ -1982,7 +2011,7 @@ boolean WiFly::disableUdpAutoPair()
  */
 boolean WiFly::setFlushTimeout(const uint16_t timeout)
 {
-    return setopt(PSTR("set comm time"), timeout);
+    return setopt(F("set comm time"), timeout);
 }
 
 /** Set the comms flush character. 0 disables the feature.
@@ -1993,7 +2022,7 @@ boolean WiFly::setFlushTimeout(const uint16_t timeout)
  */
 boolean WiFly::setFlushChar(const char flushChar)
 {
-    return setopt(PSTR("set comm match"), (uint8_t)flushChar, HEX);
+    return setopt(F("set comm match"), (uint8_t)flushChar, HEX);
 }
 
 /** Set the comms flush size.
@@ -2007,13 +2036,13 @@ boolean WiFly::setFlushSize(uint16_t size)
         size = 1460;
     }
 
-    return setopt(PSTR("set comm size"), size);
+    return setopt(F("set comm size"), size);
 }
 
 /** Set the WiFly IO function option */
 boolean WiFly::setIOFunc(const uint8_t func)
 {
-    return setopt(PSTR("set sys iofunc"), func, HEX);
+    return setopt(F("set sys iofunc"), func, HEX);
 }
 
 /**
@@ -2055,7 +2084,7 @@ boolean WiFly::disableDataTrigger()
 /** Hide passphrase and key */
 boolean WiFly::hide()
 {
-    return setopt(PSTR("set wlan hide 1"), (char *)NULL);
+    return setopt(F("set wlan hide 1"), (char *)NULL);
 }
 
 boolean WiFly::disableDHCP()
@@ -2070,7 +2099,7 @@ boolean WiFly::enableDHCP()
 
 boolean WiFly::setSSID(const char *buf)
 {
-    return setopt(PSTR("set wlan ssid"), buf, NULL, true);
+    return setopt(F("set wlan ssid"), buf, NULL, true);
 }
 
 /** Set the WiFi channel.
@@ -2082,13 +2111,13 @@ boolean WiFly::setChannel(uint8_t channel)
     if (channel > 13) {
         channel = 13;
     }
-    return setopt(PSTR("set wlan chan"), channel);
+    return setopt(F("set wlan chan"), channel);
 }
 
 /** Set auth mode, normally leave as 0, but wep64 requires 8 */
 boolean WiFly::setAuth(uint8_t mode)
 {
-    return setopt(PSTR("set wlan auth"), mode);
+    return setopt(F("set wlan auth"), mode);
 }
 
 /** Set WEP key */
@@ -2101,7 +2130,7 @@ boolean WiFly::setKey(const char *buf)
         buf += 2;
     }
 
-    res = setopt(PSTR("set wlan key"), buf);
+    res = setopt(F("set wlan key"), buf);
 
     hide();    /* hide the key */
     return res;
@@ -2118,7 +2147,7 @@ boolean WiFly::setKey(const char *buf)
 boolean WiFly::setPassphrase(const char *buf)
 {
     boolean res;
-    res = setopt(PSTR("set wlan phrase"), buf, NULL, true);
+    res = setopt(F("set wlan phrase"), buf, NULL, true);
 
     hide();    /* hide the key */
     return res;
@@ -2133,7 +2162,7 @@ boolean WiFly::setSpaceReplace(char ch)
     char buf[2] = { ch, 0 };
 
     replaceChar = ch;
-    return setopt(PSTR("set opt replace"), buf);
+    return setopt(F("set opt replace"), buf);
 }
 
 char WiFly::getSpaceReplace(void)
@@ -2179,7 +2208,7 @@ boolean WiFly::setRate(uint32_t rate)
             break;
         }
     }
-    return setopt(PSTR("set wlan rate"), setting);
+    return setopt(F("set wlan rate"), setting);
 }
 
 /**
@@ -2212,7 +2241,7 @@ boolean WiFly::setTxPower(uint8_t dBm)
     if (dBm > 12) {
         dBm = 12;
     }
-    return setopt(PSTR("set wlan tx"), dBm);
+    return setopt(F("set wlan tx"), dBm);
 }
 
 /**
@@ -2239,7 +2268,7 @@ uint8_t WiFly::getTxPower()
  */
 boolean WiFly::setAdhocBeacon(const uint16_t msecs)
 {
-    return setopt(PSTR("set adhoc beacon"), msecs);
+    return setopt(F("set adhoc beacon"), msecs);
 }
 
 /**
@@ -2251,7 +2280,7 @@ boolean WiFly::setAdhocBeacon(const uint16_t msecs)
  */
 boolean WiFly::setAdhocProbe(const uint16_t secs)
 {
-    return setopt(PSTR("set adhoc probe"), secs);
+    return setopt(F("set adhoc probe"), secs);
 }
 
 uint16_t WiFly::getAdhocBeacon()
@@ -2273,20 +2302,20 @@ uint16_t WiFly::getAdhocReboot()
 boolean WiFly::join(const char *ssid, uint16_t timeout)
 {
     int8_t res;
-    const prog_char *joinResult[] = {
-        PSTR("FAILED"),
-        PSTR("Associated!")
+    const char *joinResult[] PROGMEM = {
+        "FAILED",
+        "Associated!"
     };
 
     if (!startCommand()) {
         return false;
     }
 
-    send_P(PSTR("join "));
+    send_P(F("join "));
     if (ssid != NULL) {
         send(ssid);
     }
-    send_P(PSTR("\r"));
+    send_P(F("\r"));
 
     res = multiMatch_P(joinResult,2,timeout);
     flushRx(100);
@@ -2294,7 +2323,7 @@ boolean WiFly::join(const char *ssid, uint16_t timeout)
         status.assoc = 1;
         if (dhcp) {
             // need some time to complete DHCP request
-            match_P(PSTR("GW="), 15000);
+            match_P(F("GW="), 15000);
             flushRx(100);
         }
         gets(NULL,0);
@@ -2347,7 +2376,7 @@ boolean WiFly::join(const char *ssid, const char *password, bool dhcp, uint8_t m
 /** leave the wireless network */
 boolean WiFly::leave()
 {
-    send_P(PSTR("leave\r"));
+    send_P(F("leave\r"));
 
     /* Don't care about result, it either succeeds with a
      * "DeAuth" reponse and prompt, or fails with just a
@@ -2375,7 +2404,7 @@ boolean WiFly::setBaud(uint32_t baud)
 
     /* Go into command mode, since "set uart instant" will exit command mode */
     startCommand();
-    if (setopt(PSTR("set u i"), buf)) {
+    if (setopt(F("set u i"), buf)) {
         //serial->begin(baud);        // Sketch will need to do this
         return true;
     }
@@ -2436,7 +2465,7 @@ void WiFly::sendChunkln(const char *str)
  */
 void WiFly::sendChunkln(const __FlashStringHelper *str)
 {
-    serial->println(strlen_P((const prog_char *)str)+2,HEX);
+    serial->println(strlen_P((const char *)str)+2,HEX);
     serial->println(str);
     serial->println();
 }
@@ -2461,7 +2490,7 @@ void WiFly::sendChunk(const char *str)
  */
 void WiFly::sendChunk(const __FlashStringHelper *str)
 {
-    serial->println(strlen_P((const prog_char *)str),HEX);
+    serial->println(strlen_P((const char *)str),HEX);
     serial->println(str);
 }
 
@@ -2486,17 +2515,17 @@ boolean WiFly::ping(const char *host)
     }
 
     startCommand();
-    send_P(PSTR("ping "));
+    send_P(F("ping "));
     send(addr);
     send('\r');
 
-    match_P(PSTR("Ping try"));
+    match_P(F("Ping try"));
     if (!getPrompt()) {
         finishCommand();
         return false;
     }
 
-    if (match_P(PSTR("reply from"), 5000)) {
+    if (match_P(F("reply from"), 5000)) {
         flushRx(); //as long as we get a "reply from" it's good.
         finishCommand();
         DPRINTLN(F("ping success"));
@@ -2564,11 +2593,11 @@ boolean WiFly::open(const char *addr, uint16_t port, boolean block, uint16_t tim
 
     simple_utoa(port, 10, buf, sizeof(buf));
     debug.print(F("open ")); debug.print(addr); debug.print(' '); debug.println(buf);
-    send_P(PSTR("open "));
+    send_P(F("open "));
     send(addr);
     send(" ");
     send(buf);
-    send_P(PSTR("\r"));
+    send_P(F("\r"));
 
     if (!getPrompt()) {
         debug.println(F("Failed to get prompt"));
@@ -2588,7 +2617,7 @@ boolean WiFly::open(const char *addr, uint16_t port, boolean block, uint16_t tim
     while (readTimeout(&ch,timeout)) {
         switch (ch) {
         case '*':
-            if (match_P(PSTR("OPEN*"))) {
+            if (match_P(F("OPEN*"))) {
                 DPRINT(F("Connected\r\n"));
                 connected = true;
                 /* successful connection exits command mode */
@@ -2856,7 +2885,7 @@ boolean WiFly::openComplete()
         char ch = serial->read();
         switch (ch) {
         case '*':
-            if (match_P(PSTR("OPEN*"))) {
+            if (match_P(F("OPEN*"))) {
                 DPRINT(F("Connected\r\n"));
                 connected = true;
                 connecting = false;
@@ -2929,7 +2958,7 @@ boolean WiFly::close()
     }
 
     //first check to see if server closed the connection
-    if (match_P(PSTR("*CLOS*"))) {
+    if (match_P(F("*CLOS*"))) {
         finishCommand();
         debug.println(F("close: got *CLOS*"));
         connected = false;
@@ -2939,9 +2968,9 @@ boolean WiFly::close()
     flushRx();
 
     startCommand();
-    send_P(PSTR("close\r"));
+    send_P(F("close\r"));
 
-    if (match_P(PSTR("*CLOS*"))) {
+    if (match_P(F("*CLOS*"))) {
         finishCommand();
         debug.println(F("close: got *CLOS*"));
         connected = false;

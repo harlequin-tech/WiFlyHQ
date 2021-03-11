@@ -297,7 +297,7 @@ public:
     boolean debugOn;
 
     boolean match(const char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-    boolean match(const __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+//    boolean match_P(const __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     int multiMatch_P(uint16_t timeout, uint8_t count, ...);
     int gets(char *buf, int size, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
     int getsTerm(char *buf, int size, char term, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
@@ -319,6 +319,8 @@ public:
     const char *user,
     const char *password,
     const char *filename);
+    boolean match_P(const char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    boolean match_P(const __FlashStringHelper *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
 
   private:
     void init(void);
@@ -332,10 +334,10 @@ public:
     const char *host,
     uint16_t port);
 
-    boolean match_P(const prog_char *str, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
-    int8_t multiMatch_P(const prog_char *str[], uint8_t count, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
+    int8_t multiMatch_P(const char *str[], uint8_t count, uint16_t timeout=WIFLY_DEFAULT_TIMEOUT);
 
-    void send_P(const prog_char *str);
+    void send_P(const __FlashStringHelper *str);
+    void send_P(const char *str);
     void send(const char *str);
     void send(const char ch);
     boolean enterCommandMode();
@@ -349,11 +351,13 @@ public:
     boolean finishCommand();
     char *getopt(int opt, char *buf, int size);
     uint32_t getopt(int opt, uint8_t base=DEC);
-    boolean setopt(const prog_char *cmd, const char *buf=NULL, const __FlashStringHelper *buf_P=NULL, bool spacesub=false);
-    boolean setopt(const prog_char *opt, const uint32_t value, uint8_t base=DEC);
+    boolean setopt(const __FlashStringHelper *cmd, const char *buf=NULL, const __FlashStringHelper *buf_P=NULL, bool spacesub=false);
+    boolean setopt(const char *cmd, const char *buf=NULL, const char *buf_P=NULL, bool spacesub=false);
+    boolean setopt(const char *opt, const uint32_t value, uint8_t base=DEC);
+    boolean setopt(const __FlashStringHelper *opt, const uint32_t value, uint8_t base=DEC);
     boolean getres(char *buf, int size);
 
-    boolean checkStream(const prog_char *str, boolean peeked);
+    boolean checkStream(const __FlashStringHelper *str, boolean peeked);
     boolean checkClose(boolean peeked);
     boolean checkOpen(boolean peeked);
 
